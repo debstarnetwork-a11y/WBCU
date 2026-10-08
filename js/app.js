@@ -572,7 +572,7 @@ export async function initDashboardPage() {
   const dashboardRoot = document.getElementById('dashboardRoot');
   if (!dashboardRoot) return;
 
-  // 1. Session Verification (with Sandbox fallback)
+  // 1. Session Verification
   let user = getDemoStorageUser();
   if (!user) {
     try {
@@ -582,43 +582,50 @@ export async function initDashboardPage() {
     }
   }
 
-  // If in preview sandbox and no user logged in, provide active member
-  if (!user || user.fullName === 'Alexander Morgan') {
-    try {
-      const dbRaw = localStorage.getItem('wb_credit_union_admin_users_db');
-      if (dbRaw) {
-        const dbUsers = JSON.parse(dbRaw);
-        if (Array.isArray(dbUsers) && dbUsers.length > 0) {
-          const found = dbUsers.find(u => u.fullName && u.fullName !== 'Alexander Morgan');
-          if (found) {
-            user = {
-              ...found,
-              accountNumber: found.accounts?.[0]?.accountNumber || found.accountNumber || 'WB-9482-1049-55',
-              account_status: found.status || 'active',
-              role: found.role || 'member',
-              tier: 'Multi-Currency Vault',
-              primaryCurrency: found.primaryCurrency || 'USD',
-            };
-          }
-        }
-      }
-    } catch {}
-
-    if (!user || user.fullName === 'Alexander Morgan') {
-      user = {
-        id: 'usr-101',
-        email: 'mizbrymo@gmail.com',
-        fullName: 'Miz Brymo',
-        accountNumber: 'WB-9482-1049-55',
-        account_status: 'active',
-        role: 'member',
-        tier: 'Multi-Currency Vault',
-        primaryCurrency: 'USD',
-        createdAt: new Date().toISOString(),
-      };
-    }
-    setDemoStorageUser(user);
+  // STRICT REQUIREMENT: If user is not authenticated, redirect immediately to login!
+  if (!user || (!user.email && !user.id)) {
+    showToast('Authentication required. Please sign in to access your vault.', 'error', 'Session Required');
+    setTimeout(() => {
+      window.location.href = '/index.html';
+    }, 700);
+    return;
   }
+
+  // Cross-reference user against registered database to ensure status is up to date
+  let dbUser = null;
+  try {
+    const dbRaw = localStorage.getItem('wb_credit_union_admin_users_db');
+    if (dbRaw) {
+      const dbUsers = JSON.parse(dbRaw);
+      if (Array.isArray(dbUsers)) {
+        dbUser = dbUsers.find(u => u.id === user.id || (u.email && user.email && u.email.toLowerCase() === user.email.toLowerCase()));
+      }
+    }
+  } catch (e) {}
+
+  if (dbUser) {
+    user = {
+      ...dbUser,
+      ...user,
+      account_status: dbUser.status || dbUser.account_status || user.account_status || 'active',
+      status: dbUser.status || dbUser.account_status || user.status || 'active',
+    };
+  }
+
+  // STRICT ACCOUNT STATUS ENFORCEMENT: Inactive, Dormant, Blocked, Suspended, Frozen, Closed accounts CANNOT access dashboard!
+  const userStatus = (user.account_status || user.status || 'active').toLowerCase();
+  if (userStatus !== 'active') {
+    localStorage.removeItem('wb_credit_union_demo_user');
+    sessionStorage.removeItem('wb_credit_union_demo_user');
+    showToast(`Access Prohibited: Account status is currently "${userStatus.toUpperCase()}". Contact support to restore access.`, 'error', 'Account Restricted');
+    setTimeout(() => {
+      window.location.href = `/index.html?status=${encodeURIComponent(userStatus)}`;
+    }, 1000);
+    return;
+  }
+
+  // Update session with verified user
+  setDemoStorageUser(user);
 
   // Ensure notifications bell is immediately synchronized with realtime transactions
   try {

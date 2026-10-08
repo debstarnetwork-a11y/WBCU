@@ -195,17 +195,8 @@ export function getDemoStorageUser() {
     return user;
   }
 
-  // Default seed user: Miz Brymo
-  return {
-    id: 'wb-usr-demo-01',
-    fullName: 'Miz Brymo',
-    firstName: 'Miz',
-    lastName: 'Brymo',
-    email: 'mizbrymo@gmail.com',
-    role: 'member',
-    accountNumber: 'WB-9482-1049-55',
-    status: 'active',
-  };
+  // If no user is logged in, return null
+  return null;
 }
 
 if (typeof window !== 'undefined') {

@@ -306,7 +306,23 @@ export function openBiometricEnrollModal(targetEmail = '', onComplete = null) {
             });
           }
 
-          showToast(`Biometric thumbprint (${selectedFinger}) successfully enrolled for ${emailToEnroll}!`, 'success', 'Fingerprint Registered');
+          let isRegisteredInDb = false;
+          try {
+            const dbRaw = localStorage.getItem('wb_credit_union_admin_users_db');
+            if (dbRaw) {
+              const list = JSON.parse(dbRaw);
+              if (Array.isArray(list)) {
+                isRegisteredInDb = list.some(u => u.email?.toLowerCase() === emailToEnroll.toLowerCase());
+              }
+            }
+          } catch (e) {}
+
+          if (isRegisteredInDb) {
+            showToast(`Biometric thumbprint (${selectedFinger}) successfully enrolled for ${emailToEnroll}!`, 'success', 'Fingerprint Registered');
+          } else {
+            showToast(`Fingerprint enrolled for ${emailToEnroll}. Note: Account registration is required before fingerprint login can be used.`, 'info', 'Fingerprint Enrolled');
+          }
+
           closeModal();
           isEnrolling = false;
           if (typeof onComplete === 'function') onComplete();
@@ -452,6 +468,18 @@ function displayAccountStatusHold(status) {
   if (!modal) return;
 
   const messages = {
+    inactive: {
+      title: 'Account Status: Inactive',
+      desc: 'This account is currently inactive. Please contact Member Clearance or Account Administration to reactivate your vault access.',
+    },
+    dormant: {
+      title: 'Account Status: Dormant',
+      desc: 'This account has been flagged as dormant due to inactivity or pending verification. Please contact member support to restore active status.',
+    },
+    blocked: {
+      title: 'Account Access Blocked',
+      desc: 'This account has been blocked for security and compliance protection. Access to the banking vault is prohibited.',
+    },
     suspended: {
       title: 'Account Temporarily Suspended',
       desc: 'Your membership is currently suspended due to pending identity verification or security precautions. Contact Member Clearance to restore vault access.',
@@ -464,9 +492,22 @@ function displayAccountStatusHold(status) {
       title: 'Account Inactive / Closed',
       desc: 'This account has been formally concluded. If you wish to reactivate or open a new account, speak with our member services team.',
     },
+    pending: {
+      title: 'Account Pending Admin Approval',
+      desc: 'Your account registration is awaiting administrative review and approval. Vault access will be unlocked once approved by an officer.',
+    },
+    locked: {
+      title: 'Account Security Lockout',
+      desc: 'This account is locked due to security policy or multiple authentication failures. Please contact support.',
+    },
   };
 
-  const info = messages[status] || messages.suspended;
+  const statusKey = (status || 'suspended').toString().toLowerCase();
+  const info = messages[statusKey] || {
+    title: `Account Access Restricted (${statusKey.toUpperCase()})`,
+    desc: `Access to this account is currently prohibited because its status is "${statusKey}". Please contact member clearance support.`,
+  };
+
   if (titleEl) titleEl.textContent = info.title;
   if (descEl) descEl.textContent = info.desc;
 
@@ -1403,7 +1444,7 @@ export function initLoginForm() {
         }
 
         setTimeout(() => {
-          // Look up user matching enrolled email in admin database
+          // Look up user matching enrolled email in registered admin database
           let dbUser = null;
           try {
             const dbRaw = localStorage.getItem('wb_credit_union_admin_users_db');
@@ -1415,25 +1456,46 @@ export function initLoginForm() {
             }
           } catch (e) {}
 
-          const loggedInUser = dbUser || {
-            id: enrolled.userId || 'usr-101',
-            email: enrolled.userEmail,
-            fullName: enrolled.userEmail.includes('mizbrymo') ? 'Miz Brymo' : enrolled.userEmail.split('@')[0],
-            accountNumber: 'WB-9482-1049-55',
-            account_status: 'active',
-            role: 'member',
-            tier: 'Multi-Currency Vault',
-            primaryCurrency: 'USD',
-            biometricAuthenticated: true,
-            createdAt: new Date().toISOString(),
-            device: captureDeviceFingerprint(),
-          };
+          // Fallback check against active user cache
+          if (!dbUser) {
+            try {
+              const active = JSON.parse(localStorage.getItem('wb_credit_union_active_user') || '{}');
+              if (active.email?.toLowerCase() === enrolled.userEmail.toLowerCase()) {
+                dbUser = active;
+              }
+            } catch (e) {}
+          }
 
-          const status = loggedInUser.account_status || loggedInUser.status || 'active';
+          // STRICT SECURITY ENFORCEMENT: Unregistered users CANNOT log in via fingerprint!
+          if (!dbUser) {
+            if (bioStatusMsg) {
+              bioStatusMsg.textContent = `❌ Fingerprint Rejected: Email "${enrolled.userEmail}" is not registered in the database.`;
+              bioStatusMsg.className = 'biometric-status-msg text-red font-semibold';
+            }
+            showToast(`Access Denied: Email "${enrolled.userEmail}" is not registered in the database. Only registered users can access accounts.`, 'error', 'Unregistered Fingerprint');
+            const pulse = document.getElementById('biometricPulseRing');
+            if (pulse) pulse.style.borderColor = '#ef4444';
+            return;
+          }
+
+          const status = (dbUser.account_status || dbUser.status || 'active').toLowerCase();
           if (status !== 'active') {
+            if (bioStatusMsg) {
+              bioStatusMsg.textContent = `❌ Access Blocked: Account status is currently "${status.toUpperCase()}".`;
+              bioStatusMsg.className = 'biometric-status-msg text-red font-semibold';
+            }
+            showToast(`Access Denied: Account status is ${status.toUpperCase()}. Dashboard access prohibited.`, 'error', 'Account Restricted');
             displayAccountStatusHold(status);
             return;
           }
+
+          const loggedInUser = {
+            ...dbUser,
+            account_status: dbUser.account_status || dbUser.status || 'active',
+            status: dbUser.status || dbUser.account_status || 'active',
+            biometricAuthenticated: true,
+            device: captureDeviceFingerprint(),
+          };
 
           setFailedAttempts(0);
           setLockoutUntil(0);
@@ -1608,6 +1670,7 @@ export function initMultiStepRegistration() {
     const wrapFirst = document.getElementById('wrapFirstName');
     if (!firstName) {
       wrapFirst?.classList.add('is-invalid');
+      wrapFirst?.classList.remove('is-valid');
       isValid = false;
     } else {
       wrapFirst?.classList.remove('is-invalid');
@@ -1617,6 +1680,7 @@ export function initMultiStepRegistration() {
     const wrapLast = document.getElementById('wrapLastName');
     if (!lastName) {
       wrapLast?.classList.add('is-invalid');
+      wrapLast?.classList.remove('is-valid');
       isValid = false;
     } else {
       wrapLast?.classList.remove('is-invalid');
@@ -1624,8 +1688,21 @@ export function initMultiStepRegistration() {
     }
 
     const wrapEmail = document.getElementById('wrapEmail');
-    if (!email || !emailRegex.test(email)) {
+    const emailErrMsg = wrapEmail?.querySelector('.field-error-msg');
+    if (!email) {
+      if (emailErrMsg) emailErrMsg.textContent = 'Please enter your email address.';
       wrapEmail?.classList.add('is-invalid');
+      wrapEmail?.classList.remove('is-valid');
+      isValid = false;
+    } else if (!email.includes('@')) {
+      if (emailErrMsg) emailErrMsg.textContent = 'Missing "@" symbol in email address (e.g., name@gmail.com).';
+      wrapEmail?.classList.add('is-invalid');
+      wrapEmail?.classList.remove('is-valid');
+      isValid = false;
+    } else if (!emailRegex.test(email)) {
+      if (emailErrMsg) emailErrMsg.textContent = 'Please enter a valid email domain (e.g., name@gmail.com).';
+      wrapEmail?.classList.add('is-invalid');
+      wrapEmail?.classList.remove('is-valid');
       isValid = false;
     } else {
       wrapEmail?.classList.remove('is-invalid');
@@ -1916,6 +1993,52 @@ export function initMultiStepRegistration() {
     });
   }
 
+  // Live Input Validation & Clear Errors for Step 1
+  const regEmailInput = document.getElementById('regEmail');
+  const regFirstNameInput = document.getElementById('regFirstName');
+  const regLastNameInput = document.getElementById('regLastName');
+  const regPhoneInput = document.getElementById('regPhoneNumber');
+  const regDOBInput = document.getElementById('regDOB');
+
+  if (regEmailInput) {
+    const wrapEmail = document.getElementById('wrapEmail');
+    const emailErrMsg = wrapEmail?.querySelector('.field-error-msg');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    regEmailInput.addEventListener('input', () => {
+      const val = regEmailInput.value.trim();
+      if (!val) {
+        wrapEmail?.classList.remove('is-valid');
+      } else if (!val.includes('@')) {
+        if (emailErrMsg) emailErrMsg.textContent = 'Missing "@" symbol (e.g., name@gmail.com).';
+        wrapEmail?.classList.add('is-invalid');
+        wrapEmail?.classList.remove('is-valid');
+      } else if (!emailRegex.test(val)) {
+        if (emailErrMsg) emailErrMsg.textContent = 'Please enter a valid domain (e.g., name@gmail.com).';
+        wrapEmail?.classList.add('is-invalid');
+        wrapEmail?.classList.remove('is-valid');
+      } else {
+        wrapEmail?.classList.remove('is-invalid');
+        wrapEmail?.classList.add('is-valid');
+      }
+    });
+
+    regEmailInput.addEventListener('blur', () => {
+      regEmailInput.value = regEmailInput.value.trim();
+    });
+  }
+
+  [regFirstNameInput, regLastNameInput, regPhoneInput, regDOBInput].forEach(input => {
+    if (input) {
+      input.addEventListener('input', () => {
+        const wrap = input.closest('.form-floating-wrap');
+        if (input.value.trim()) {
+          wrap?.classList.remove('is-invalid');
+        }
+      });
+    }
+  });
+
   if (photoUrlInput && previewImg && placeholderIcon) {
     photoUrlInput.addEventListener('input', () => {
       const url = photoUrlInput.value.trim();
@@ -2078,6 +2201,11 @@ export function initMultiStepRegistration() {
     const baseCurrency = document.getElementById('regBaseCurrency')?.value || 'CHF';
     const cryptoEnabled = document.getElementById('cryptoWalletToggle')?.checked || false;
     const password = document.getElementById('regPassword')?.value;
+    const pin1 = document.getElementById('pinDigit1')?.value || '';
+    const pin2 = document.getElementById('pinDigit2')?.value || '';
+    const pin3 = document.getElementById('pinDigit3')?.value || '';
+    const pin4 = document.getElementById('pinDigit4')?.value || '';
+    const pin = `${pin1}${pin2}${pin3}${pin4}`;
     const biometricsEnabled = document.getElementById('biometricsToggle')?.checked || false;
 
     const randomDigits = Math.floor(10000000 + Math.random() * 90000000);
@@ -2473,6 +2601,33 @@ export function initAdminLoginForm() {
       openBiometricEnrollModal(adminEmail, () => {
         updateAdminBiometricUI();
       });
+      return;
+    }
+
+    const enrolledEmail = (enrolled.email || enrolled.userEmail || '').toLowerCase();
+    let isAdminOfficer = enrolledEmail === 'mizbrymo@gmail.com' || enrolledEmail.includes('mizbrymo');
+
+    if (!isAdminOfficer) {
+      try {
+        const dbRaw = localStorage.getItem('wb_credit_union_admin_users_db');
+        if (dbRaw) {
+          const list = JSON.parse(dbRaw);
+          if (Array.isArray(list)) {
+            const found = list.find(u => u.email?.toLowerCase() === enrolledEmail);
+            if (found && (found.is_admin || found.role === 'Super Admin' || found.role === 'Admin')) {
+              isAdminOfficer = true;
+            }
+          }
+        }
+      } catch (err) {}
+    }
+
+    if (!isAdminOfficer) {
+      showToast(`Access Denied: Email "${enrolledEmail}" does not have Administrator privileges.`, 'error', 'Admin Clearance Denied');
+      if (biometricStatusText) {
+        biometricStatusText.textContent = `❌ Access Denied: ${enrolledEmail} is not an authorized Admin officer.`;
+        biometricStatusText.style.color = '#f87171';
+      }
       return;
     }
 
