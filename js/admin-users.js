@@ -3447,6 +3447,24 @@ function setupCreateUserModal() {
     });
   }
 
+  // Open Full Create User Modal triggers
+  const openFullModal = () => {
+    randomizeCreateUserModalFields();
+    if (modal) modal.classList.add('show');
+    const fnInput = document.getElementById('adminNewUserFirstName');
+    if (fnInput) setTimeout(() => fnInput.focus(), 80);
+  };
+
+  const fullBtn = document.getElementById('btnOpenFullCreateUserModal');
+  if (fullBtn) fullBtn.addEventListener('click', openFullModal);
+
+  const quickBtn = document.getElementById('btnOpenCreateUserModal');
+  if (quickBtn) quickBtn.addEventListener('click', openFullModal);
+
+  document.querySelectorAll('[data-open-modal="createUserFullModal"], [data-open-modal="createUserModal"]').forEach((el) => {
+    el.addEventListener('click', openFullModal);
+  });
+
   // Handle Photo File Upload & URL input
   const photoFile = document.getElementById('adminNewUserProfilePhotoFile');
   const photoUrlInput = document.getElementById('adminNewUserProfilePhotoUrl');
@@ -3566,25 +3584,25 @@ function setupCreateUserModal() {
       const nationality = document.getElementById('adminNewUserNationality')?.value || 'Afghanistan';
       const acctType = document.getElementById('adminNewUserAcctType')?.value || 'Checking';
 
-      // Codes and numbers - ALWAYS generate fresh unique random values
+      // Codes and numbers - preserve entered values or generate fresh unique random values
       let acctNum = document.getElementById('adminNewUserAccountNum')?.value.trim();
-      if (!acctNum || acctNum === '09372996993') {
+      if (!acctNum) {
         acctNum = generateRandomAccountNumber();
       }
       let cotCode = document.getElementById('adminNewUserCotCode')?.value.trim();
-      if (!cotCode || cotCode === '0467799') {
+      if (!cotCode) {
         cotCode = generateRandomCotCode();
       }
       let imfCode = document.getElementById('adminNewUserImfCode')?.value.trim();
-      if (!imfCode || imfCode === '9498779') {
+      if (!imfCode) {
         imfCode = generateRandomImfCode();
       }
       let taxCode = document.getElementById('adminNewUserTaxCode')?.value.trim();
-      if (!taxCode || taxCode === 'TX-88392') {
+      if (!taxCode) {
         taxCode = generateRandomTaxCode();
       }
       let txPin = document.getElementById('adminNewUserTxPin')?.value.trim();
-      if (!txPin || txPin === '8869') {
+      if (!txPin) {
         txPin = generateRandomPin();
       }
 

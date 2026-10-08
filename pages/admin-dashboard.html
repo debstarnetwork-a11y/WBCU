@@ -410,7 +410,7 @@
             </div>
             
             <div class="admin-quick-actions-bar">
-              <button type="button" class="admin-btn admin-btn-primary" id="btnOpenCreateUserModal">
+              <button type="button" class="admin-btn admin-btn-primary" id="btnOpenCreateUserModal" data-open-modal="createUserFullModal">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                   <circle cx="8.5" cy="7" r="4"></circle>
@@ -861,7 +861,7 @@
                 Export PDF
               </button>
 
-              <button type="button" class="admin-btn admin-btn-primary" id="btnOpenFullCreateUserModal">
+              <button type="button" class="admin-btn admin-btn-primary" id="btnOpenFullCreateUserModal" data-open-modal="createUserFullModal">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                   <circle cx="8.5" cy="7" r="4"></circle>
@@ -3453,72 +3453,8 @@
        3. INTERACTIVE MODALS
        ========================================================================= -->
 
-  <!-- Modal 1: Create User Account Modal -->
-  <div class="admin-modal-overlay" id="createUserModal">
-    <div class="admin-modal-card">
-      <div class="admin-modal-header">
-        <h3 class="admin-modal-title">Create New Member Account</h3>
-        <button type="button" class="admin-modal-close" data-close-modal="createUserModal">&times;</button>
-      </div>
-      <form id="adminCreateUserForm">
-        <div class="admin-modal-body">
-          <div class="admin-form-group">
-            <label class="admin-form-label">Full Legal Name</label>
-            <input type="text" id="newUserName" class="admin-form-control" placeholder="e.g. Sir Arthur Sterling" required />
-          </div>
-
-          <div class="admin-form-group">
-            <label class="admin-form-label">Email Address</label>
-            <input type="email" id="newUserEmail" class="admin-form-control" placeholder="e.g. arthur.sterling@example.com" required />
-          </div>
-
-          <div class="d-grid grid-cols-2 gap-3 mb-3">
-            <div>
-              <label class="admin-form-label">Account Type</label>
-              <select id="newUserAccountType" class="admin-form-control">
-                <option value="Checking">Premier Checking</option>
-                <option value="Savings">High-Yield Wealth Savings</option>
-                <option value="Business">Institutional Business Vault</option>
-                <option value="Offshore">Swiss Sovereign Offshore Account</option>
-              </select>
-            </div>
-            <div>
-              <label class="admin-form-label">Initial Balance (USD)</label>
-              <input type="number" id="newUserDeposit" class="admin-form-control" placeholder="50000.00" min="0" step="100" required />
-            </div>
-          </div>
-
-          <div class="d-grid grid-cols-2 gap-3 mb-3">
-            <div>
-              <label class="admin-form-label">Default Currency</label>
-              <select id="newUserCurrency" class="admin-form-control">
-                <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="CHF">CHF (Fr)</option>
-                <option value="GBP">GBP (£)</option>
-              </select>
-            </div>
-            <div>
-              <label class="admin-form-label">Initial KYC Status</label>
-              <select id="newUserKycStatus" class="admin-form-control">
-                <option value="Verified">Fully Verified (Level 3)</option>
-                <option value="Pending">Pending Review</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="admin-form-group">
-            <label class="admin-form-label">Initial Security PIN (4-Digits)</label>
-            <input type="password" id="newUserPin" class="admin-form-control" maxlength="4" placeholder="1234" value="1234" required />
-          </div>
-        </div>
-        <div class="admin-modal-footer">
-          <button type="button" class="admin-btn admin-btn-outline" data-close-modal="createUserModal">Cancel</button>
-          <button type="submit" class="admin-btn admin-btn-primary font-bold">⚡ EXECUTE &amp; CREATE ACCOUNT</button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <!-- Modal 1: Legacy Alias pointing directly to Full Create User Modal -->
+  <div class="admin-modal-overlay" id="createUserModal" style="display:none !important;" aria-hidden="true"></div>
 
   <!-- Modal 2: Credit / Debit Account Modal -->
   <div class="admin-modal-overlay" id="creditDebitModal">

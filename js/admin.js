@@ -981,26 +981,26 @@ function setupModals() {
 }
 
 function setupQuickActions() {
-  // 1. Create User Modal Trigger & Submission
+  // 1. Full Create User Modal Trigger & Submission
   const openCreateUserBtn = document.getElementById('btnOpenCreateUserModal');
   const openFullCreateUserBtn = document.getElementById('btnOpenFullCreateUserModal');
-  const createUserModal = document.getElementById('createUserModal');
   const createUserFullModal = document.getElementById('createUserFullModal');
-  const createUserForm = document.getElementById('adminCreateUserForm');
 
-  if (openCreateUserBtn && createUserModal) {
-    openCreateUserBtn.addEventListener('click', () => {
-      createUserModal.classList.add('show');
-    });
+  const openFullModal = () => {
+    if (typeof window.wbRandomizeCreateUserModalFields === 'function') {
+      window.wbRandomizeCreateUserModalFields();
+    }
+    if (createUserFullModal) {
+      createUserFullModal.classList.add('show');
+    }
+  };
+
+  if (openCreateUserBtn) {
+    openCreateUserBtn.addEventListener('click', openFullModal);
   }
 
-  if (openFullCreateUserBtn && createUserFullModal) {
-    openFullCreateUserBtn.addEventListener('click', () => {
-      if (typeof window.wbRandomizeCreateUserModalFields === 'function') {
-        window.wbRandomizeCreateUserModalFields();
-      }
-      createUserFullModal.classList.add('show');
-    });
+  if (openFullCreateUserBtn) {
+    openFullCreateUserBtn.addEventListener('click', openFullModal);
   }
 
   if (createUserForm) {

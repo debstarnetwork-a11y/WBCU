@@ -1,6 +1,7 @@
 import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import nodemailer from 'nodemailer';
 import { GoogleGenAI } from '@google/genai';
@@ -374,8 +375,157 @@ Respond concisely, politely, professionally, and in the language specified (${la
   });
 
   // Serve static assets or mount Vite in dev
-  // API 3: Server-side Admin Users Store (Persisted across domain visits)
-  let serverUsersStore: any[] | null = null;
+  // API 3: Server-side Admin Users Store (Persisted to disk across domain visits and restarts)
+  const USERS_FILE = path.resolve(__dirname, 'admin-users.json');
+
+  const defaultSeedUsers = [
+    {
+      id: 'usr-101',
+      fullName: 'Miz Brymo',
+      email: 'mizbrymo@gmail.com',
+      password: '12345',
+      pin: '1234',
+      transactionPin: '8869',
+      role: 'Super Admin',
+      is_admin: true,
+      phone: '+41 44 915 8901',
+      avatar: 'MB',
+      avatarColor: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
+      dob: '1984-06-14',
+      address: '109, Feldgüetliweg, Meilen, Zurich 8706, Switzerland',
+      status: 'active',
+      statusReason: 'Super Admin Clearance',
+      kycStatus: 'verified',
+      createdAt: '2025-01-15T09:30:00Z',
+      lastLogin: new Date().toISOString(),
+      accounts: [
+        {
+          accountNumber: 'WB-9482-1049-55',
+          type: 'Checking',
+          name: 'Premier Checking Account',
+          currency: 'USD',
+          balance: 248500.00,
+          status: 'active',
+          routingNumber: '021000089',
+        },
+        {
+          accountNumber: 'WB-9482-1049-56',
+          type: 'Savings',
+          name: 'Swiss High-Yield Wealth Reserve',
+          currency: 'CHF',
+          balance: 1450000.00,
+          status: 'active',
+          routingNumber: '021000089',
+        }
+      ],
+      transactions: [],
+      cards: [
+        {
+          id: 'crd-1',
+          cardNumber: '•••• •••• •••• 1234',
+          cardHolder: 'MIZ BRYMO',
+          type: 'Black Metal Premier',
+          expiry: '09/29',
+          status: 'active',
+          dailyAtmLimit: 10000,
+          onlineLimit: 50000,
+        }
+      ],
+      cryptoWallets: [
+        { currency: 'BTC', balance: 4.85, address: 'bc1q9x48v2m9sl3k0pw84mz789xq4e9', status: 'active' },
+        { currency: 'ETH', balance: 32.40, address: '0x71C...9B28', status: 'active' },
+        { currency: 'USDT', balance: 125000.00, address: '0x99A...11C4', status: 'active' }
+      ],
+      wireTransferCodes: {
+        COT: { code: 'CT-78234', active: true, notes: 'Cost of Transfer clearance token' },
+        TAX: { code: 'TX-99120', active: true, notes: 'Federal Tax Clearance certificate' },
+        IMF: { code: 'IMF-44912', active: true, notes: 'IMF regulatory signoff' },
+        AML: { code: 'AML-00821', active: true, notes: 'Anti-Money Laundering key' },
+        PAP: { code: 'PAP-33810', active: true, notes: 'Proof of Anti-Piracy clearance' }
+      },
+      activityLog: []
+    },
+    {
+      id: 'usr-659',
+      fullName: 'Olle Robert Christer Råström',
+      firstName: 'Olle Robert Christer',
+      lastName: 'Råström',
+      username: 'ollerobertrstrm52',
+      email: 'debstarnetwork@gmail.com',
+      password: 'Password123!',
+      pin: '8869',
+      transactionPin: '8869',
+      role: 'Member',
+      is_admin: false,
+      phone: '+46702813441',
+      avatar: 'OR',
+      avatarColor: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
+      dob: '1982-05-18',
+      nationality: 'Sweden',
+      address: 'Korgmakargatan 32 621 53 Visby',
+      status: 'active',
+      account_status: 'active',
+      accountStatus: 'active',
+      statusReason: 'Active Member Clearance',
+      kycStatus: 'verified',
+      kyc_status: 'verified',
+      createdAt: '2026-10-07T10:00:00Z',
+      lastLogin: new Date().toISOString(),
+      accounts: [
+        {
+          accountNumber: '09372996993',
+          type: 'Checking',
+          name: 'Primary Checking Vault',
+          currency: 'USD',
+          balance: 100000.00,
+          status: 'active',
+          routingNumber: '021000089',
+        }
+      ],
+      transactions: [],
+      cards: [
+        {
+          id: 'crd-659',
+          cardNumber: '4532 7140 3114 3230',
+          cardHolder: 'OLLE ROBERT CHRISTER RÅSTRÖM',
+          type: 'Visa Platinum Debit',
+          expiry: '09/31',
+          cvv: '775',
+          pin: '8869',
+          status: 'active',
+          dailyAtmLimit: 10000,
+          onlineLimit: 50000,
+        }
+      ],
+      cryptoWallets: [
+        { currency: 'BTC', balance: 0.00, address: 'bc1q9x48v2m9sl3k0pw84mz789xq4e9', status: 'active' }
+      ],
+      wireTransferCodes: {
+        COT: { code: '0467799', active: true, notes: 'Cost of Transfer clearance token' },
+        TAX: { code: 'TX-88392', active: true, notes: 'Tax Clearance certificate' },
+        IMF: { code: '9498779', active: true, notes: 'IMF Clearance signoff' },
+        AML: { code: 'AML-86902', active: true, notes: 'Anti-Money Laundering key' },
+        PAP: { code: 'PAP-70216', active: true, notes: 'Proof of Anti-Piracy clearance' },
+        OTP: '806158'
+      },
+      activityLog: []
+    }
+  ];
+
+  let serverUsersStore: any[] = defaultSeedUsers;
+  try {
+    if (fs.existsSync(USERS_FILE)) {
+      const data = JSON.parse(fs.readFileSync(USERS_FILE, 'utf-8'));
+      if (Array.isArray(data) && data.length > 0) {
+        serverUsersStore = data;
+      }
+    } else {
+      fs.writeFileSync(USERS_FILE, JSON.stringify(defaultSeedUsers, null, 2), 'utf-8');
+    }
+  } catch (err) {
+    console.warn('[USERS STORE LOAD ERROR]', err);
+  }
+
   let serverCardsStore: any[] | null = null;
   let serverTxStore: any[] | null = null;
 
@@ -387,6 +537,11 @@ Respond concisely, politely, professionally, and in the language specified (${la
     const { users } = req.body || {};
     if (Array.isArray(users)) {
       serverUsersStore = users;
+      try {
+        fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf-8');
+      } catch (err) {
+        console.warn('[USERS STORE SAVE ERROR]', err);
+      }
       return res.json({ success: true, count: users.length });
     }
     return res.status(400).json({ success: false, error: 'Users must be an array' });
