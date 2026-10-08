@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 
 async function startServer() {
   const app = express();
-  const PORT = parseInt(process.env.PORT || '3000', 10);
+  const PORT = process.env.PORT || 3000;
 
   app.use(express.json({ limit: '15mb' }));
   app.use(express.urlencoded({ extended: true, limit: '15mb' }));
@@ -387,9 +387,15 @@ Respond concisely, politely, professionally, and in the language specified (${la
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`[WB Credit Union Server] Listening on http://0.0.0.0:${PORT}`);
-  });
+  if (typeof PORT === 'string' && (PORT.startsWith('/') || PORT.startsWith('\\\\'))) {
+    app.listen(PORT, () => {
+      console.log(`[WB Credit Union Server] Listening on Passenger socket ${PORT}`);
+    });
+  } else {
+    app.listen(PORT, () => {
+      console.log(`[WB Credit Union Server] Listening on http://localhost:${PORT}`);
+    });
+  }
 }
 
 startServer().catch((err) => {
