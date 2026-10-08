@@ -3,7 +3,8 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/glolbka/WBCU/
     - /bin/mkdir -p $DEPLOYPATH/dist
-    - /bin/cp -R dist/* $DEPLOYPATH/dist/
-    - /bin/cp server.js $DEPLOYPATH/
-    - /bin/cp package.json $DEPLOYPATH/
-    - /bin/cp .env $DEPLOYPATH/
+    - if [ -d dist ] && [ "$(ls -A dist)" ]; then /bin/cp -R dist/* $DEPLOYPATH/dist/ ; fi
+    - if [ -f server.js ]; then /bin/cp server.js $DEPLOYPATH/ ; fi
+    - if [ -f package.json ]; then /bin/cp package.json $DEPLOYPATH/ ; fi
+    - if [ -f .env ]; then /bin/cp .env $DEPLOYPATH/ ; fi
+
