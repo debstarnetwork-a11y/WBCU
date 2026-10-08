@@ -324,6 +324,31 @@ Respond concisely, politely, professionally, and in the language specified (${la
       });
     }
   });
+  let serverUsersStore = null;
+  let serverCardsStore = null;
+  let serverTxStore = null;
+  app.get("/api/admin/users", (_req, res) => {
+    return res.json({ success: true, users: serverUsersStore });
+  });
+  app.post("/api/admin/users", (req, res) => {
+    const { users } = req.body || {};
+    if (Array.isArray(users)) {
+      serverUsersStore = users;
+      return res.json({ success: true, count: users.length });
+    }
+    return res.status(400).json({ success: false, error: "Users must be an array" });
+  });
+  app.get("/api/admin/cards", (_req, res) => {
+    return res.json({ success: true, cards: serverCardsStore });
+  });
+  app.post("/api/admin/cards", (req, res) => {
+    const { cards } = req.body || {};
+    if (Array.isArray(cards)) {
+      serverCardsStore = cards;
+      return res.json({ success: true, count: cards.length });
+    }
+    return res.status(400).json({ success: false, error: "Cards must be an array" });
+  });
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },

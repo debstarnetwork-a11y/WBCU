@@ -109,7 +109,7 @@ export function getEffectiveMemberEmail(targetUser = null) {
   return 'mizbrymo@gmail.com';
 }
 
-const initialSeedUsers = [
+export const initialSeedUsers = [
   {
     id: 'usr-101',
     fullName: 'Miz Brymo',
@@ -468,7 +468,7 @@ export function generateFullUserTransferCodes() {
   };
 }
 
-export function ensureUserHasUniqueCodesAndAccounts(user) {
+export function ensureUserHasUniqueCodesAndAccounts(user, persist = false) {
   if (!user) return user;
   let modified = false;
 
@@ -477,7 +477,7 @@ export function ensureUserHasUniqueCodesAndAccounts(user) {
     modified = true;
   }
 
-  if (!user.accounts || user.accounts.length === 0) {
+  if (!user.accounts || !Array.isArray(user.accounts) || user.accounts.length === 0) {
     user.accounts = [
       {
         accountNumber: generateRandomAccountNumber(),
@@ -524,13 +524,18 @@ export function ensureUserHasUniqueCodesAndAccounts(user) {
     }
   }
 
-  if (modified) {
+  if (modified && persist) {
     try {
-      const allUsers = getAdminUsersList();
-      const idx = allUsers.findIndex(u => u.id === user.id);
-      if (idx !== -1) {
-        allUsers[idx] = user;
-        saveAdminUsersList(allUsers);
+      const stored = localStorage.getItem(ADMIN_USERS_STORAGE_KEY);
+      if (stored) {
+        const allUsers = JSON.parse(stored);
+        if (Array.isArray(allUsers)) {
+          const idx = allUsers.findIndex(u => u.id === user.id);
+          if (idx !== -1) {
+            allUsers[idx] = user;
+            saveAdminUsersList(allUsers);
+          }
+        }
       }
     } catch (e) {
       console.warn('Sync user codes update note:', e);
@@ -882,12 +887,13 @@ function setupSearchAndFilters() {
     const dateRange = dateFilter?.value || 'all';
 
     filteredUsers = currentUsers.filter((u) => {
-      // Query filter (Name, Email, Phone, Account Number)
+      // Query filter (Name, Email, Phone, Account Number, Username)
       const matchesQuery = !query ||
-        u.fullName.toLowerCase().includes(query) ||
-        u.email.toLowerCase().includes(query) ||
-        u.phone.toLowerCase().includes(query) ||
-        u.accounts.some((a) => a.accountNumber.toLowerCase().includes(query));
+        ((u.fullName || '').toLowerCase().includes(query)) ||
+        ((u.email || '').toLowerCase().includes(query)) ||
+        ((u.username || '').toLowerCase().includes(query)) ||
+        ((u.phone || '').toLowerCase().includes(query)) ||
+        (Array.isArray(u.accounts) && u.accounts.some((a) => (a.accountNumber || '').toLowerCase().includes(query)));
 
       // Status
       const matchesStatus = status === 'all' || u.status === status;
@@ -896,7 +902,7 @@ function setupSearchAndFilters() {
       const matchesKyc = kyc === 'all' || (u.kycStatus || u.kyc_status || '').toLowerCase() === kyc.toLowerCase();
 
       // Account type
-      const matchesType = acctType === 'all' || u.accounts.some((a) => a.type.toLowerCase() === acctType.toLowerCase());
+      const matchesType = acctType === 'all' || (Array.isArray(u.accounts) && u.accounts.some((a) => (a.type || '').toLowerCase() === acctType.toLowerCase()));
 
       // Date range
       let matchesDate = true;
@@ -1027,8 +1033,8 @@ export function renderUsersTable() {
   }
 
   tbody.innerHTML = pagedUsers.map((u) => {
-    const totalBalance = u.accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0);
-    const primaryAcct = u.accounts[0] || { accountNumber: 'N/A', type: 'Checking', currency: 'USD' };
+    const totalBalance = Array.isArray(u.accounts) ? u.accounts.reduce((sum, acc) => sum + (acc.balance || 0), 0) : 0;
+    const primaryAcct = (Array.isArray(u.accounts) && u.accounts[0]) ? u.accounts[0] : { accountNumber: 'N/A', type: 'Checking', currency: 'USD' };
     const isChecked = selectedUserIds.has(u.id);
     const userStatus = u.status || 'active';
     const isKycVer = (u.kycStatus || u.kyc_status || '').toLowerCase() === 'verified';

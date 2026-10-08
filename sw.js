@@ -4,7 +4,7 @@
  * ============================================================================
  */
 
-const CACHE_NAME = 'wbcu-cache-v1.0.0';
+const CACHE_NAME = 'wbcu-cache-v1.1.0';
 
 const STATIC_PRECACHE = [
   '/',

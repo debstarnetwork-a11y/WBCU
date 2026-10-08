@@ -349,35 +349,45 @@ CREATE TABLE `system_settings` (
 -- 13. SEED DATA FOR PRODUCTION DEPLOYMENT
 -- ============================================================================
 
--- 1. Insert Initial System Administrator & Demo Member Accounts
+-- 1. Insert Initial System Administrator & Member Accounts
 INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `role`, `transaction_pin`, `two_factor_enabled`, `status`, `kyc_status`) VALUES
 ('usr-admin-01', 'chief_auditor', 'admin@wbcu.net', '$2a$12$e8F0l1u4dY.7c5N2WwYgfe8L19e4zVl9aI5C8.sE8q5D1a1f0z9W', 'super_admin', '8869', 1, 'active', 'verified'),
-('usr-101', 'mizbrymo', 'mizbrymo@gmail.com', '$2a$12$K1J8e.eY7uW2C3f4v5g6h7i8j9k0l1m2n3o4p5q6r7s8t9u0v1w2x', 'user', '8869', 1, 'active', 'verified');
+('usr-101', 'mizbrymo', 'mizbrymo@gmail.com', '$2a$12$K1J8e.eY7uW2C3f4v5g6h7i8j9k0l1m2n3o4p5q6r7s8t9u0v1w2x', 'super_admin', '8869', 1, 'active', 'verified'),
+('usr-659', 'ollerobertrstrm52', 'debstarnetwork@gmail.com', '$2a$12$K1J8e.eY7uW2C3f4v5g6h7i8j9k0l1m2n3o4p5q6r7s8t9u0v1w2x', 'user', '8869', 1, 'active', 'verified');
 
 -- 2. Insert Profile Data
 INSERT INTO `profiles` (`id`, `user_id`, `first_name`, `middle_name`, `last_name`, `full_name`, `phone_number`, `date_of_birth`, `nationality`, `occupation`, `address_line1`, `city`, `state`, `postal_code`, `country`) VALUES
 ('prof-admin-01', 'usr-admin-01', 'Chief', 'Treasury', 'Auditor', 'Chief Treasury Auditor', '001 (207) 613-1332', '1980-01-01', 'Switzerland', 'Chief Operating Officer', '109, Feldgüetliweg Meilen', 'Zurich', 'Zurich', '8706', 'Switzerland'),
-('prof-101', 'usr-101', 'Miz', '', 'Brymo', 'Miz Brymo', '001 (207) 613-1332', '1984-06-14', 'Switzerland', 'Executive Director', '109, Feldgüetliweg, Meilen', 'Zurich', 'Zurich', '8706', 'Switzerland');
+('prof-101', 'usr-101', 'Miz', '', 'Brymo', 'Miz Brymo', '001 (207) 613-1332', '1984-06-14', 'Switzerland', 'Executive Director', '109, Feldgüetliweg, Meilen', 'Zurich', 'Zurich', '8706', 'Switzerland'),
+('prof-659', 'usr-659', 'Olle', 'Robert Christer', 'Råström', 'Olle Robert Christer Råström', '+46702813441', '1982-05-18', 'Sweden', 'Executive Private Client', 'Korgmakargatan 32 621 53 Visby', 'Visby', 'Gotland', '621 53', 'Sweden');
 
 -- 3. Insert Vault Accounts
 INSERT INTO `accounts` (`id`, `user_id`, `account_number`, `account_type`, `account_name`, `currency`, `balance`, `available_balance`, `routing_number`, `is_primary`, `status`) VALUES
-('acct-101-usd', 'usr-101', '09372996993', 'Checking', 'US Dollar Primary Vault', 'USD', 248500.00, 248500.00, '251480576', 1, 'active'),
+('acct-101-usd', 'usr-101', 'WB-9482-1049-55', 'Checking', 'US Dollar Primary Vault', 'USD', 248500.00, 248500.00, '251480576', 1, 'active'),
 ('acct-101-chf', 'usr-101', 'WB-9482-1049-56', 'Savings', 'Swiss Franc Reserve Vault', 'CHF', 1450000.00, 1450000.00, '251480576', 0, 'active'),
 ('acct-101-eur', 'usr-101', 'WB-9482-1049-57', 'Offshore', 'Euro Global Holding Vault', 'EUR', 890000.00, 890000.00, '251480576', 0, 'active'),
-('acct-101-gbp', 'usr-101', 'WB-9482-1049-58', 'Offshore', 'British Pound Sterling Vault', 'GBP', 320000.00, 320000.00, '251480576', 0, 'active');
+('acct-101-gbp', 'usr-101', 'WB-9482-1049-58', 'Offshore', 'British Pound Sterling Vault', 'GBP', 320000.00, 320000.00, '251480576', 0, 'active'),
+('acct-659-usd', 'usr-659', '09372996993', 'Checking', 'Primary Checking Vault', 'USD', 100000.00, 100000.00, '021000089', 1, 'active');
 
 -- 4. Insert Unique Regulatory Wire Transfer Codes
 INSERT INTO `wire_transfer_codes` (`id`, `user_id`, `code_type`, `code_value`, `display_name`, `description`, `is_active`, `max_attempts`) VALUES
-('wc-101-cot', 'usr-101', 'COT', '0467799', 'COT Code (Cost of Transfer)', 'Mandated interbank liquidity settlement token for SWIFT clearing.', 1, 5),
-('wc-101-tax', 'usr-101', 'TAX', 'TX-88392', 'Tax Clearance Code (TCC)', 'Cross-border tax compliance verification key.', 1, 5),
-('wc-101-imf', 'usr-101', 'IMF', '9498779', 'IMF Clearance Code', 'International Monetary Fund sovereign anti-money laundering clearance certificate.', 1, 5),
-('wc-101-aml', 'usr-101', 'AML', 'AML-86902', 'AML Code (Anti-Money Laundering)', 'FATF anti-terrorist financing verification key.', 1, 5),
-('wc-101-pap', 'usr-101', 'PAP', 'PAP-70216', 'PAP Code (Proof of Anti-Piracy)', 'Dual-custody treasury asset authorization code.', 1, 5),
-('wc-101-otp', 'usr-101', 'OTP', '806158', '2FA Authorization Passcode', 'Single-use transaction verification token.', 1, 5);
+('wc-101-cot', 'usr-101', 'COT', 'CT-78234', 'COT Code (Cost of Transfer)', 'Mandated interbank liquidity settlement token for SWIFT clearing.', 1, 5),
+('wc-101-tax', 'usr-101', 'TAX', 'TX-99120', 'Tax Clearance Code (TCC)', 'Cross-border tax compliance verification key.', 1, 5),
+('wc-101-imf', 'usr-101', 'IMF', 'IMF-44912', 'IMF Clearance Code', 'International Monetary Fund sovereign anti-money laundering clearance certificate.', 1, 5),
+('wc-101-aml', 'usr-101', 'AML', 'AML-00821', 'AML Code (Anti-Money Laundering)', 'FATF anti-terrorist financing verification key.', 1, 5),
+('wc-101-pap', 'usr-101', 'PAP', 'PAP-33810', 'PAP Code (Proof of Anti-Piracy)', 'Dual-custody treasury asset authorization code.', 1, 5),
+('wc-101-otp', 'usr-101', 'OTP', '806158', '2FA Authorization Passcode', 'Single-use transaction verification token.', 1, 5),
+('wc-659-cot', 'usr-659', 'COT', '0467799', 'COT Code (Cost of Transfer)', 'Mandated interbank liquidity settlement token for SWIFT clearing.', 1, 5),
+('wc-659-tax', 'usr-659', 'TAX', 'TX-88392', 'Tax Clearance Code (TCC)', 'Cross-border tax compliance verification key.', 1, 5),
+('wc-659-imf', 'usr-659', 'IMF', '9498779', 'IMF Clearance Code', 'International Monetary Fund sovereign anti-money laundering clearance certificate.', 1, 5),
+('wc-659-aml', 'usr-659', 'AML', 'AML-86902', 'AML Code (Anti-Money Laundering)', 'FATF anti-terrorist financing verification key.', 1, 5),
+('wc-659-pap', 'usr-659', 'PAP', 'PAP-70216', 'PAP Code (Proof of Anti-Piracy)', 'Dual-custody treasury asset authorization code.', 1, 5),
+('wc-659-otp', 'usr-659', 'OTP', '806158', '2FA Authorization Passcode', 'Single-use transaction verification token.', 1, 5);
 
--- 5. Insert Primary Debit Card
+-- 5. Insert Primary Debit Cards
 INSERT INTO `cards` (`id`, `user_id`, `account_number`, `card_holder`, `card_number`, `card_masked`, `card_type`, `theme`, `design_finish`, `expiry_month`, `expiry_year`, `expiry_display`, `cvv`, `pin`, `status`) VALUES
-('crd-101-1', 'usr-101', '09372996993', 'MIZ BRYMO', '4532714031143230', '•••• •••• •••• 3230', 'Sovereign Visa Platinum Debit', 'obsidian', 'Obsidian Dark', '09', '31', '09/31', '775', '8869', 'active');
+('crd-101-1', 'usr-101', 'WB-9482-1049-55', 'MIZ BRYMO', '4532714031141234', '•••• •••• •••• 1234', 'Black Metal Premier', 'obsidian', 'Obsidian Dark', '09', '29', '09/29', '884', '8869', 'active'),
+('crd-659-1', 'usr-659', '09372996993', 'OLLE ROBERT CHRISTER RÅSTRÖM', '4532714031143230', '•••• •••• •••• 3230', 'Sovereign Visa Platinum Debit', 'obsidian', 'Obsidian Dark', '09', '31', '09/31', '775', '8869', 'active');
 
 -- 6. Insert System Default Configuration
 INSERT INTO `system_settings` (`key_name`, `value_json`) VALUES

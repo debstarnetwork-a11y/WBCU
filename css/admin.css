@@ -477,6 +477,15 @@ body#adminRoot,
   flex: 1 1 auto;
 }
 
+/* Dynamic View Section Visibility */
+.admin-view-section {
+  display: none;
+}
+
+.admin-view-section.active {
+  display: block !important;
+}
+
 .admin-header-row {
   display: flex;
   flex-wrap: wrap;
