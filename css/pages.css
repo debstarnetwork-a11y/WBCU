@@ -1,0 +1,396 @@
+/**
+ * ============================================================================
+ * WB CREDIT UNION - SHARED PAGES & NAVIGATION STYLESHEET (css/pages.css)
+ * ============================================================================
+ */
+
+/* ----------------------------------------------------------------------------
+ * 1. SHARED SITE NAVBAR
+ * ---------------------------------------------------------------------------- */
+.site-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 72px;
+  background: rgba(26, 58, 107, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 3px solid #ea580c;
+  box-shadow: 0 2px 12px rgba(234, 88, 12, 0.22);
+  z-index: 1000;
+  transition: background-color 0.3s ease, height 0.3s ease, box-shadow 0.3s ease;
+}
+
+.site-navbar.scrolled {
+  background: rgba(15, 23, 42, 0.96);
+  height: 64px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25), 0 2px 10px rgba(234, 88, 12, 0.25);
+  border-bottom: 3px solid #ea580c;
+}
+
+[data-theme="light"] .site-navbar.scrolled {
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 3px solid #ea580c;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(234, 88, 12, 0.2);
+}
+
+[data-theme="light"] .site-navbar.scrolled .brand-text {
+  color: #1a3a6b;
+}
+
+[data-theme="light"] .site-navbar.scrolled .nav-link {
+  color: #475569;
+}
+
+[data-theme="light"] .site-navbar.scrolled .nav-link:hover,
+[data-theme="light"] .site-navbar.scrolled .nav-link.active {
+  color: #2563eb;
+}
+
+[data-theme="light"] .site-navbar.scrolled .btn-outline {
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+[data-theme="light"] .site-navbar.scrolled .mobile-hamburger-btn {
+  color: #1e293b;
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Brand Logo */
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+  transition: transform 0.2s ease;
+}
+
+.brand-logo:hover .brand-icon {
+  transform: scale(1.05);
+}
+
+.brand-text {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.brand-text span {
+  color: #60a5fa;
+  font-weight: 600;
+}
+
+/* Nav Menu */
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-link {
+  color: #e2e8f0;
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  position: relative;
+  padding: 0.25rem 0;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: #ffffff;
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #f97316;
+  border-radius: 2px;
+}
+
+.mobile-nav-ctas {
+  display: none;
+}
+
+/* Right Nav Actions */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.mobile-hamburger-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid transparent;
+  font-family: inherit;
+}
+
+.btn-sm {
+  padding: 0.5rem 1.1rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+}
+
+.btn-orange,
+.btn-primary {
+  background: #f97316;
+  color: #ffffff;
+  border-color: #f97316;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35);
+}
+
+.btn-orange:hover,
+.btn-primary:hover {
+  background: #ea580c;
+  border-color: #ea580c;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(249, 115, 22, 0.45);
+}
+
+.btn-outline {
+  background: transparent;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.btn-white {
+  background: #ffffff;
+  color: #1a3a6b;
+  border-color: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.btn-white:hover {
+  background: #f8fafc;
+  color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* ----------------------------------------------------------------------------
+ * 2. SHARED SITE FOOTER
+ * ---------------------------------------------------------------------------- */
+.site-footer {
+  background: #0f172a;
+  color: #94a3b8;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 4.5rem 0 2rem 0;
+  font-size: 0.9rem;
+}
+
+.footer-main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+  gap: 3rem;
+  margin-bottom: 3.5rem;
+}
+
+.footer-logo {
+  margin-bottom: 1.25rem;
+}
+
+.footer-bio {
+  line-height: 1.65;
+  margin-bottom: 1.5rem;
+  color: #94a3b8;
+  font-size: 0.88rem;
+}
+
+.footer-routing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(37, 99, 235, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: #93c5fd;
+}
+
+.footer-routing-badge strong {
+  color: #ffffff;
+  letter-spacing: 0.05em;
+  font-family: monospace;
+}
+
+.footer-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.01em;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footer-links a {
+  color: #94a3b8;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-block;
+}
+
+.footer-links a:hover {
+  color: #60a5fa;
+  transform: translateX(3px);
+}
+
+.footer-contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  color: #e2e8f0;
+}
+
+.footer-contact-item svg {
+  color: #3b82f6;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.footer-bottom-bar {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 2rem;
+  text-align: center;
+  font-size: 0.82rem;
+}
+
+.footer-legal p {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+/* ----------------------------------------------------------------------------
+ * 3. RESPONSIVE BREAKPOINTS (TABLET & MOBILE)
+ * ---------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 860px) {
+  .nav-menu {
+    position: fixed;
+    top: 72px;
+    left: 0;
+    right: 0;
+    background: #0f172a;
+    flex-direction: column;
+    padding: 1.5rem;
+    gap: 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transform: translateY(-120%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.4);
+  }
+
+  .nav-menu.is-open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mobile-nav-ctas {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .nav-actions .btn {
+    display: none;
+  }
+
+  .mobile-hamburger-btn {
+    display: block;
+  }
+}
+
+@media (max-width: 580px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "WB CREDIT UNION",
+  "short_name": "WBCU",
+  "description": "WB CREDIT UNION Digital Banking & Sovereign Treasury",
+  "start_url": "/pages/dashboard.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1a3a6b",
+  "theme_color": "#2563eb",
+  "categories": ["finance", "banking", "business"],
+  "icons": [
+    {
+      "src": "/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

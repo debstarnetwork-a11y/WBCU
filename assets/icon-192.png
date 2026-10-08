@@ -1,0 +1,18 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' width='512' height='512'>
+  <defs>
+    <linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='100%'>
+      <stop offset='0%' stop-color='#1e3a8a' />
+      <stop offset='50%' stop-color='#2563eb' />
+      <stop offset='100%' stop-color='#0f172a' />
+    </linearGradient>
+    <filter id='shadow' x='-10%' y='-10%' width='120%' height='120%'>
+      <feDropShadow dx='0' dy='8' stdDeviation='12' flood-color='#000000' flood-opacity='0.4'/>
+    </filter>
+  </defs>
+  <rect width='512' height='512' rx='110' fill='url(#grad)'/>
+  <g filter='url(#shadow)' transform='translate(56, 56) scale(0.78)'>
+    <path d='M256 32L64 128v144c0 144 82 256 192 288 110-32 192-144 192-288V128L256 32z' fill='none' stroke='#60a5fa' stroke-width='24' stroke-linejoin='round'/>
+    <path d='M200 240l40 40 80-80' fill='none' stroke='#38bdf8' stroke-width='28' stroke-linecap='round' stroke-linejoin='round'/>
+    <text x='256' y='420' font-family='sans-serif' font-weight='900' font-size='56' fill='#ffffff' text-anchor='middle' letter-spacing='4'>WBCU</text>
+  </g>
+</svg>

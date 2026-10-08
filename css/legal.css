@@ -1,0 +1,258 @@
+/**
+ * ============================================================================
+ * WB CREDIT UNION - LEGAL / PRIVACY POLICY STYLESHEET (css/legal.css)
+ * ============================================================================
+ */
+
+/* ----------------------------------------------------------------------------
+ * 1. LEGAL HERO BANNER (~40vh)
+ * ---------------------------------------------------------------------------- */
+.legal-hero-section {
+  position: relative;
+  min-height: 38vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 120px 1.5rem 50px 1.5rem;
+  background: radial-gradient(circle at 50% 30%, #1e3a8a 0%, #1a3a6b 50%, #0f172a 100%);
+  color: #ffffff;
+  overflow: hidden;
+  text-align: center;
+}
+
+.legal-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #93c5fd;
+  margin-bottom: 1.25rem;
+  background: rgba(37, 99, 235, 0.2);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  padding: 0.35rem 1rem;
+  border-radius: 9999px;
+}
+
+.legal-breadcrumb a {
+  color: #bfdbfe;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.legal-breadcrumb a:hover {
+  color: #ffffff;
+}
+
+.legal-breadcrumb span.divider {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.legal-hero-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 0.85rem;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+}
+
+.legal-hero-subtitle {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+  max-width: 750px;
+  margin: 0 auto;
+}
+
+/* ----------------------------------------------------------------------------
+ * 2. LEGAL CONTAINER & STICKY TABLE OF CONTENTS
+ * ---------------------------------------------------------------------------- */
+.legal-content-section {
+  padding: 5rem 1.5rem;
+  background: var(--bg-primary, #ffffff);
+}
+
+.legal-layout-container {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 3.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: flex-start;
+}
+
+/* Sticky TOC Sidebar (Desktop) */
+.legal-toc-sidebar {
+  position: sticky;
+  top: 100px;
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.toc-header {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary, #1e293b);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color, #e2e8f0);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toc-toggle-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #2563eb;
+  cursor: pointer;
+}
+
+.toc-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  font-size: 0.88rem;
+}
+
+.toc-nav-list a {
+  color: var(--text-secondary, #64748b);
+  text-decoration: none;
+  display: block;
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  line-height: 1.4;
+}
+
+.toc-nav-list a:hover {
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.06);
+}
+
+.toc-nav-list a.active {
+  color: #2563eb;
+  font-weight: 700;
+  background: rgba(37, 99, 235, 0.1);
+  border-left: 3px solid #2563eb;
+}
+
+/* ----------------------------------------------------------------------------
+ * 3. LEGAL BODY DOCUMENT (MAX-WIDTH 800PX)
+ * ---------------------------------------------------------------------------- */
+.legal-document-body {
+  max-width: 800px;
+  color: var(--text-primary, #1e293b);
+  line-height: 1.8;
+  font-size: 1rem;
+}
+
+.legal-last-updated-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  padding: 0.35rem 0.95rem;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #2563eb;
+  margin-bottom: 2rem;
+}
+
+.legal-document-body h2 {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--text-primary, #1e293b);
+  letter-spacing: -0.015em;
+  margin-top: 3.5rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color, #e2e8f0);
+  scroll-margin-top: 100px;
+}
+
+.legal-document-body h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary, #1e293b);
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.legal-document-body p {
+  margin-bottom: 1.25rem;
+  color: var(--text-secondary, #475569);
+}
+
+.legal-document-body ul {
+  margin: 0 0 1.5rem 1.25rem;
+  padding: 0;
+  color: var(--text-secondary, #475569);
+}
+
+.legal-document-body li {
+  margin-bottom: 0.65rem;
+  line-height: 1.65;
+}
+
+.legal-document-body strong {
+  color: var(--text-primary, #1e293b);
+}
+
+/* Contact Details Box in Document */
+.legal-contact-box {
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-color, #cbd5e1);
+  border-left: 4px solid #2563eb;
+  border-radius: 12px;
+  padding: 1.75rem;
+  margin-top: 1.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.legal-contact-box p {
+  margin: 0 0 0.5rem 0;
+  line-height: 1.6;
+}
+
+/* ----------------------------------------------------------------------------
+ * 4. RESPONSIVE BREAKPOINTS
+ * ---------------------------------------------------------------------------- */
+@media (max-width: 960px) {
+  .legal-layout-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .legal-toc-sidebar {
+    position: relative;
+    top: 0;
+    margin-bottom: 1rem;
+  }
+
+  .toc-toggle-btn {
+    display: block;
+  }
+
+  .toc-nav-list {
+    display: none;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-color, #e2e8f0);
+  }
+
+  .legal-toc-sidebar.is-open .toc-nav-list {
+    display: flex;
+  }
+}

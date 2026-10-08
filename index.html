@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WB Credit Union - People First Digital Banking</title>
+  <meta name="description" content="WB Credit Union is a member-owned cooperative financial institution offering competitive high-yield savings, mortgages, credit cards, and digital banking." />
+  <meta property="og:title" content="WB Credit Union - People First Digital Banking" />
+  <meta property="og:description" content="Discover competitive rates, global multi-currency checking, and personalized banking designed to help your wealth grow." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" href="/assets/icon-192.png" />
+
+  <!-- Google Font: Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/pages.css" />
+  <link rel="stylesheet" href="/css/home.css" />
+
+  <!-- Anti-Flash Instant Theme Initialization -->
+  <script>
+    (function() {
+      try {
+        var saved = localStorage.getItem('wbcu_theme_preference');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = saved === 'dark' || (!saved && prefersDark) ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body class="home-page">
+
+  <!-- ========================================================================
+       SHARED HEADER (INJECTED BY js/navigation.js)
+       ======================================================================== -->
+  <div id="site-header"></div>
+
+  <main>
+    <!-- ======================================================================
+         1. HERO SECTION (FULL VIEWPORT HEIGHT)
+         ====================================================================== -->
+    <section class="hero-section" id="hero">
+      <!-- Background Geometric Mesh & Floating Orbs -->
+      <div class="hero-bg-pattern"></div>
+      <div class="hero-shape hero-shape-1"></div>
+      <div class="hero-shape hero-shape-2"></div>
+      <div class="hero-shape hero-shape-3"></div>
+
+      <div class="hero-content reveal-on-scroll">
+        <!-- Badge Pill -->
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          <span data-i18n="hero.badge">Modern banking experience</span>
+        </div>
+
+        <!-- Large Heading -->
+        <h1 class="hero-title" data-i18n="hero.title">WB CREDIT UNION</h1>
+
+        <!-- Subheading -->
+        <p class="hero-subtitle" data-i18n="hero.subtitle">
+          We do banking differently. We believe that people come first, and that everyone deserves a great experience every step of the way.
+        </p>
+
+        <!-- Two CTA Buttons -->
+        <div class="hero-ctas">
+          <a href="/pages/register.html" class="btn btn-orange">
+            <span data-i18n="hero.btn_open">Open Account Today</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+          <a href="/pages/login.html" class="btn btn-outline">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+              <polyline points="10 17 15 12 10 7"></polyline>
+              <line x1="15" y1="12" x2="3" y2="12"></line>
+            </svg>
+            <span data-i18n="hero.btn_login">Login to Banking</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Three Floating Info Cards at the Bottom of the Hero -->
+      <div class="hero-info-cards reveal-on-scroll delay-2">
+        <!-- Card 1: Routing Number -->
+        <div class="info-card">
+          <div class="info-card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+              <line x1="2" y1="10" x2="22" y2="10"></line>
+            </svg>
+          </div>
+          <div>
+            <div class="info-card-label" data-i18n="hero.routing_label">ABA Routing #</div>
+            <div class="info-card-val font-numeric">251480576</div>
+            <span class="info-card-sub" data-i18n="hero.routing_sub">Direct Deposit &amp; Wires</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Branch Hours -->
+        <div class="info-card">
+          <div class="info-card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <div>
+            <div class="info-card-label" data-i18n="hero.hours_label">Branch Hours</div>
+            <div class="info-card-val" data-i18n="hero.hours_val">Mon–Fri: 9AM–5PM</div>
+            <span class="info-card-sub" data-i18n="hero.hours_sub">Sat: 9AM–1PM | Sun: Closed</span>
+          </div>
+        </div>
+
+        <!-- Card 3: 24/7 Support -->
+        <div class="info-card">
+          <div class="info-card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="info-card-label" data-i18n="hero.support_title">24/7 Support</div>
+            <div class="info-card-val">
+              <a href="tel:18002265464" style="color:inherit; text-decoration:none;" title="Call 1-800-BANKING">1-800-BANKING</a>
+            </div>
+            <div style="font-size: 0.78rem; font-weight: 600; color: var(--primary-bright-blue, #2563eb); margin-top: 1px;">
+              <a href="mailto:support@wbcu.net" style="color:inherit; text-decoration:none;" title="Email WB Credit Union Support">support@wbcu.net</a>
+            </div>
+            <span class="info-card-sub" data-i18n="hero.support_sub">Always here to help</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- ======================================================================
+         BUILDING SHOWCASE BANNER SECTION
+         ====================================================================== -->
+    <section class="building-showcase-section">
+      <div class="container">
+        <div class="building-showcase-card reveal-on-scroll">
+          <a href="https://ibb.co/13jTpZs" target="_blank" rel="noopener noreferrer" class="building-img-link">
+            <img src="https://i.ibb.co/2wHdLq8/WBCU-Building.png" alt="WBCU-Building" class="building-showcase-img" loading="lazy" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         2. RATES SECTION
+         ====================================================================== -->
+    <section class="rates-section" id="rates">
+      <div class="container">
+        <!-- Section Header -->
+        <div class="section-header reveal-on-scroll">
+          <span class="section-subtitle-tag">WB CREDIT UNION Member Care</span>
+          <h2 class="section-title">WB CREDIT UNION Rates</h2>
+          <p class="section-desc">Discover competitive rates designed to help your money grow faster</p>
+        </div>
+
+        <!-- 4 Rate Cards Grid -->
+        <div class="rates-grid">
+          <!-- Rate Card 1 (Featured) -->
+          <div class="rate-card featured reveal-on-scroll delay-1">
+            <span class="featured-badge">Featured</span>
+            <div class="rate-category">Savings</div>
+            <div class="rate-value">3.75%</div>
+            <div class="rate-product-name">High Yield Savings (APY*)</div>
+            <a href="/pages/register.html" class="btn btn-orange rate-action-btn">Open Savings</a>
+          </div>
+
+          <!-- Rate Card 2 -->
+          <div class="rate-card reveal-on-scroll delay-2">
+            <div class="rate-category">Savings</div>
+            <div class="rate-value">3.65%</div>
+            <div class="rate-product-name">18 Month Certificate (APY*)</div>
+            <a href="/pages/register.html" class="btn btn-outline rate-action-btn" style="color:var(--text-primary); border-color:var(--border-color);">Lock In Rate</a>
+          </div>
+
+          <!-- Rate Card 3 -->
+          <div class="rate-card reveal-on-scroll delay-3">
+            <div class="rate-category">Credit</div>
+            <div class="rate-value">4.00%</div>
+            <div class="rate-product-name">Credit Cards (APR*)</div>
+            <a href="/pages/register.html" class="btn btn-outline rate-action-btn" style="color:var(--text-primary); border-color:var(--border-color);">Apply for Card</a>
+          </div>
+
+          <!-- Rate Card 4 -->
+          <div class="rate-card reveal-on-scroll delay-4">
+            <div class="rate-category">Mortgage</div>
+            <div class="rate-value">15.49%</div>
+            <div class="rate-product-name">Loans / Mortgage (APR*)</div>
+            <a href="/pages/register.html" class="btn btn-outline rate-action-btn" style="color:var(--text-primary); border-color:var(--border-color);">Explore Loans</a>
+          </div>
+        </div>
+
+        <!-- Rates Footer Note -->
+        <p class="rates-footer-note reveal-on-scroll delay-4">
+          *Annual Percentage Yield (APY) &amp; Annual Percentage Rate (APR). Rates subject to change. Terms and conditions apply.
+        </p>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         BANKING HALL SHOWCASE BANNER SECTION
+         ====================================================================== -->
+    <section class="building-showcase-section" style="padding-top: 1rem; padding-bottom: 3.5rem;">
+      <div class="container">
+        <div class="building-showcase-card reveal-on-scroll">
+          <a href="https://ibb.co/FMYpQGC" target="_blank" rel="noopener noreferrer" class="building-img-link">
+            <img src="https://i.ibb.co/nv1pXht/WBCU-Banking-Hall-01.png" alt="WBCU-Banking-Hall-01" class="building-showcase-img" loading="lazy" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         3. PROMOTIONAL BANNER ($200 CHECKING BONUS)
+         ====================================================================== -->
+    <section class="promo-section" id="promo">
+      <div class="container">
+        <div class="promo-banner-card reveal-on-scroll">
+          <div class="promo-card-pattern"></div>
+          
+          <!-- Promo Copy -->
+          <div class="promo-content">
+            <div class="promo-subheading">Start Building Your Financial Strength</div>
+            <h2 class="promo-heading">Get $200* With a Checking Account Built for You</h2>
+            <p class="promo-desc">
+              For a limited time, get $200 when you open any new account, and what helps you reach your financial goals. You can open a new account online or in person at any of our locations.
+            </p>
+
+            <ul class="promo-checklist">
+              <li>
+                <div class="check-icon-circle">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <span>No minimum balance required</span>
+              </li>
+              <li>
+                <div class="check-icon-circle">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <span>Free online and mobile banking</span>
+              </li>
+              <li>
+                <div class="check-icon-circle">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <span>24/7 customer support</span>
+              </li>
+            </ul>
+
+            <a href="/pages/register.html" class="btn btn-orange">
+              <span>Open Account Now</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+
+          <!-- Promo Right Illustration / Graphic Area -->
+          <div class="promo-art-container">
+            <div class="promo-illustration-box">
+              <div class="promo-art-badge">$200 BONUS</div>
+              <div class="promo-art-caption">WB Member Welcome Reward</div>
+              <p class="text-xs text-muted mt-2" style="color:#cbd5e1;">Available for all new checking vaults opened online this month.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         4. TESTIMONIALS SECTION
+         ====================================================================== -->
+    <section class="testimonials-section" id="testimonials">
+      <div class="container">
+        <!-- Section Header -->
+        <div class="section-header reveal-on-scroll">
+          <span class="section-subtitle-tag">Member Experiences</span>
+          <h2 class="section-title">Hear From Our Customers</h2>
+          <p class="section-desc">Real stories from people and businesses powered by WB CREDIT UNION.</p>
+        </div>
+
+        <!-- Testimonial Cards Grid / Mobile Carousel -->
+        <div class="testimonials-grid" id="testimonialsCarousel">
+          <!-- Card 1 -->
+          <div class="testimonial-card reveal-on-scroll delay-1">
+            <div class="star-rating">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <p class="testimonial-quote">
+              "I am impressed with the customer service and speed of payout."
+            </p>
+            <div class="testimonial-author">
+              <div class="author-avatar">
+                <img src="https://i.ibb.co/qFk3kzC0/Sarah-Morris.jpg" alt="Sarah Morris" loading="lazy" />
+              </div>
+              <div>
+                <div class="author-name">Sarah Morris</div>
+                <div class="author-title">Verified Customer</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="testimonial-card reveal-on-scroll delay-2">
+            <div class="star-rating">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <p class="testimonial-quote">
+              "Excellent service and competitive rates. Highly recommended!"
+            </p>
+            <div class="testimonial-author">
+              <div class="author-avatar">
+                <img src="https://i.ibb.co/CCjvSmV/John-Davis.jpg" alt="John Davis" loading="lazy" />
+              </div>
+              <div>
+                <div class="author-name">John Davis</div>
+                <div class="author-title">Business Owner</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="testimonial-card reveal-on-scroll delay-3">
+            <div class="star-rating">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <p class="testimonial-quote">
+              "The mobile app is fantastic and customer support is top-notch."
+            </p>
+            <div class="testimonial-author">
+              <div class="author-avatar">
+                <img src="https://i.ibb.co/zjWwW1Z/Emily-Johnson.jpg" alt="Emily Johnson" loading="lazy" />
+              </div>
+              <div>
+                <div class="author-name">Emily Johnson</div>
+                <div class="author-title">Personal Banking</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         5. CTA BANNER (ORANGE GRADIENT)
+         ====================================================================== -->
+    <section class="cta-banner-section" id="cta">
+      <div class="container cta-banner-container reveal-on-scroll">
+        <h2 class="cta-banner-title">Ready to Experience Better Banking?</h2>
+        <p class="cta-banner-desc">
+          Join thousands of members who trust WB CREDIT UNION with their financial future.
+        </p>
+        <div class="cta-banner-actions">
+          <a href="/pages/register.html" class="btn btn-white">
+            <span>Open an Account</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+          <a href="/contact.html" class="btn btn-outline">
+            <span>Contact Us</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       SHARED FOOTER (INJECTED BY js/navigation.js)
+       ======================================================================== -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts: Theme & Shared Navigation Injection -->
+  <script type="module" src="/js/theme.js"></script>
+  <script type="module" src="/js/navigation.js"></script>
+
+  <!-- Scroll Animation & Interactive Carousel Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Intersection Observer for Smooth Scroll Reveals
+      const revealElements = document.querySelectorAll('.reveal-on-scroll');
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15 });
+
+        revealElements.forEach(el => observer.observe(el));
+      } else {
+        // Fallback for older browsers
+        revealElements.forEach(el => el.classList.add('is-visible'));
+      }
+
+      // 2. Testimonials Auto-sliding Carousel for Mobile
+      const carousel = document.getElementById('testimonialsCarousel');
+      if (carousel && window.innerWidth <= 768) {
+        let scrollIndex = 0;
+        const cards = carousel.querySelectorAll('.testimonial-card');
+        setInterval(() => {
+          if (cards.length > 0) {
+            scrollIndex = (scrollIndex + 1) % cards.length;
+            const targetCard = cards[scrollIndex];
+            if (targetCard) {
+              carousel.scrollTo({
+                left: targetCard.offsetLeft - 24,
+                behavior: 'smooth'
+              });
+            }
+          }
+        }, 4500);
+      }
+    });
+  </script>
+</body>
+</html>

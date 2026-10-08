@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" href="/assets/icon-192.png" />
+  <title>Member Sign In | WB Credit Union</title>
+  <meta name="description" content="Securely sign in to your WB Credit Union digital banking vault via Email, Account PIN, or Biometric Authentication." />
+
+  <!-- Google Font Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Pure Custom Stylesheets -->
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/auth.css" />
+
+  <!-- Anti-Flash Instant Theme Initialization -->
+  <script>
+    (function() {
+      try {
+        var saved = localStorage.getItem('wbcu_theme_preference');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = saved === 'dark' || (!saved && prefersDark) ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body class="auth-page">
+
+  <div class="auth-split-layout">
+    <!-- ====================================================================
+         LEFT DECORATIVE BRAND PANEL (DESKTOP)
+         ==================================================================== -->
+    <aside class="auth-split-brand">
+      <div class="brand-mesh-overlay"></div>
+      <div class="brand-orb-1"></div>
+      <div class="brand-orb-2"></div>
+
+      <div class="brand-panel-content">
+        <!-- Brand Top Logo -->
+        <a href="/" class="brand-top-logo">
+          <img src="https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png" alt="WB Credit Union Logo" style="height: 48px; width: auto; object-fit: contain;">
+        </a>
+
+        <!-- Hero Copy -->
+        <div class="brand-hero-copy">
+          <div class="brand-kicker-tag">Encrypted Banking Vault</div>
+          <h1 class="brand-title">Welcome to Borderless Digital Banking</h1>
+          <p class="brand-subtitle">
+            Securely access your multi-currency accounts, international SWIFT wires, and real-time portfolio management.
+          </p>
+
+          <div class="brand-benefits-stack">
+            <div class="brand-benefit-item">
+              <div class="brand-benefit-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span>Multi-Factor Authentication & Biometric WebAuthn</span>
+            </div>
+            <div class="brand-benefit-item">
+              <div class="brand-benefit-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span>Automated 15-Minute Inactivity Session Protection</span>
+            </div>
+            <div class="brand-benefit-item">
+              <div class="brand-benefit-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span>FIPS 140-2 Level 3 Hardware Security Isolation</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Testimonial Card -->
+        <div class="brand-footer-card">
+          <p class="brand-footer-quote">
+            "Direct deposits arrive early, international wires clear without surprise fees, and biometric login takes under one second."
+          </p>
+          <div class="brand-footer-author">Verified Commercial Member · Institutional Banking</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ====================================================================
+         RIGHT FORM PANEL WITH ANIMATED GRADIENT BORDER CARD
+         ==================================================================== -->
+    <main class="auth-split-form">
+      <!-- Topbar Header -->
+      <div class="auth-form-topbar">
+        <a href="/" class="mobile-brand-header">
+          <img src="https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png" alt="WB Credit Union Logo" style="height: 32px; width: auto; object-fit: contain;">
+        </a>
+
+        <div class="d-flex items-center gap-2 ml-auto">
+          <!-- Language Switcher Dropdown Widget -->
+          <div class="lang-switcher-dropdown" id="langSwitcher_Auth">
+            <button type="button" class="lang-switcher-btn" id="langBtn_Auth" aria-label="Select Language" aria-expanded="false" title="Switch Language">
+              <span class="lang-btn-flag">🇺🇸</span>
+              <span class="lang-btn-code">EN</span>
+              <svg class="lang-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="lang-dropdown-menu" id="langMenu_Auth">
+              <div class="lang-dropdown-header">Select Language</div>
+              <div class="lang-options-grid">
+                <button type="button" class="lang-option-btn is-active" data-lang-code="en">
+                  <span class="lang-option-flag">🇺🇸</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">English</strong>
+                    <span class="lang-option-sub">English</span>
+                  </div>
+                  <span class="lang-check">✓</span>
+                </button>
+                <button type="button" class="lang-option-btn" data-lang-code="es">
+                  <span class="lang-option-flag">🇪🇸</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">Español</strong>
+                    <span class="lang-option-sub">Spanish</span>
+                  </div>
+                </button>
+                <button type="button" class="lang-option-btn" data-lang-code="fr">
+                  <span class="lang-option-flag">🇫🇷</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">Français</strong>
+                    <span class="lang-option-sub">French</span>
+                  </div>
+                </button>
+                <button type="button" class="lang-option-btn" data-lang-code="de">
+                  <span class="lang-option-flag">🇩🇪</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">Deutsch</strong>
+                    <span class="lang-option-sub">German</span>
+                  </div>
+                </button>
+                <button type="button" class="lang-option-btn" data-lang-code="sv">
+                  <span class="lang-option-flag">🇸🇪</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">Svenska</strong>
+                    <span class="lang-option-sub">Swedish</span>
+                  </div>
+                </button>
+                <button type="button" class="lang-option-btn" data-lang-code="zh">
+                  <span class="lang-option-flag">🇨🇳</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">简体中文</strong>
+                    <span class="lang-option-sub">Chinese</span>
+                  </div>
+                </button>
+                <button type="button" class="lang-option-btn" data-lang-code="ar">
+                  <span class="lang-option-flag">🇦🇪</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">العربية</strong>
+                    <span class="lang-option-sub">Arabic</span>
+                  </div>
+                </button>
+                <button type="button" class="lang-option-btn" data-lang-code="pt">
+                  <span class="lang-option-flag">🇵🇹</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">Português</strong>
+                    <span class="lang-option-sub">Portuguese</span>
+                  </div>
+                </button>
+                <button type="button" class="lang-option-btn" data-lang-code="ja">
+                  <span class="lang-option-flag">🇯🇵</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">日本語</strong>
+                    <span class="lang-option-sub">Japanese</span>
+                  </div>
+                </button>
+                <button type="button" class="lang-option-btn" data-lang-code="it">
+                  <span class="lang-option-flag">🇮🇹</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">Italiano</strong>
+                    <span class="lang-option-sub">Italian</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle theme" title="Toggle Theme">
+            <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          </button>
+          <div class="form-auth-switch">
+            Not yet a member?
+            <a href="/pages/register.html">Open an Account</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-content-inner">
+        <!-- Heading -->
+        <div class="mb-4">
+          <h2 class="text-2xl font-bold text-navy mb-1">Welcome Back</h2>
+          <p class="text-sm text-muted">Access your WB CREDIT UNION account</p>
+        </div>
+
+        <!-- Attempts Counter & Lockout Alerts -->
+        <div id="attemptsCounterBanner" class="attempts-counter-banner"></div>
+        <div id="lockoutAlertBanner" class="attempts-counter-banner" style="background:#fef2f2; color:#b91c1c; display:none;"></div>
+
+        <!-- Animated Gradient Card Wrapper -->
+        <div class="animated-card-border-wrap">
+          <div class="animated-card-inner">
+
+            <!-- ------------------------------------------------------------
+                 LOGIN METHODS NAVIGATION TABS (TAB 1, 2, 3)
+                 ------------------------------------------------------------ -->
+            <nav class="login-tabs-nav" aria-label="Login Authentication Methods">
+              <button type="button" class="login-tab-btn is-active" id="tabBtnEmail" data-target="loginPaneEmail">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                Email & Passcode
+              </button>
+              <button type="button" class="login-tab-btn" id="tabBtnAccountPin" data-target="loginPaneAccountPin">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                Account & PIN
+              </button>
+              <button type="button" class="login-tab-btn" id="tabBtnBiometric" data-target="loginPaneBiometric">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 12v6m0-12a8 8 0 0 0-8 8v4m16-12a8 8 0 0 1 8 8v4M9 12a3 3 0 0 1 6 0v6"/></svg>
+                Biometric
+              </button>
+            </nav>
+
+            <!-- ------------------------------------------------------------
+                 TAB 1: EMAIL & PASSWORD LOGIN
+                 ------------------------------------------------------------ -->
+            <div class="login-tab-pane is-active" id="loginPaneEmail">
+              <!-- High-Visibility Alert Banner for Login Errors / Forgot Prompts -->
+              <div id="loginEmailAlertBanner" class="auth-inline-alert auth-alert-danger" style="display:none;" role="alert">
+                <div class="alert-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                </div>
+                <div class="alert-body">
+                  <div class="alert-title" id="loginEmailAlertTitle">Authentication Notice</div>
+                  <div class="alert-desc" id="loginEmailAlertDesc">Please verify your email and master passcode.</div>
+                  <a href="javascript:void(0)" class="alert-action-link" id="alertForgotLink" style="display:none;">Forgot your password? Click here to reset</a>
+                </div>
+              </div>
+
+              <form id="formLoginEmail" novalidate>
+                <div class="form-floating-wrap" id="wrapLoginEmail">
+                  <div class="field-prefix-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                  </div>
+                  <input type="email" id="loginEmail" class="form-floating-input" placeholder=" " required autocomplete="email" />
+                  <label class="form-floating-label" for="loginEmail">Email Address</label>
+                  <div class="field-error-msg" id="loginEmailError"></div>
+                </div>
+
+                <div class="form-floating-wrap" id="wrapLoginPassword">
+                  <div class="field-prefix-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                  </div>
+                  <input type="password" id="loginPassword" class="form-floating-input" placeholder=" " minlength="6" required autocomplete="current-password" />
+                  <label class="form-floating-label" for="loginPassword">Master Passcode (min 6 characters)</label>
+                  <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                  <div class="field-error-msg" id="loginPasswordError"></div>
+                </div>
+
+                <!-- Math CAPTCHA Challenge (appears after 3 failures) -->
+                <div class="captcha-challenge-panel" id="captchaPanelEmail">
+                  <div class="captcha-label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Security Verification Required
+                  </div>
+                  <div class="captcha-input-row">
+                    <div class="captcha-question-badge" id="captchaQuestionText">7 + 4 = ?</div>
+                    <input type="number" id="captchaAnswerInput" class="captcha-answer-input" placeholder="Result" />
+                  </div>
+                </div>
+
+                <div class="d-flex justify-between items-center mb-4">
+                  <label class="form-check mb-0">
+                    <input type="checkbox" id="rememberMeCheckbox" class="form-check-input" checked />
+                    <span class="form-check-label text-xs">Remember me</span>
+                  </label>
+                  <button type="button" class="btn-link text-xs text-blue" id="btnOpenForgotPassword">
+                    Forgot Password?
+                  </button>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg" id="btnSubmitEmailLogin">
+                  Login to Banking Vault
+                </button>
+              </form>
+            </div>
+
+            <!-- ------------------------------------------------------------
+                 TAB 2: ACCOUNT NUMBER & 4-DIGIT PIN LOGIN
+                 ------------------------------------------------------------ -->
+            <div class="login-tab-pane" id="loginPaneAccountPin">
+              <!-- Alert banner for PIN Login -->
+              <div id="loginPinAlertBanner" class="auth-inline-alert auth-alert-danger" style="display:none;" role="alert">
+                <div class="alert-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                </div>
+                <div class="alert-body">
+                  <div class="alert-title" id="loginPinAlertTitle">Authentication Error</div>
+                  <div class="alert-desc" id="loginPinAlertDesc">Invalid account number or 4-digit PIN.</div>
+                </div>
+              </div>
+
+              <form id="formLoginAccountPin" novalidate>
+                <div class="form-floating-wrap" id="wrapLoginAccount">
+                  <div class="field-prefix-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                  </div>
+                  <input type="text" id="loginAccountNumber" class="form-floating-input font-numeric" placeholder=" " maxlength="14" required />
+                  <label class="form-floating-label" for="loginAccountNumber">10-Digit Account Number</label>
+                  <div class="field-error-msg" id="loginAccountError"></div>
+                </div>
+
+                <label class="form-label text-center text-xs mb-2">Enter 4-Digit Security PIN</label>
+                <div class="pin-segmented-grid" id="loginPinGrid">
+                  <input type="password" maxlength="1" class="pin-cell-input" inputmode="numeric" pattern="[0-9]*" id="lPin1" required />
+                  <input type="password" maxlength="1" class="pin-cell-input" inputmode="numeric" pattern="[0-9]*" id="lPin2" required />
+                  <input type="password" maxlength="1" class="pin-cell-input" inputmode="numeric" pattern="[0-9]*" id="lPin3" required />
+                  <input type="password" maxlength="1" class="pin-cell-input" inputmode="numeric" pattern="[0-9]*" id="lPin4" required />
+                </div>
+                <div class="field-error-msg text-center mb-3" id="loginPinError"></div>
+
+                <!-- Math CAPTCHA Challenge for PIN login (appears after 3 failures) -->
+                <div class="captcha-challenge-panel" id="captchaPanelPin">
+                  <div class="captcha-label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Security Verification Required
+                  </div>
+                  <div class="captcha-input-row">
+                    <div class="captcha-question-badge captcha-question-display">7 + 4 = ?</div>
+                    <input type="number" id="captchaAnswerInputPin" class="captcha-answer-input" placeholder="Result" />
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg" id="btnSubmitPinLogin">
+                  Verify PIN & Sign In
+                </button>
+              </form>
+            </div>
+
+            <!-- ------------------------------------------------------------
+                 TAB 3: BIOMETRIC LOGIN (WEBAUTHN FINGERPRINT)
+                 ------------------------------------------------------------ -->
+            <div class="login-tab-pane" id="loginPaneBiometric">
+              <!-- STATE A: BIOMETRIC NOT CONFIGURED YET -->
+              <div id="biometricNotConfiguredView" class="biometric-unconfigured-card" style="display:none;">
+                <div style="width: 52px; height: 52px; border-radius: 50%; background: #fee2e2; color: #ef4444; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem auto;">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                </div>
+                <h4 class="font-bold text-navy text-sm mb-1">Thumbprint Biometrics Not Enrolled</h4>
+                <p class="text-xs text-muted mb-3">
+                  Biometric thumbprint login will not work until you have set it up using any of your fingerprints.
+                </p>
+                <button type="button" class="btn btn-primary btn-sm" id="btnOpenBiometricSetup">
+                  Set Up Fingerprint Biometrics Now
+                </button>
+              </div>
+
+              <!-- STATE B: BIOMETRIC ACTIVE & ENROLLED -->
+              <div class="biometric-scanner-box" id="biometricReadyView">
+                <div id="biometricEnrolledBadge" class="biometric-enrolled-badge" style="display:none;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <span id="biometricEnrolledName">Registered Thumbprint Active</span>
+                </div>
+
+                <button type="button" class="biometric-touch-target" id="btnTriggerBiometric" aria-label="Touch fingerprint sensor to sign in">
+                  <div class="biometric-pulse-ring" id="biometricPulseRing"></div>
+                  <!-- Fingerprint SVG -->
+                  <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 12v6"></path>
+                    <path d="M12 6a6 6 0 0 0-6 6v4"></path>
+                    <path d="M18 12a6 6 0 0 0-6-6"></path>
+                    <path d="M9 12a3 3 0 0 1 6 0v6"></path>
+                    <path d="M12 2a10 10 0 0 0-10 10v4"></path>
+                    <path d="M22 12a10 10 0 0 0-10-10"></path>
+                  </svg>
+                </button>
+
+                <div class="biometric-scanner-title" id="biometricScannerTitle">Touch to Login</div>
+                <p class="biometric-scanner-sub" id="biometricScannerSub">Authenticate securely using your registered device fingerprint or Face ID.</p>
+                <div class="biometric-status-msg text-blue" id="biometricStatusMsg">Ready for biometric sensor</div>
+
+                <div class="mt-3">
+                  <button type="button" class="btn-link text-xs text-blue" id="btnReEnrollFingerprint">
+                    Re-enroll or change fingerprint
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Google Single Sign-On (SSO) Container (Synced with Admin Settings) -->
+            <div id="googleSsoContainer" class="mt-4 pt-3 border-top text-center" style="display:none;">
+              <p class="text-xs text-muted mb-2">Or continue with enterprise cloud credentials</p>
+              <button type="button" class="btn btn-outline btn-block d-flex items-center justify-center gap-2" id="btnGoogleSignIn" style="background:#ffffff; color:#1e293b; border: 1px solid #cbd5e1; font-weight:600; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.25 21.36 7.34 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.17 0 9.97 0 12s.45 3.83 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.25 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+                <span>Sign in with Google</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer Help Support -->
+      <div class="mt-6 pt-4 text-center text-xs text-muted border-top">
+        Need assistance with your account? Email 24/7 Member Care: <strong><a href="mailto:support@wbcu.net" style="color:inherit; text-decoration:underline;">support@wbcu.net</a></strong> &bull; <a href="/pages/admin-login.html" class="text-blue font-semibold">Treasury Officer Portal &rarr;</a>
+      </div>
+    </main>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: FORGOT PASSWORD RESET REQUEST
+       ======================================================================== -->
+  <div class="modal-backdrop-wrap" id="forgotPasswordModal" role="dialog" aria-modal="true" aria-labelledby="forgotModalTitle">
+    <div class="modal-dialog-card">
+      <div class="modal-dialog-header">
+        <h3 class="font-bold text-navy text-md" id="forgotModalTitle">Reset Account Passcode</h3>
+        <button type="button" class="btn-icon-only text-muted" id="btnCloseForgotModal" aria-label="Close modal" style="background:none; border:none; cursor:pointer;">&times;</button>
+      </div>
+      <div class="modal-dialog-body">
+        <p class="text-xs text-muted mb-4">
+          Enter your registered member email address. We will dispatch a secure, encrypted link to reset your master credentials.
+        </p>
+        <form id="formForgotPassword">
+          <div class="form-floating-wrap mb-4">
+            <input type="email" id="forgotEmailInput" class="form-floating-input no-icon" placeholder=" " required />
+            <label class="form-floating-label" for="forgotEmailInput">Member Email Address</label>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block btn-lg" id="btnSubmitForgot">
+            Send Passcode Reset Link
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: ACCOUNT STATUS NOTICE (FROZEN / SUSPENDED)
+       ======================================================================== -->
+  <div class="account-status-modal" id="accountStatusNoticeModal">
+    <div class="account-status-card">
+      <div class="brand-icon-box" style="background:#dc2626; margin:0 auto 1.25rem auto;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+      <h3 class="font-bold text-navy text-lg mb-2" id="statusNoticeTitle">Account Security Hold</h3>
+      <p class="text-sm text-muted mb-4" id="statusNoticeDesc">
+        Your account status is currently flagged for security review. Please contact Member Compliance immediately.
+      </p>
+      <div class="p-3 bg-light rounded text-xs mb-4" style="background:#f1f5f9;">
+        Clearance Operations: <strong>support@wbcu.net</strong><br/>
+        Bank Website: <strong>www.wbcu.net</strong>
+      </div>
+      <button type="button" class="btn btn-outline btn-block" id="btnCloseStatusNotice">Dismiss</button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: INTERACTIVE BIOMETRIC FINGERPRINT ENROLLMENT (WEBAUTHN)
+       ======================================================================== -->
+  <div class="biometric-enroll-modal" id="biometricEnrollModal" role="dialog" aria-modal="true" aria-labelledby="bioEnrollModalTitle">
+    <div class="biometric-enroll-dialog">
+      <div class="modal-dialog-header">
+        <div class="d-flex items-center gap-2">
+          <div style="width: 32px; height: 32px; border-radius: 50%; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 12v6m0-12a8 8 0 0 0-8 8v4m16-12a8 8 0 0 1 8 8v4M9 12a3 3 0 0 1 6 0v6"/></svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-navy text-sm mb-0" id="bioEnrollModalTitle">Biometric Thumbprint Setup</h3>
+            <div class="text-xs text-muted">FIDO2 / WebAuthn Hardware Security Enrollment</div>
+          </div>
+        </div>
+        <button type="button" class="btn-icon-only text-muted" id="btnCloseBioEnrollModal" aria-label="Close modal" style="background:none; border:none; cursor:pointer; font-size:1.25rem;">&times;</button>
+      </div>
+
+      <div class="modal-dialog-body" style="padding: 1.5rem;">
+        <!-- Step 1: Account Context & Finger Selection -->
+        <div class="mb-3">
+          <label class="form-label text-xs font-bold text-muted text-uppercase mb-1">Associate With Account</label>
+          <input type="email" id="bioEnrollEmailInput" class="form-control text-sm" placeholder="Enter your registered email" value="mizbrymo@gmail.com" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-xs font-bold text-muted text-uppercase mb-1">Select Finger to Register</label>
+          <div class="finger-chips-grid" id="fingerSelectionChips">
+            <button type="button" class="finger-chip is-active" data-finger="Right Thumb (Primary)">Right Thumb</button>
+            <button type="button" class="finger-chip" data-finger="Left Thumb">Left Thumb</button>
+            <button type="button" class="finger-chip" data-finger="Right Index Finger">Right Index</button>
+            <button type="button" class="finger-chip" data-finger="Touch ID / Face ID">Touch ID / Face ID</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Interactive Fingerprint Scanner Target -->
+        <div class="text-center">
+          <div class="text-xs text-muted mb-1" id="bioEnrollInstructions">
+            Press and hold the sensor below to capture your fingerprint ridge patterns:
+          </div>
+
+          <div class="biometric-scan-target" id="bioModalScanTarget" role="button" tabindex="0" aria-label="Press and hold sensor to enroll fingerprint">
+            <!-- Fingerprint SVG -->
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" id="bioModalSvg">
+              <path d="M12 12v6"></path>
+              <path d="M12 6a6 6 0 0 0-6 6v4"></path>
+              <path d="M18 12a6 6 0 0 0-6-6"></path>
+              <path d="M9 12a3 3 0 0 1 6 0v6"></path>
+              <path d="M12 2a10 10 0 0 0-10 10v4"></path>
+              <path d="M22 12a10 10 0 0 0-10-10"></path>
+            </svg>
+            <div id="bioModalLaser" style="display:none; position: absolute; left: 10px; right: 10px; height: 2px; background: #10b981; box-shadow: 0 0 10px #10b981; animation: scanAnim 1.2s infinite ease-in-out;"></div>
+          </div>
+
+          <!-- Progress Ring / Bar -->
+          <div class="strength-bar-track" style="height: 8px; margin: 0 auto 0.75rem auto; max-width: 260px;">
+            <div class="strength-bar-fill" id="bioEnrollProgressFill" style="width: 0%; background-color: #3b82f6;"></div>
+          </div>
+
+          <div class="text-xs font-semibold text-muted" id="bioEnrollStatusText">
+            Ready: Press and hold sensor for 2 seconds
+          </div>
+        </div>
+
+        <!-- Success confirmation action -->
+        <div class="mt-4 pt-3 border-top d-flex gap-2">
+          <button type="button" class="btn btn-outline btn-block text-xs" id="btnCancelBioEnroll">Cancel</button>
+          <button type="button" class="btn btn-primary btn-block text-xs" id="btnSimulateBioComplete">
+            Touch Sensor to Complete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Authentication & Theme Scripts -->
+  <script type="module" src="/js/theme.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+</body>
+</html>

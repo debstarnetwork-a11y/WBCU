@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" href="/assets/icon-192.png" />
+  <title>Open Account | WB Credit Union</title>
+  <meta name="description" content="Open a multi-currency digital banking account with WB Credit Union in 4 simple steps. Enjoy high-yield APY, global IBANs, and institutional security." />
+
+  <!-- Google Font Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Pure Custom Stylesheets -->
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/auth.css" />
+
+  <!-- Anti-Flash Instant Theme Initialization -->
+  <script>
+    (function() {
+      try {
+        var saved = localStorage.getItem('wbcu_theme_preference');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = saved === 'dark' || (!saved && prefersDark) ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body class="auth-page">
+
+  <!-- Confetti Canvas for Celebration -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <div class="auth-split-layout">
+    <!-- ====================================================================
+         LEFT DECORATIVE BRAND PANEL (DESKTOP)
+         ==================================================================== -->
+    <aside class="auth-split-brand">
+      <div class="brand-mesh-overlay"></div>
+      <div class="brand-orb-1"></div>
+      <div class="brand-orb-2"></div>
+
+      <div class="brand-panel-content">
+        <!-- Top Logo -->
+        <a href="/" class="brand-top-logo">
+          <img src="https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png" alt="WB Credit Union" style="height: 48px; width: auto; object-fit: contain;">
+        </a>
+
+        <!-- Center Copy & Trust Pillars -->
+        <div class="brand-hero-copy">
+          <div class="brand-kicker-tag">Member-Owned Cooperative</div>
+          <h1 class="brand-title">Building Financial Strength Together</h1>
+          <p class="brand-subtitle">
+            Experience banking reimagined with seamless multi-currency vaults, high-yield deposit returns, and institutional peace of mind.
+          </p>
+
+          <div class="brand-benefits-stack">
+            <div class="brand-benefit-item">
+              <div class="brand-benefit-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span>Up to 3.75% High-Yield APY on checking & savings</span>
+            </div>
+            <div class="brand-benefit-item">
+              <div class="brand-benefit-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span>FDIC & NCUA Insured deposits up to $250,000</span>
+            </div>
+            <div class="brand-benefit-item">
+              <div class="brand-benefit-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span>256-Bit military-grade vault encryption & 2FA protection</span>
+            </div>
+            <div class="brand-benefit-item">
+              <div class="brand-benefit-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span>Zero foreign transaction fees on international wires</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Quote Card -->
+        <div class="brand-footer-card">
+          <p class="brand-footer-quote">
+            "Opening my multi-currency account took under three minutes. The best rates and customer care I've experienced in 20 years of banking."
+          </p>
+          <div class="brand-footer-author">Eleanor Vance · Premier Member</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ====================================================================
+         RIGHT FORM PANEL (MULTI-STEP REGISTRATION)
+         ==================================================================== -->
+    <main class="auth-split-form">
+      <!-- Blue Top Header Bar with WBCU Logo and Actions -->
+      <div class="auth-form-topbar">
+        <a href="/" aria-label="WB Credit Union Home" class="auth-topbar-brand">
+          <img src="https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png" alt="WB Credit Union Logo" class="auth-topbar-logo-img">
+        </a>
+
+        <div class="d-flex items-center gap-2 ml-auto">
+          <!-- Language Switcher Dropdown Widget -->
+          <div class="lang-switcher-dropdown" id="langSwitcher_Register">
+            <button type="button" class="lang-switcher-btn" id="langBtn_Register" aria-label="Select Language" aria-expanded="false" title="Switch Language">
+              <span class="lang-btn-flag">🇺🇸</span>
+              <span class="lang-btn-code">EN</span>
+              <svg class="lang-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="lang-dropdown-menu" id="langMenu_Register">
+              <div class="lang-dropdown-header">Select Language</div>
+              <div class="lang-options-grid">
+                <button type="button" class="lang-option-btn is-active" data-lang-code="en">
+                  <span class="lang-option-flag">🇺🇸</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">English</strong>
+                    <span class="lang-option-sub">English</span>
+                  </div>
+                  <span class="lang-check">✓</span>
+                </button>
+                <button type="button" class="lang-option-btn" data-lang-code="es">
+                  <span class="lang-option-flag">🇪🇸</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">Español</strong>
+                    <span class="lang-option-sub">Spanish</span>
+                  </div>
+                </button>
+                <button type="button" class="lang-option-btn" data-lang-code="fr">
+                  <span class="lang-option-flag">🇫🇷</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">Français</strong>
+                    <span class="lang-option-sub">French</span>
+                  </div>
+                </button>
+                <button type="button" class="lang-option-btn" data-lang-code="de">
+                  <span class="lang-option-flag">🇩🇪</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">Deutsch</strong>
+                    <span class="lang-option-sub">German</span>
+                  </div>
+                </button>
+                <button type="button" class="lang-option-btn" data-lang-code="sv">
+                  <span class="lang-option-flag">🇸🇪</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">Svenska</strong>
+                    <span class="lang-option-sub">Swedish</span>
+                  </div>
+                </button>
+                <button type="button" class="lang-option-btn" data-lang-code="zh">
+                  <span class="lang-option-flag">🇨🇳</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">简体中文</strong>
+                    <span class="lang-option-sub">Chinese</span>
+                  </div>
+                </button>
+                <button type="button" class="lang-option-btn" data-lang-code="ar">
+                  <span class="lang-option-flag">🇦🇪</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">العربية</strong>
+                    <span class="lang-option-sub">Arabic</span>
+                  </div>
+                </button>
+                <button type="button" class="lang-option-btn" data-lang-code="pt">
+                  <span class="lang-option-flag">🇵🇹</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">Português</strong>
+                    <span class="lang-option-sub">Portuguese</span>
+                  </div>
+                </button>
+                <button type="button" class="lang-option-btn" data-lang-code="ja">
+                  <span class="lang-option-flag">🇯🇵</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">日本語</strong>
+                    <span class="lang-option-sub">Japanese</span>
+                  </div>
+                </button>
+                <button type="button" class="lang-option-btn" data-lang-code="it">
+                  <span class="lang-option-flag">🇮🇹</span>
+                  <div class="lang-option-text">
+                    <strong class="lang-option-name">Italiano</strong>
+                    <span class="lang-option-sub">Italian</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle theme" title="Toggle Theme">
+            <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          </button>
+          <div class="form-auth-switch">
+            Already a member?
+            <a href="/pages/login.html" class="font-semibold text-blue">Sign In</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-content-inner">
+        <!-- ================================================================
+             PROGRESS STEPPER HEADER
+             ================================================================ -->
+        <div class="stepper-header" id="stepperHeader">
+          <div class="stepper-title-row">
+            <div>
+              <div class="step-count-badge" id="stepCountBadge">Step 1 of 4</div>
+              <h2 class="step-main-title" id="stepMainTitle">Personal Information</h2>
+            </div>
+          </div>
+          <p class="step-subtitle" id="stepSubtitle">Please provide your legal identity details as on official documentation.</p>
+
+          <!-- Animated Progress Fill Track -->
+          <div class="stepper-progress-track">
+            <div class="stepper-progress-fill" id="progressBar" style="width: 25%;"></div>
+          </div>
+
+          <!-- 4 Step Indicator Pills -->
+          <div class="stepper-pills">
+            <div class="step-pill-item is-active" id="pillStep1">
+              <span class="step-pill-number">1</span>
+              <span class="step-pill-label">Personal</span>
+            </div>
+            <div class="step-pill-item" id="pillStep2">
+              <span class="step-pill-number">2</span>
+              <span class="step-pill-label">Address</span>
+            </div>
+            <div class="step-pill-item" id="pillStep3">
+              <span class="step-pill-number">3</span>
+              <span class="step-pill-label">Account</span>
+            </div>
+            <div class="step-pill-item" id="pillStep4">
+              <span class="step-pill-number">4</span>
+              <span class="step-pill-label">Security</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error Banner Container -->
+        <div id="registrationGlobalAlert" class="mb-4" style="display: none; padding: 0.875rem 1.25rem; border-radius: var(--radius-md); background-color: var(--accent-red-soft); border: 1px solid var(--accent-red-border); color: var(--accent-red); font-size: var(--font-size-xs); font-weight: 500;"></div>
+
+        <!-- ================================================================
+             MULTI-STEP FORM CONTAINER
+             ================================================================ -->
+        <form id="multiStepRegisterForm" novalidate>
+          <div class="step-container">
+
+            <!-- ------------------------------------------------------------
+                 STEP 1: PERSONAL INFORMATION
+                 ------------------------------------------------------------ -->
+            <div class="step-pane is-current" id="stepPane1">
+              <!-- Profile Photo (URL or Upload) -->
+              <div class="avatar-upload-card">
+                <div class="avatar-preview-box" id="avatarPreviewBox">
+                  <svg id="avatarPlaceholderIcon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                  <img id="avatarPreviewImg" alt="Profile preview" />
+                </div>
+                <div class="avatar-upload-meta" style="flex: 1;">
+                  <div class="text-xs font-semibold text-dark mb-1">Profile Photo (URL or Upload)</div>
+                  <div class="text-xs text-muted mb-2">Upload a picture or enter direct image URL (Optional)</div>
+                  <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
+                    <label class="avatar-upload-btn-label m-0" style="cursor: pointer;">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                      Choose Photo File
+                      <input type="file" id="profilePhotoInput" accept="image/*" style="display: none;" />
+                    </label>
+                  </div>
+                  <div>
+                    <input type="text" id="regProfilePhotoUrl" class="form-floating-input" placeholder="Or enter direct image URL: https://..." style="height: 38px; font-size: 0.8rem; padding: 6px 10px; border-radius: 6px;" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- First & Middle Name -->
+              <div class="d-grid grid-cols-1 grid-sm-2 gap-3">
+                <div class="form-floating-wrap" id="wrapFirstName">
+                  <input type="text" id="regFirstName" class="form-floating-input" placeholder=" " required />
+                  <label class="form-floating-label" for="regFirstName">First Name *</label>
+                  <span class="field-valid-icon">&check;</span>
+                  <div class="field-error-msg">Please enter your legal first name.</div>
+                </div>
+                <div class="form-floating-wrap" id="wrapMiddleName">
+                  <input type="text" id="regMiddleName" class="form-floating-input" placeholder=" " />
+                  <label class="form-floating-label" for="regMiddleName">Middle Name (Optional)</label>
+                </div>
+              </div>
+
+              <!-- Last Name -->
+              <div class="form-floating-wrap" id="wrapLastName">
+                <input type="text" id="regLastName" class="form-floating-input" placeholder=" " required />
+                <label class="form-floating-label" for="regLastName">Last Name *</label>
+                <span class="field-valid-icon">&check;</span>
+                <div class="field-error-msg">Please enter your legal last name.</div>
+              </div>
+
+              <!-- Email Address -->
+              <div class="form-floating-wrap" id="wrapEmail">
+                <input type="email" id="regEmail" class="form-floating-input" placeholder=" " required />
+                <label class="form-floating-label" for="regEmail">Email Address *</label>
+                <span class="field-valid-icon">&check;</span>
+                <div class="field-error-msg">Please provide a valid email address.</div>
+              </div>
+
+              <!-- Phone with Country Code -->
+              <div class="form-floating-wrap" id="wrapPhone">
+                <div class="phone-input-group">
+                  <select id="regCountryCode" class="form-floating-select has-value" aria-label="Country Dialing Code">
+                    <option value="+41" selected>🇨🇭 +41 (CH)</option>
+                    <option value="+1">🇺🇸 +1 (US)</option>
+                    <option value="+44">🇬🇧 +44 (UK)</option>
+                    <option value="+49">🇩🇪 +49 (DE)</option>
+                    <option value="+33">🇫🇷 +33 (FR)</option>
+                    <option value="+1-ca">🇨🇦 +1 (CA)</option>
+                    <option value="+61">🇦🇺 +61 (AU)</option>
+                    <option value="+81">🇯🇵 +81 (JP)</option>
+                    <option value="+234">🇳🇬 +234 (NG)</option>
+                    <option value="+971">🇦🇪 +971 (AE)</option>
+                  </select>
+                  <input type="tel" id="regPhoneNumber" class="form-floating-input" placeholder=" " required />
+                </div>
+                <label class="form-floating-label" style="left: 125px;" for="regPhoneNumber">Phone Number *</label>
+                <div class="field-error-msg">Please provide a valid phone number for SMS authentication.</div>
+              </div>
+
+              <!-- Date of Birth & Gender -->
+              <div class="d-grid grid-cols-1 grid-sm-2 gap-3">
+                <div class="form-floating-wrap" id="wrapDOB">
+                  <input type="date" id="regDOB" class="form-floating-input" required />
+                  <label class="form-floating-label" for="regDOB">Date of Birth *</label>
+                  <div class="field-error-msg">You must be at least 18 years old to open an account.</div>
+                </div>
+
+                <div class="form-floating-wrap" id="wrapGender">
+                  <select id="regGender" class="form-floating-select">
+                    <option value="" selected disabled hidden></option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                    <option value="prefer_not_to_say">Prefer not to say</option>
+                  </select>
+                  <label class="form-floating-label" for="regGender">Gender</label>
+                </div>
+              </div>
+
+              <!-- Masked Social Security / National ID -->
+              <div class="form-floating-wrap" id="wrapSSN">
+                <input type="text" id="regSSN" class="form-floating-input font-numeric" placeholder=" " maxlength="11" />
+                <label class="form-floating-label" for="regSSN">Social Security Number / National ID (Masked)</label>
+                <div class="form-help-text">Used exclusively for mandatory federal compliance & identity verification.</div>
+              </div>
+            </div>
+
+            <!-- ------------------------------------------------------------
+                 STEP 2: ADDRESS & CONTACT INFORMATION
+                 ------------------------------------------------------------ -->
+            <div class="step-pane" id="stepPane2">
+              <div class="form-floating-wrap" id="wrapAddress1">
+                <input type="text" id="regAddress1" class="form-floating-input" placeholder=" " required />
+                <label class="form-floating-label" for="regAddress1">Residential Address Line 1 *</label>
+                <span class="field-valid-icon">&check;</span>
+                <div class="field-error-msg">Please enter your primary street address.</div>
+              </div>
+
+              <div class="form-floating-wrap" id="wrapAddress2">
+                <input type="text" id="regAddress2" class="form-floating-input" placeholder=" " />
+                <label class="form-floating-label" for="regAddress2">Apartment, Suite, Unit (Optional)</label>
+              </div>
+
+              <div class="d-grid grid-cols-1 grid-sm-2 gap-3">
+                <div class="form-floating-wrap" id="wrapCity">
+                  <input type="text" id="regCity" class="form-floating-input" placeholder=" " required />
+                  <label class="form-floating-label" for="regCity">City *</label>
+                  <span class="field-valid-icon">&check;</span>
+                  <div class="field-error-msg">City is required.</div>
+                </div>
+
+                <div class="form-floating-wrap" id="wrapState">
+                  <input type="text" id="regState" class="form-floating-input" placeholder=" " required />
+                  <label class="form-floating-label" for="regState">State / Canton / Province *</label>
+                  <span class="field-valid-icon">&check;</span>
+                  <div class="field-error-msg">State or Province is required.</div>
+                </div>
+              </div>
+
+              <div class="d-grid grid-cols-1 grid-sm-2 gap-3">
+                <div class="form-floating-wrap" id="wrapZip">
+                  <input type="text" id="regZip" class="form-floating-input font-numeric" placeholder=" " required />
+                  <label class="form-floating-label" for="regZip">Postal / ZIP Code *</label>
+                  <span class="field-valid-icon">&check;</span>
+                  <div class="field-error-msg">Postal code is required.</div>
+                </div>
+
+                <div class="form-floating-wrap" id="wrapCountry">
+                  <select id="regCountry" class="form-floating-select has-value" required>
+                    <option value="Switzerland" selected>Switzerland</option>
+                    <option value="United States">United States</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="Germany">Germany</option>
+                    <option value="France">France</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Japan">Japan</option>
+                    <option value="Nigeria">Nigeria</option>
+                    <option value="Singapore">Singapore</option>
+                    <option value="United Arab Emirates">United Arab Emirates</option>
+                    <option value="Austria">Austria</option>
+                    <option value="Netherlands">Netherlands</option>
+                    <option value="Italy">Italy</option>
+                  </select>
+                  <label class="form-floating-label" for="regCountry">Country *</label>
+                </div>
+              </div>
+
+              <div class="form-floating-wrap" id="wrapReferral">
+                <select id="regReferral" class="form-floating-select">
+                  <option value="" selected disabled hidden></option>
+                  <option value="Search Engine">Search Engine (Google / Bing)</option>
+                  <option value="Friend or Family">Friend, Colleague or Family Member</option>
+                  <option value="Financial Advisor">Certified Financial Advisor</option>
+                  <option value="Social Media">Social Media</option>
+                  <option value="Press / News">Financial Times / Bloomberg / News</option>
+                  <option value="Other">Other Community Referral</option>
+                </select>
+                <label class="form-floating-label" for="regReferral">How did you hear about us?</label>
+              </div>
+            </div>
+
+            <!-- ------------------------------------------------------------
+                 STEP 3: ACCOUNT SETUP & SELECTION
+                 ------------------------------------------------------------ -->
+            <div class="step-pane" id="stepPane3">
+              <input type="hidden" id="selectedAccountCategory" value="checking" />
+
+              <!-- Account Tier Dropdown (Replaced Grid) -->
+              <div class="form-floating-wrap mb-4">
+                <select id="regAccountTier" class="form-floating-select has-value" required>
+                  <option value="savings">Savings Account (3.75% APY) - High-yield capital growth</option>
+                  <option value="checking" selected>Checking Account (Most Popular) - Full digital banking</option>
+                  <option value="business">Business Account (Commercial) - International wires & payroll</option>
+                  <option value="premium">Premium Account (Exclusive) - Private treasury manager</option>
+                </select>
+                <label class="form-floating-label" for="regAccountTier">Choose Your Account Tier *</label>
+              </div>
+
+              <!-- Base Currency Dropdown -->
+              <div class="form-floating-wrap mb-4">
+                <select id="regBaseCurrency" class="form-floating-select has-value">
+                  <option value="USD">USD - United States Dollar ($)</option>
+                  <option value="EUR">EUR - European Euro (€)</option>
+                  <option value="GBP">GBP - British Pound Sterling (£)</option>
+                  <option value="CHF" selected>CHF - Swiss Franc (Fr.)</option>
+                  <option value="CAD">CAD - Canadian Dollar (CA$)</option>
+                  <option value="AUD">AUD - Australian Dollar (AU$)</option>
+                  <option value="JPY">JPY - Japanese Yen (¥)</option>
+                  <option value="NGN">NGN - Nigerian Naira (₦)</option>
+                </select>
+                <label class="form-floating-label" for="regBaseCurrency">Primary Currency Vault *</label>
+              </div>
+
+              <!-- Crypto Wallet Toggle Switch -->
+              <div class="crypto-toggle-panel">
+                <div class="toggle-switch-row">
+                  <div>
+                    <div class="switch-toggle-label">Enable Institutional Crypto Wallet</div>
+                    <div class="switch-toggle-sub">Hold and settle digital crypto assets alongside sovereign fiat</div>
+                  </div>
+                  <label class="switch-control" aria-label="Toggle crypto wallet integration">
+                    <input type="checkbox" id="cryptoWalletToggle" />
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Expandable Crypto Token Multi-Select -->
+                <div class="crypto-tokens-grid" id="cryptoTokensGrid">
+                  <div class="crypto-token-chip is-selected" data-token="BTC">BTC</div>
+                  <div class="crypto-token-chip is-selected" data-token="ETH">ETH</div>
+                  <div class="crypto-token-chip is-selected" data-token="USDT">USDT</div>
+                  <div class="crypto-token-chip is-selected" data-token="USDC">USDC</div>
+                  <div class="crypto-token-chip" data-token="BNB">BNB</div>
+                  <div class="crypto-token-chip" data-token="XRP">XRP</div>
+                  <div class="crypto-token-chip" data-token="SOL">SOL</div>
+                  <div class="crypto-token-chip" data-token="ADA">ADA</div>
+                </div>
+              </div>
+
+              <!-- Mandatory Legal Agreements -->
+              <div class="form-check mb-2">
+                <input type="checkbox" class="form-check-input" id="checkTerms" required />
+                <label class="form-check-label" for="checkTerms">
+                  I agree to the <a href="#" class="text-blue font-semibold">Terms and Conditions</a> and Member Charter. *
+                </label>
+              </div>
+              <div class="form-check mb-4">
+                <input type="checkbox" class="form-check-input" id="checkPrivacy" required />
+                <label class="form-check-label" for="checkPrivacy">
+                  I acknowledge receipt of the <a href="#" class="text-blue font-semibold">Privacy Policy</a> and Electronic Fund Disclosures. *
+                </label>
+              </div>
+            </div>
+
+            <!-- ------------------------------------------------------------
+                 STEP 4: SECURITY SETUP & AUTHENTICATION
+                 ------------------------------------------------------------ -->
+            <div class="step-pane" id="stepPane4">
+              <!-- Create Password -->
+              <div class="form-floating-wrap" id="wrapPassword">
+                <input type="password" id="regPassword" class="form-floating-input" placeholder=" " minlength="6" required />
+                <label class="form-floating-label" for="regPassword">Create Master Password (min 6 characters) *</label>
+                <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                <div class="field-error-msg" id="regPasswordError">Password must be at least 6 characters long.</div>
+              </div>
+
+              <!-- Enhanced Password Strength Meter (Weak, Medium, Strong) -->
+              <div class="password-strength-wrap" id="passwordStrengthWrap">
+                <div class="strength-segments-row" id="strengthSegmentsRow">
+                  <div class="strength-segment-bar" id="segBar1" title="Weak"></div>
+                  <div class="strength-segment-bar" id="segBar2" title="Medium"></div>
+                  <div class="strength-segment-bar" id="segBar3" title="Strong"></div>
+                </div>
+                <div class="strength-bar-track" style="display:none;">
+                  <div class="strength-bar-fill" id="strengthBarFill"></div>
+                </div>
+                <div class="strength-text-label">
+                  <span class="text-xs">Password Strength:</span>
+                  <span id="strengthTextLabel" class="strength-pill-badge strength-pill-weak">None</span>
+                </div>
+                <div class="password-criteria-list" id="passwordCriteriaList">
+                  <span class="criteria-chip" id="critLength">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    6+ Characters
+                  </span>
+                  <span class="criteria-chip" id="critLetter">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    Letters
+                  </span>
+                  <span class="criteria-chip" id="critNumber">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    Numbers
+                  </span>
+                  <span class="criteria-chip" id="critSpecial">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    Symbols
+                  </span>
+                </div>
+              </div>
+
+              <!-- Confirm Password -->
+              <div class="form-floating-wrap" id="wrapConfirmPassword">
+                <input type="password" id="regConfirmPassword" class="form-floating-input" placeholder=" " minlength="6" required />
+                <label class="form-floating-label" for="regConfirmPassword">Confirm Master Password *</label>
+                <span class="field-valid-icon">&check;</span>
+                <div class="field-error-msg" id="regConfirmPasswordError">Passwords do not match.</div>
+              </div>
+
+              <!-- 4-Digit Security PIN -->
+              <div class="mb-4">
+                <label class="form-label text-center mb-2">Set 4-Digit Transaction PIN *</label>
+                <div class="pin-inputs-wrapper" id="setPinWrapper">
+                  <input type="password" maxlength="1" class="pin-digit-box" inputmode="numeric" pattern="[0-9]*" id="pinDigit1" required />
+                  <input type="password" maxlength="1" class="pin-digit-box" inputmode="numeric" pattern="[0-9]*" id="pinDigit2" required />
+                  <input type="password" maxlength="1" class="pin-digit-box" inputmode="numeric" pattern="[0-9]*" id="pinDigit3" required />
+                  <input type="password" maxlength="1" class="pin-digit-box" inputmode="numeric" pattern="[0-9]*" id="pinDigit4" required />
+                </div>
+
+                <label class="form-label text-center mb-2">Confirm 4-Digit Transaction PIN *</label>
+                <div class="pin-inputs-wrapper" id="confirmPinWrapper">
+                  <input type="password" maxlength="1" class="pin-digit-box" inputmode="numeric" pattern="[0-9]*" id="confPinDigit1" required />
+                  <input type="password" maxlength="1" class="pin-digit-box" inputmode="numeric" pattern="[0-9]*" id="confPinDigit2" required />
+                  <input type="password" maxlength="1" class="pin-digit-box" inputmode="numeric" pattern="[0-9]*" id="confPinDigit3" required />
+                  <input type="password" maxlength="1" class="pin-digit-box" inputmode="numeric" pattern="[0-9]*" id="confPinDigit4" required />
+                </div>
+                <div id="pinErrorMessage" class="field-error-msg text-center" style="display:none;">4-digit PINs do not match.</div>
+              </div>
+
+              <!-- Biometric Fingerprint Configuration -->
+              <div class="crypto-toggle-panel mb-4">
+                <div class="toggle-switch-row">
+                  <div>
+                    <div class="switch-toggle-label d-flex items-center">
+                      Enable Fingerprint / Face ID
+                      <span class="tooltip-badge" data-tooltip="Secured via FIDO2 / WebAuthn cryptographic hardware standards.">?</span>
+                    </div>
+                    <div class="switch-toggle-sub">Fast biometric login and high-value wire confirmation</div>
+                  </div>
+                  <label class="switch-control" aria-label="Toggle biometric authentication">
+                    <input type="checkbox" id="biometricsToggle" checked />
+                    <span class="switch-slider"></span>
+                  </label>
+                </div>
+                <div class="mt-2 pt-2 border-top d-flex justify-between items-center" id="biometricEnrollSectionRegister">
+                  <div class="text-xs text-muted" id="regBiometricsStatus">
+                    <span class="text-orange font-semibold">● Not enrolled yet</span> — configure thumbprint sensor
+                  </div>
+                  <button type="button" class="btn btn-outline btn-sm text-xs" id="btnOpenBiometricSetupRegister" style="padding: 0.25rem 0.65rem;">
+                    Set Up Fingerprint Now
+                  </button>
+                </div>
+              </div>
+
+              <!-- Security Question 1 -->
+              <div class="form-floating-wrap" id="wrapSecQ1">
+                <select id="regSecQuestion1" class="form-floating-select has-value" required>
+                  <option value="What was the name of your first childhood pet?">What was the name of your first childhood pet?</option>
+                  <option value="In what city were you born?">In what city were you born?</option>
+                  <option value="What was the make and model of your first car?">What was the make and model of your first car?</option>
+                  <option value="What was your maternal grandmother's maiden name?">What was your maternal grandmother's maiden name?</option>
+                </select>
+                <label class="form-floating-label" for="regSecQuestion1">Security Question 1 *</label>
+              </div>
+              <div class="form-floating-wrap" id="wrapSecA1">
+                <input type="text" id="regSecAnswer1" class="form-floating-input" placeholder=" " required />
+                <label class="form-floating-label" for="regSecAnswer1">Answer to Question 1 *</label>
+                <div class="field-error-msg">Please provide an answer.</div>
+              </div>
+
+              <!-- Security Question 2 -->
+              <div class="form-floating-wrap" id="wrapSecQ2">
+                <select id="regSecQuestion2" class="form-floating-select has-value" required>
+                  <option value="What elementary school did you attend?">What elementary school did you attend?</option>
+                  <option value="What is the name of your favorite book or movie?">What is the name of your favorite book or movie?</option>
+                  <option value="What street did you grow up on?">What street did you grow up on?</option>
+                  <option value="What was your favorite childhood vacation spot?">What was your favorite childhood vacation spot?</option>
+                </select>
+                <label class="form-floating-label" for="regSecQuestion2">Security Question 2 *</label>
+              </div>
+              <div class="form-floating-wrap" id="wrapSecA2">
+                <input type="text" id="regSecAnswer2" class="form-floating-input" placeholder=" " required />
+                <label class="form-floating-label" for="regSecAnswer2">Answer to Question 2 *</label>
+                <div class="field-error-msg">Please provide an answer.</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Step Navigation Buttons -->
+          <div class="stepper-actions-bar" id="stepperActionsBar">
+            <button type="button" class="btn btn-step-prev" id="btnPrevStep" style="display: none;">
+              &larr; Back
+            </button>
+            <button type="button" class="btn btn-step-next ml-auto" id="btnNextStep">
+              Continue &rarr;
+            </button>
+            <button type="submit" class="btn btn-step-submit ml-auto" id="btnSubmitRegistration" style="display: none;">
+              Create My Account
+            </button>
+          </div>
+        </form>
+
+        <!-- ================================================================
+             POST-REGISTRATION SUCCESS VIEW (SHOWN AFTER REGISTRATION)
+             ================================================================ -->
+        <div class="registration-success-panel" id="registrationSuccessPanel">
+          <div class="success-badge-circle" aria-hidden="true">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+
+          <h2 class="success-title">Membership Approved!</h2>
+          <p class="text-sm text-muted">Welcome to WB Credit Union. Your primary digital vault has been provisioned.</p>
+
+          <div class="success-account-card">
+            <div class="success-acct-label">Your New 10-Digit Account Number</div>
+            <div class="success-acct-num" id="successAccountNumber">2514809281</div>
+            <div class="text-xs text-muted mt-2">Routing Number: <strong>251480576</strong></div>
+          </div>
+
+          <p class="success-email-notice">
+            A confirmation welcome package and security instructions have been dispatched to <strong id="successEmailTarget" class="text-dark">your email</strong>.
+          </p>
+
+          <div class="d-flex justify-center gap-3">
+            <a href="/pages/dashboard.html" class="btn btn-primary btn-lg" id="btnGoToDashboard">
+              Enter Member Dashboard &rarr;
+            </a>
+          </div>
+
+          <div class="text-xs text-muted mt-4">
+            Auto-routing to your banking vault in <span id="autoRedirectTimer" class="font-bold text-navy">5</span> seconds...
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Help / Disclosures -->
+      <div class="mt-6 pt-4 text-center text-xs text-muted border-top">
+        Need assistance with your membership application? Email 24/7 Member Services: <strong><a href="mailto:support@wbcu.net" style="color:inherit; text-decoration:underline;">support@wbcu.net</a></strong> &bull; Official Portal: <strong>www.wbcu.net</strong>
+      </div>
+    </main>
+  </div>
+
+  <!-- Authentication & Theme Controller Scripts -->
+  <script type="module" src="/js/theme.js"></script>
+  <script type="module" src="/js/auth.js"></script>
+</body>
+</html>
