@@ -125,10 +125,10 @@ const initialSeedUsers = [
     dob: '1984-06-14',
     address: '109, Feldgüetliweg, Meilen, Zurich 8706, Switzerland',
     status: 'active',
-    statusReason: 'Initial onboarding approval & Super Admin clearance',
+    statusReason: 'Super Admin Clearance',
     kycStatus: 'verified',
     createdAt: '2025-01-15T09:30:00Z',
-    lastLogin: '2026-09-26T12:40:00Z',
+    lastLogin: new Date().toISOString(),
     accounts: [
       {
         accountNumber: 'WB-9482-1049-55',
@@ -147,41 +147,9 @@ const initialSeedUsers = [
         balance: 1450000.00,
         status: 'active',
         routingNumber: '021000089',
-      },
-      {
-        accountNumber: 'WB-9482-1049-57',
-        type: 'Offshore',
-        name: 'Geneva Sovereign Vault',
-        currency: 'EUR',
-        balance: 890000.00,
-        status: 'active',
-        routingNumber: '021000089',
       }
     ],
-    transactions: [
-      {
-        id: 'TX-99201',
-        date: '2026-09-26T11:15:00Z',
-        type: 'wire',
-        amount: 240000.00,
-        currency: 'EUR',
-        description: 'International Wire to BNP Paribas Paris (Ref: WB-SWIFT-99201)',
-        status: 'pending',
-        reference: 'WB-SWIFT-99201',
-        adminNotes: 'Dual treasury signoff pending',
-      },
-      {
-        id: 'TX-98402',
-        date: '2026-09-24T14:20:00Z',
-        type: 'credit',
-        amount: 50000.00,
-        currency: 'USD',
-        description: 'Direct Inward Fedwire Clearing - UBS Zurich',
-        status: 'completed',
-        reference: 'FED-009182',
-        adminNotes: 'Verified source of funds',
-      }
-    ],
+    transactions: [],
     cards: [
       {
         id: 'crd-1',
@@ -206,365 +174,19 @@ const initialSeedUsers = [
       AML: { code: 'AML-00821', active: true, notes: 'Anti-Money Laundering verification key' },
       PAP: { code: 'PAP-33810', active: true, notes: 'Proof of Anti-Piracy / Source of Wealth code' }
     },
-    activityLog: [
-      { date: '2026-09-26 12:40:12', action: 'Member login via WebAuthn Biometric Token', ip: '178.197.234.12 (Zurich, Switzerland)', officer: 'SYSTEM' },
-      { date: '2026-09-25 16:10:00', action: 'Assigned COT Wire Code CT-78234', ip: 'Internal Treasury Node', officer: 'Chief Treasury Auditor' },
-      { date: '2026-09-24 14:20:15', action: 'Inward Wire +$50,000.00 credited to account', ip: 'SWIFT Gateway', officer: 'SYSTEM' }
-    ]
-  },
-  {
-    id: 'usr-102',
-    fullName: 'Elena Rostova',
-    email: 'elena.rostova@vanguardlogistics.ch',
-    phone: '+41 22 819 0044',
-    avatar: 'ER',
-    avatarColor: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
-    dob: '1989-11-03',
-    address: 'Rue du Rhône 42, Geneva 1204, Switzerland',
-    status: 'active',
-    statusReason: 'Corporate treasury executive verified',
-    kycStatus: 'verified',
-    createdAt: '2025-02-10T11:00:00Z',
-    lastLogin: '2026-09-26T10:15:00Z',
-    accounts: [
-      {
-        accountNumber: 'WB-1102-8849-01',
-        type: 'Business',
-        name: 'Vanguard Corporate Settlement Account',
-        currency: 'USD',
-        balance: 18450000.00,
-        status: 'active',
-        routingNumber: '021000089',
-      }
-    ],
-    transactions: [
-      {
-        id: 'TX-99202',
-        date: '2026-09-26T10:00:00Z',
-        type: 'wire',
-        amount: 88500000,
-        currency: 'JPY',
-        description: 'Trade settlement to Sumitomo Mitsui Tokyo',
-        status: 'pending',
-        reference: 'WB-SWIFT-99202',
-        adminNotes: 'Awaiting secondary signoff',
-      }
-    ],
-    cards: [
-      {
-        id: 'crd-2',
-        cardNumber: '•••• •••• •••• 5590',
-        cardHolder: 'ELENA ROSTOVA',
-        type: 'Executive Corporate Visa',
-        expiry: '11/28',
-        status: 'active',
-        dailyAtmLimit: 25000,
-        onlineLimit: 100000,
-      }
-    ],
-    cryptoWallets: [
-      { currency: 'BTC', balance: 15.00, address: 'bc1qvan88guard9942001', status: 'active' }
-    ],
-    wireTransferCodes: {
-      COT: { code: 'CT-11099', active: true, notes: 'Corporate bulk clearance code' },
-      TAX: { code: 'TX-44018', active: true, notes: 'Cantonal Geneva Tax Certificate' },
-      IMF: { code: 'IMF-88129', active: true, notes: 'UN/IMF clearing credential' },
-      AML: { code: 'AML-99014', active: true, notes: 'Full compliance verified' },
-      PAP: { code: 'PAP-00124', active: true, notes: 'Maritime Logistics Source Certificate' }
-    },
-    activityLog: [
-      { date: '2026-09-26 10:15:00', action: 'Login from Geneva HQ IP 194.230.14.88', ip: '194.230.14.88', officer: 'SYSTEM' }
-    ]
-  },
-  {
-    id: 'usr-103',
-    fullName: 'Sterling Merchant Trading',
-    email: 'treasury@sterlingmerchant.com',
-    phone: '+44 20 7946 0912',
-    avatar: 'SM',
-    avatarColor: 'linear-gradient(135deg, #d97706 0%, #f59e0b 100%)',
-    dob: '1978-04-22',
-    address: '14 Cornhill, City of London EC3V 3ND, United Kingdom',
-    status: 'suspended',
-    statusReason: 'AML Watchlist flag on Nigerian beneficiary entity',
-    kycStatus: 'pending',
-    createdAt: '2025-03-01T08:00:00Z',
-    lastLogin: '2026-09-25T18:30:00Z',
-    accounts: [
-      {
-        accountNumber: 'WB-7738-9921-44',
-        type: 'Business',
-        name: 'Sterling Multi-Currency Vault',
-        currency: 'GBP',
-        balance: 4250000.00,
-        status: 'frozen',
-        routingNumber: '021000089',
-      }
-    ],
-    transactions: [
-      {
-        id: 'TX-99203',
-        date: '2026-09-26T08:30:00Z',
-        type: 'wire',
-        amount: 185000000,
-        currency: 'NGN',
-        description: 'Wire to First Bank of Nigeria Lagos (AML Hold)',
-        status: 'failed',
-        reference: 'WB-SWIFT-99203',
-        adminNotes: 'AML audit hold triggered',
-      }
-    ],
-    cards: [],
-    cryptoWallets: [],
-    wireTransferCodes: {
-      COT: { code: 'CT-99441', active: false, notes: 'Suspended pending investigation' },
-      TAX: { code: 'TX-00912', active: false, notes: 'Suspended' },
-      IMF: { code: 'IMF-11239', active: false, notes: 'Suspended' },
-      AML: { code: 'AML-00000', active: false, notes: 'AML Flag Active' },
-      PAP: { code: 'PAP-00000', active: false, notes: 'Suspended' }
-    },
-    activityLog: [
-      { date: '2026-09-26 09:00:00', action: 'Account locked for AML review by Officer', ip: 'Internal', officer: 'Chief Treasury Auditor' }
-    ]
-  },
-  {
-    id: 'usr-104',
-    fullName: 'Dr. Chen Wei',
-    email: 'chen.wei@singaporebiotech.sg',
-    phone: '+65 6789 0123',
-    avatar: 'CW',
-    avatarColor: 'linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%)',
-    dob: '1975-08-19',
-    address: '8 Marina View, Asia Square Tower 1, Singapore 018960',
-    status: 'active',
-    statusReason: 'Private wealth high-tier verified',
-    kycStatus: 'verified',
-    createdAt: '2025-04-12T14:20:00Z',
-    lastLogin: '2026-09-26T04:10:00Z',
-    accounts: [
-      {
-        accountNumber: 'WB-4419-3301-88',
-        type: 'Savings',
-        name: 'Private Offshore Wealth Fund',
-        currency: 'USD',
-        balance: 9800000.00,
-        status: 'active',
-        routingNumber: '021000089',
-      }
-    ],
-    transactions: [],
-    cards: [
-      {
-        id: 'crd-4',
-        cardNumber: '•••• •••• •••• 9921',
-        cardHolder: 'CHEN WEI',
-        type: 'World Elite Mastercard',
-        expiry: '04/30',
-        status: 'active',
-        dailyAtmLimit: 20000,
-        onlineLimit: 80000,
-      }
-    ],
-    cryptoWallets: [
-      { currency: 'BTC', balance: 8.50, address: 'bc1qchen99singapore992', status: 'active' },
-      { currency: 'ETH', balance: 50.00, address: '0x88F...44A1', status: 'active' }
-    ],
-    wireTransferCodes: {
-      COT: { code: 'CT-66321', active: true, notes: 'Singapore MAS approved' },
-      TAX: { code: 'TX-88219', active: true, notes: 'IRAS tax clearance' },
-      IMF: { code: 'IMF-33910', active: true, notes: 'Verified' },
-      AML: { code: 'AML-55120', active: true, notes: 'Verified' },
-      PAP: { code: 'PAP-77123', active: true, notes: 'Verified' }
-    },
-    activityLog: [
-      { date: '2026-09-26 04:10:00', action: 'Biometric Login from Singapore IP 202.166.4.11', ip: '202.166.4.11', officer: 'SYSTEM' }
-    ]
-  },
-  {
-    id: 'usr-105',
-    fullName: 'Lady Genevieve Dubois',
-    email: 'genevieve.dubois@chateau-dubois.fr',
-    phone: '+33 1 42 68 55 00',
-    avatar: 'GD',
-    avatarColor: 'linear-gradient(135deg, #db2777 0%, #f43f5e 100%)',
-    dob: '1968-12-05',
-    address: '28 Avenue Montaigne, 75008 Paris, France',
-    status: 'active',
-    statusReason: 'European Private Heritage Trust',
-    kycStatus: 'verified',
-    createdAt: '2025-05-18T10:00:00Z',
-    lastLogin: '2026-09-25T15:45:00Z',
-    accounts: [
-      {
-        accountNumber: 'WB-6620-8812-33',
-        type: 'Offshore',
-        name: 'Dubois Family Heritage Trust',
-        currency: 'EUR',
-        balance: 6200000.00,
-        status: 'active',
-        routingNumber: '021000089',
-      }
-    ],
-    transactions: [],
-    cards: [],
-    cryptoWallets: [],
-    wireTransferCodes: {
-      COT: { code: 'CT-22091', active: true, notes: 'Banque de France clearing code' },
-      TAX: { code: 'TX-77192', active: true, notes: 'French Fiscal Clearance' },
-      IMF: { code: 'IMF-99014', active: true, notes: 'IMF Special Drawing Rights signoff' },
-      AML: { code: 'AML-33019', active: true, notes: 'EU 5AMLD Certified' },
-      PAP: { code: 'PAP-88102', active: true, notes: 'Heritage Wealth verified' }
-    },
-    activityLog: []
-  },
-  {
-    id: 'usr-106',
-    fullName: 'Marcus Sterling',
-    email: 'marcus.sterling@sterlingcorp.com',
-    phone: '+1 212 555 0199',
-    avatar: 'MS',
-    avatarColor: 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)',
-    dob: '1982-03-29',
-    address: '740 Park Avenue, New York, NY 10021, USA',
-    status: 'frozen',
-    statusReason: 'Court subpoena hold regarding foreign affiliate transfer',
-    kycStatus: 'verified',
-    createdAt: '2025-06-02T13:45:00Z',
-    lastLogin: '2026-09-24T20:10:00Z',
-    accounts: [
-      {
-        accountNumber: 'WB-8833-2210-99',
-        type: 'Checking',
-        name: 'Sterling Capital Reserve',
-        currency: 'USD',
-        balance: 1200000.00,
-        status: 'frozen',
-        routingNumber: '021000089',
-      }
-    ],
-    transactions: [],
-    cards: [],
-    cryptoWallets: [],
-    wireTransferCodes: {
-      COT: { code: 'CT-00000', active: false, notes: 'Frozen' },
-      TAX: { code: 'TX-00000', active: false, notes: 'Frozen' },
-      IMF: { code: 'IMF-00000', active: false, notes: 'Frozen' },
-      AML: { code: 'AML-00000', active: false, notes: 'Frozen' },
-      PAP: { code: 'PAP-00000', active: false, notes: 'Frozen' }
-    },
-    activityLog: []
-  },
-  {
-    id: 'usr-107',
-    fullName: 'Carlos Mendez',
-    email: 'carlos.mendez@mendezholdings.es',
-    phone: '+34 91 588 1234',
-    avatar: 'CM',
-    avatarColor: 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)',
-    dob: '1990-07-11',
-    address: 'Paseo de la Castellana 89, 28046 Madrid, Spain',
-    status: 'active',
-    statusReason: 'Commercial account verified',
-    kycStatus: 'verified',
-    createdAt: '2025-07-20T08:15:00Z',
-    lastLogin: '2026-09-26T07:22:00Z',
-    accounts: [
-      {
-        accountNumber: 'WB-5512-9901-22',
-        type: 'Checking',
-        name: 'Mendez Global Commercial',
-        currency: 'EUR',
-        balance: 750000.00,
-        status: 'active',
-        routingNumber: '021000089',
-      }
-    ],
-    transactions: [],
-    cards: [],
-    cryptoWallets: [],
-    wireTransferCodes: {
-      COT: { code: 'CT-33819', active: true, notes: 'Bank of Spain SEPA clearing' },
-      TAX: { code: 'TX-11920', active: true, notes: 'Tax Certificate valid' },
-      IMF: { code: 'IMF-22910', active: true, notes: 'Standard' },
-      AML: { code: 'AML-77192', active: true, notes: 'Standard' },
-      PAP: { code: 'PAP-44109', active: true, notes: 'Standard' }
-    },
-    activityLog: []
-  },
-  {
-    id: 'usr-108',
-    fullName: 'Olivia Van Der Bilt',
-    email: 'olivia.vanderbilt@vanderbilt-estate.nl',
-    phone: '+31 20 798 4400',
-    avatar: 'OV',
-    avatarColor: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
-    dob: '1987-09-17',
-    address: 'Herengracht 450, 1017 CA Amsterdam, Netherlands',
-    status: 'active',
-    statusReason: 'Private client verified',
-    kycStatus: 'verified',
-    createdAt: '2025-08-14T16:00:00Z',
-    lastLogin: '2026-09-25T11:05:00Z',
-    accounts: [
-      {
-        accountNumber: 'WB-9944-1102-77',
-        type: 'Savings',
-        name: 'Van Der Bilt Trust',
-        currency: 'EUR',
-        balance: 3100000.00,
-        status: 'active',
-        routingNumber: '021000089',
-      }
-    ],
-    transactions: [],
-    cards: [],
-    cryptoWallets: [],
-    wireTransferCodes: {
-      COT: { code: 'CT-44910', active: true, notes: 'DNB approved' },
-      TAX: { code: 'TX-66120', active: true, notes: 'Dutch Tax Certificate' },
-      IMF: { code: 'IMF-00918', active: true, notes: 'Cleared' },
-      AML: { code: 'AML-88219', active: true, notes: 'Cleared' },
-      PAP: { code: 'PAP-22910', active: true, notes: 'Cleared' }
-    },
-    activityLog: []
-  },
-  {
-    id: 'usr-109',
-    fullName: 'Sarah Jenkins',
-    email: 'sarah.jenkins@sydneyventures.com.au',
-    phone: '+61 2 9250 1122',
-    avatar: 'SJ',
-    avatarColor: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)',
-    dob: '1992-01-25',
-    address: '100 Barangaroo Avenue, Sydney NSW 2000, Australia',
-    status: 'closed',
-    statusReason: 'Account closed per member request',
-    kycStatus: 'rejected',
-    createdAt: '2025-09-01T09:00:00Z',
-    lastLogin: '2026-09-10T14:00:00Z',
-    accounts: [
-      {
-        accountNumber: 'WB-3301-4499-11',
-        type: 'Checking',
-        name: 'Closed Checking Account',
-        currency: 'USD',
-        balance: 0.00,
-        status: 'closed',
-        routingNumber: '021000089',
-      }
-    ],
-    transactions: [],
-    cards: [],
-    cryptoWallets: [],
-    wireTransferCodes: {
-      COT: { code: '', active: false, notes: 'Closed' },
-      TAX: { code: '', active: false, notes: 'Closed' },
-      IMF: { code: '', active: false, notes: 'Closed' },
-      AML: { code: '', active: false, notes: 'Closed' },
-      PAP: { code: '', active: false, notes: 'Closed' }
-    },
     activityLog: []
   }
+];
+
+const DUMMY_TEST_EMAILS = [
+  'elena.rostova@vanguardlogistics.ch',
+  'treasury@sterlingmerchant.com',
+  'chen.wei@singaporebiotech.sg',
+  'genevieve.dubois@chateau-dubois.fr',
+  'marcus.sterling@sterlingcorp.com',
+  'carlos.mendez@mendezholdings.es',
+  'olivia.vanderbilt@vanderbilt-estate.nl',
+  'sarah.jenkins@sydneyventures.com.au'
 ];
 
 /* ----------------------------------------------------------------------------
@@ -573,43 +195,132 @@ const initialSeedUsers = [
 export function getAdminUsersList() {
   const memberName = getEffectiveMemberName();
   const memberEmail = getEffectiveMemberEmail();
-  let list = null;
+  let list = [];
+
+  // Gather users from primary store
   const stored = localStorage.getItem(ADMIN_USERS_STORAGE_KEY);
   if (stored) {
     try {
-      list = JSON.parse(stored);
-    } catch {
-      list = null;
-    }
-  }
-  if (!Array.isArray(list) || list.length === 0) {
-    list = JSON.parse(JSON.stringify(initialSeedUsers));
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed)) list = parsed;
+    } catch {}
   }
 
-  // Ensure primary test user reflects active member name
-  const primary = list.find((u) => u.id === 'usr-101' || u.fullName === 'Miz Brymo' || (u.email && u.email.includes('mizbrymo')));
-  if (primary) {
-    primary.fullName = memberName;
-    primary.email = memberEmail;
-    primary.avatar = memberName.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+  // Gather users from secondary registered lists
+  const secondaryKeys = [
+    'wb_credit_union_registered_members_list',
+    'wbcu_all_registered_users',
+    'wbcu_user_registered_accounts'
+  ];
+
+  secondaryKeys.forEach((key) => {
+    try {
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          parsed.forEach((item) => {
+            if (item && (item.email || item.id)) {
+              const exists = list.some((u) => u.id === item.id || (u.email && item.email && u.email.toLowerCase() === item.email.toLowerCase()));
+              if (!exists) list.push(item);
+            }
+          });
+        }
+      }
+    } catch (e) {}
+  });
+
+  // Gather active user from session/localStorage
+  try {
+    const active = JSON.parse(localStorage.getItem('wb_credit_union_active_user') || '{}');
+    if (active && active.email) {
+      const exists = list.some((u) => u.id === active.id || (u.email && active.email && u.email.toLowerCase() === active.email.toLowerCase()));
+      if (!exists) {
+        list.unshift({
+          id: active.id || 'usr-active-' + Date.now().toString(36),
+          fullName: active.fullName || active.name || active.email.split('@')[0],
+          email: active.email,
+          phone: active.phone || '+41 44 915 8901',
+          avatar: (active.fullName || active.email).slice(0, 2).toUpperCase(),
+          avatarColor: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
+          dob: active.dob || '1988-05-12',
+          address: active.address || 'Zurich, Switzerland',
+          status: active.status || active.account_status || 'active',
+          kycStatus: active.kycStatus || active.kyc_status || 'verified',
+          createdAt: active.createdAt || new Date().toISOString(),
+          password: active.password || '12345',
+          accounts: active.accounts || [
+            { accountNumber: active.accountNumber || 'WB-9482-1049-55', type: 'Checking', name: 'US Dollar Primary Vault', currency: 'USD', balance: active.balance || 0.00, status: 'active', routingNumber: '021000089' }
+          ]
+        });
+      }
+    }
+  } catch (e) {}
+
+  // Gather profile from wbcu_user_profile_v1
+  try {
+    const prof = JSON.parse(localStorage.getItem('wbcu_user_profile_v1') || '{}');
+    if (prof && prof.email) {
+      const exists = list.some((u) => u.email && u.email.toLowerCase() === prof.email.toLowerCase());
+      if (!exists) {
+        const fn = `${prof.firstName || ''} ${prof.lastName || ''}`.trim() || prof.email.split('@')[0];
+        list.push({
+          id: 'usr-prof-' + Date.now().toString(36),
+          fullName: fn,
+          firstName: prof.firstName || '',
+          lastName: prof.lastName || '',
+          email: prof.email,
+          phone: prof.phone || '+41 44 915 0000',
+          address: prof.addressLine1 || prof.address || 'Zurich, Switzerland',
+          status: 'active',
+          kycStatus: 'verified',
+          createdAt: new Date().toISOString(),
+          password: 'MemberPass123!',
+          accounts: [
+            { accountNumber: 'WB-9482-' + Math.floor(1000 + Math.random() * 9000), type: 'Checking', name: 'US Dollar Primary Vault', currency: 'USD', balance: 0.00, status: 'active', routingNumber: '021000089' }
+          ]
+        });
+      }
+    }
+  } catch (e) {}
+
+  // PURGE ALL DUMMY TEST USERS
+  list = list.filter((u) => {
+    if (!u || !u.email) return true;
+    return !DUMMY_TEST_EMAILS.includes(u.email.toLowerCase());
+  });
+
+  // Ensure primary Super Admin user (Miz Brymo) exists
+  let primary = list.find((u) => u.id === 'usr-101' || (u.email && u.email.toLowerCase().includes('mizbrymo')));
+  if (!primary) {
+    primary = JSON.parse(JSON.stringify(initialSeedUsers[0]));
+    primary.fullName = memberName || 'Miz Brymo';
+    primary.email = memberEmail || 'mizbrymo@gmail.com';
+    list.unshift(primary);
+  } else {
+    primary.fullName = memberName || primary.fullName || 'Miz Brymo';
+    primary.email = memberEmail || primary.email || 'mizbrymo@gmail.com';
+    primary.avatar = (primary.fullName || 'MB').split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
     primary.role = 'Super Admin';
     primary.is_admin = true;
     if (!primary.password) primary.password = '12345';
   }
 
-  // Ensure all users have readable password and profile photo fields
-  const defaultPwds = ['MemberPass123!', 'Vanguard@2026!', 'Sterling#884!', 'SingaporeBio#99!', 'DuboisHeritage$77!', 'MarcusVault99!', 'MendezMadrid2026!', 'AminaNordic#55!', 'KlausZurich$88!', 'SydneyVault2026!'];
+  // Ensure all users have required fields and passwords
+  const defaultPwds = ['MemberPass123!', 'Vanguard@2026!', 'Sterling#884!', 'SingaporeBio#99!'];
   list.forEach((u, i) => {
     if (!u.password) {
       u.password = defaultPwds[i % defaultPwds.length] || 'MemberPass123!';
     }
-    if (!u.profilePhoto && u.avatarUrl) {
-      u.profilePhoto = u.avatarUrl;
-    }
-    if (!u.avatarUrl && u.profilePhoto) {
-      u.avatarUrl = u.profilePhoto;
-    }
+    if (!u.profilePhoto && u.avatarUrl) u.profilePhoto = u.avatarUrl;
+    if (!u.avatarUrl && u.profilePhoto) u.avatarUrl = u.profilePhoto;
+    ensureUserHasUniqueCodesAndAccounts(u);
   });
+
+  // Save updated list back to localStorage
+  try {
+    localStorage.setItem(ADMIN_USERS_STORAGE_KEY, JSON.stringify(list));
+  } catch (e) {}
 
   return list;
 }
@@ -733,6 +444,13 @@ export function ensureUserHasUniqueCodesAndAccounts(user) {
 
 export function saveAdminUsersList(users) {
   localStorage.setItem(ADMIN_USERS_STORAGE_KEY, JSON.stringify(users));
+  try {
+    fetch('/api/admin/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ users }),
+    }).catch(() => {});
+  } catch (e) {}
 }
 
 export function getUserById(userId) {
