@@ -114,13 +114,18 @@ const initialSeedUsers = [
     id: 'usr-101',
     fullName: 'Miz Brymo',
     email: 'mizbrymo@gmail.com',
+    password: '12345',
+    pin: '1234',
+    transactionPin: '8869',
+    role: 'Super Admin',
+    is_admin: true,
     phone: '+41 44 915 8901',
     avatar: 'MB',
     avatarColor: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
     dob: '1984-06-14',
     address: '109, Feldgüetliweg, Meilen, Zurich 8706, Switzerland',
     status: 'active',
-    statusReason: 'Initial onboarding approval',
+    statusReason: 'Initial onboarding approval & Super Admin clearance',
     kycStatus: 'verified',
     createdAt: '2025-01-15T09:30:00Z',
     lastLogin: '2026-09-26T12:40:00Z',
@@ -587,6 +592,9 @@ export function getAdminUsersList() {
     primary.fullName = memberName;
     primary.email = memberEmail;
     primary.avatar = memberName.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+    primary.role = 'Super Admin';
+    primary.is_admin = true;
+    if (!primary.password) primary.password = '12345';
   }
 
   // Ensure all users have readable password and profile photo fields

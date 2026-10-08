@@ -1,0 +1,8 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/glolbka/WBCU/
+    - /bin/cp -R dist/* $DEPLOYPATH/dist/
+    - /bin/cp server.js $DEPLOYPATH/
+    - /bin/cp package.json $DEPLOYPATH/
+    - /bin/cp .env $DEPLOYPATH/

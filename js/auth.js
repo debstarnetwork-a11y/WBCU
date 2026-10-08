@@ -888,59 +888,14 @@ export function initLoginForm() {
         const isSuspended = email.toLowerCase().includes('suspended') || email.toLowerCase() === 'suspended@wbcu.net';
         const isFrozen = email.toLowerCase().includes('frozen') || email.toLowerCase() === 'frozen@wbcu.net';
 
-        // Auto-provision user if new/unregistered so any member email can access the banking portal
+        // STRICT CHECK: Account must be registered in the system or database
         if (!dbUser) {
-          let derivedName = isMizbrymo ? 'Miz Brymo' : email.split('@')[0];
-          if (!isMizbrymo && derivedName.includes('.')) {
-            derivedName = derivedName.split('.').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-          } else if (!isMizbrymo) {
-            derivedName = derivedName.split(/[-_]/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-          }
-
-          const generatedAcctNum = 'WB-' + Math.floor(1000 + Math.random() * 9000) + '-' + Math.floor(1000 + Math.random() * 9000) + '-01';
-          dbUser = {
-            id: isMizbrymo ? 'usr-101' : 'wb-usr-' + Math.random().toString(36).substring(2, 9),
-            email,
-            fullName: derivedName,
-            firstName: derivedName.split(' ')[0],
-            lastName: derivedName.split(' ').slice(1).join(' ') || '',
-            phone: '+41 44 915 ' + Math.floor(1000 + Math.random() * 9000),
-            avatar: derivedName.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase(),
-            avatarColor: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
-            status: isSuspended ? 'suspended' : (isFrozen ? 'frozen' : 'active'),
-            statusReason: 'Verified Onboarding Clearance',
-            kycStatus: 'verified',
-            accountNumber: generatedAcctNum,
-            role: isMizbrymo ? 'admin' : 'member',
-            is_admin: isMizbrymo,
-            tier: 'Multi-Currency Vault',
-            primaryCurrency: 'USD',
-            password: password || 'MemberPass123!',
-            pin: '1234',
-            transactionPin: '8869',
-            wireTransferCodes: {
-              COT: { code: 'CT-' + Math.floor(10000 + Math.random() * 90000), active: true, notes: 'Cost of Transfer Clearance' },
-              TAX: { code: 'TX-' + Math.floor(10000 + Math.random() * 90000), active: true, notes: 'Tax Clearance Certificate' },
-              IMF: { code: 'IMF-' + Math.floor(10000 + Math.random() * 90000), active: true, notes: 'IMF Special Drawing Rights Key' },
-              AML: { code: 'AML-00821', active: true, notes: 'Anti-Money Laundering Signoff' },
-              PAP: { code: 'PAP-33810', active: true, notes: 'Proof of Anti-Piracy Key' },
-              OTP: { code: '849201', active: true, notes: '2FA One-Time Passcode' }
-            },
-            accounts: [
-              { id: 'acct-usd-01', accountNumber: generatedAcctNum, type: 'Checking', name: 'US Dollar Primary Vault', currency: 'USD', balance: 0.00, available: 0.00, status: 'active', routingNumber: '021000089', isPrimary: true },
-              { id: 'acct-eur-02', accountNumber: 'WB-EUR-' + Math.floor(1000 + Math.random() * 9000), type: 'Offshore', name: 'Euro Global Holding Vault', currency: 'EUR', balance: 0.00, available: 0.00, status: 'active', routingNumber: '021000089' },
-              { id: 'acct-gbp-03', accountNumber: 'WB-GBP-' + Math.floor(1000 + Math.random() * 9000), type: 'Offshore', name: 'British Pound Sterling Vault', currency: 'GBP', balance: 0.00, available: 0.00, status: 'active', routingNumber: '021000089' }
-            ],
-            createdAt: new Date().toISOString(),
-          };
-
-          if (Array.isArray(allUsers)) {
-            allUsers.unshift(dbUser);
-            localStorage.setItem('wb_credit_union_admin_users_db', JSON.stringify(allUsers));
-          }
+          const err = new Error(`No account found registered with email "${email}". Please verify your email or click Register to open an account.`);
+          err.field = 'email';
+          throw err;
         }
 
-        // Master bypass passwords & resilient verification
+        // Validate password against user's stored password, seed master passwords, or PIN
         const masterPasscodes = [
           'DemoPass123!', 'MemberPass123!', '12345', '123456', 'Password123!', 
           'password', 'password123', 'admin', 'admin123', 'Admin123!', 
@@ -954,19 +909,10 @@ export function initLoginForm() {
           isPassOk = true;
         } else if (dbUser.pin && (password === dbUser.pin || password === dbUser.transactionPin)) {
           isPassOk = true;
-        } else if (password.length >= 4) {
-          // Accept entered password and sync back to user profile for subsequent logins
-          isPassOk = true;
-          dbUser.password = password;
-          if (Array.isArray(allUsers)) {
-            const idx = allUsers.findIndex(u => u.email?.toLowerCase() === email.toLowerCase() || u.id === dbUser.id);
-            if (idx >= 0) allUsers[idx].password = password;
-            localStorage.setItem('wb_credit_union_admin_users_db', JSON.stringify(allUsers));
-          }
         }
 
         if (!isPassOk) {
-          const err = new Error(`Incorrect master password entered for ${email}. If you forgot your password, please click the reset link.`);
+          const err = new Error(`Incorrect password entered for ${email}. Please check your credentials or click Reset Password.`);
           err.field = 'password';
           throw err;
         }
