@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accessibility Statement | WB Credit Union</title>
+  <meta name="description" content="WB Credit Union is committed to ensuring digital accessibility for all users, conforming to WCAG 2.1 Level AA guidelines." />
+  <meta property="og:title" content="Accessibility Statement | WB Credit Union" />
+  <meta property="og:description" content="Read our commitment to digital accessibility, assistive technology compatibility, and inclusive financial services." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" href="/assets/icon-192.png" />
+
+  <!-- Google Font: Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/pages.css" />
+  <link rel="stylesheet" href="/css/legal.css" />
+
+  <!-- Anti-Flash Instant Theme Initialization -->
+  <script>
+    (function() {
+      try {
+        var saved = localStorage.getItem('wbcu_theme_preference');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = saved === 'dark' || (!saved && prefersDark) ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body class="legal-page">
+
+  <!-- Skip Link for Keyboard & Screen Reader Accessibility -->
+  <a href="#main-content" class="skip-to-content" style="position:absolute; top:-999px; left:0; background:#2563eb; color:#ffffff; padding:0.5rem 1rem; z-index:99999;" onfocus="this.style.top='0px'" onblur="this.style.top='-999px'">
+    Skip to Main Content
+  </a>
+
+  <!-- ========================================================================
+       SHARED HEADER (INJECTED BY js/navigation.js)
+       ======================================================================== -->
+  <div id="site-header"></div>
+
+  <main id="main-content">
+    <!-- ======================================================================
+         1. HERO BANNER (~40vh)
+         ====================================================================== -->
+    <section class="legal-hero-section">
+      <!-- Breadcrumb Navigation -->
+      <div class="legal-breadcrumb reveal-on-scroll">
+        <a href="/">Home</a>
+        <span class="divider">/</span>
+        <span>Accessibility</span>
+      </div>
+
+      <h1 class="legal-hero-title reveal-on-scroll delay-1">Accessibility Statement</h1>
+      <p class="legal-hero-subtitle reveal-on-scroll delay-2">
+        WB CREDIT UNION is committed to ensuring digital accessibility for all users, including those with disabilities. We strive to provide an inclusive banking experience for everyone.
+      </p>
+    </section>
+
+    <!-- ======================================================================
+         2. ACCESSIBILITY CONTENT & TABLE OF CONTENTS
+         ====================================================================== -->
+    <section class="legal-content-section">
+      <div class="legal-layout-container">
+        
+        <!-- Table of Contents Sidebar (Sticky Desktop, Collapsible Mobile) -->
+        <aside class="legal-toc-sidebar" id="tocSidebar" aria-label="Table of Contents">
+          <div class="toc-header">
+            <span>Table of Contents</span>
+            <button type="button" class="toc-toggle-btn" id="tocToggleBtn" aria-expanded="false" aria-label="Toggle Table of Contents">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+          </div>
+          <nav class="toc-nav-list" id="tocNavList">
+            <a href="#commitment" class="toc-link">Our Commitment</a>
+            <a href="#section-1" class="toc-link">1. Accessibility Features</a>
+            <a href="#section-2" class="toc-link">2. Ongoing Efforts</a>
+            <a href="#section-3" class="toc-link">3. Known Limitations</a>
+            <a href="#section-4" class="toc-link">4. Feedback &amp; Support</a>
+            <a href="#section-5" class="toc-link">5. Formal Complaints</a>
+            <a href="#section-6" class="toc-link">6. Third-Party Content</a>
+          </nav>
+        </aside>
+
+        <!-- Document Body (Max 800px Centered) -->
+        <article class="legal-document-body">
+          <div class="legal-last-updated-badge">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <span>Last Updated: January 1, 2026</span>
+          </div>
+
+          <!-- Our Commitment -->
+          <div id="commitment">
+            <h2>Our Commitment</h2>
+            <p>
+              At WB CREDIT UNION, we believe that everyone deserves equal access to financial services, regardless of ability. We are dedicated to ensuring that our website, mobile application, and digital banking platform are accessible to the widest possible audience, including individuals with visual, auditory, motor, and cognitive disabilities.
+            </p>
+            <p>
+              We are actively working to conform to the Web Content Accessibility Guidelines (WCAG) 2.1 Level AA standards, published by the World Wide Web Consortium (W3C). These guidelines provide a framework for making web content more accessible and usable for all people.
+            </p>
+          </div>
+
+          <!-- Section 1: Accessibility Features -->
+          <h2 id="section-1">1. Accessibility Features</h2>
+          <p>Our digital banking platform includes the following accessibility features:</p>
+
+          <h3>1.1 Visual Accessibility</h3>
+          <ul>
+            <li>High-contrast color schemes that meet WCAG AA contrast ratio requirements (minimum 4.5:1 for normal text, 3:1 for large text)</li>
+            <li>Resizable text up to 200% without loss of content or functionality</li>
+            <li>Alternative text descriptions for all images, icons, and graphical elements</li>
+            <li>Consistent and logical heading hierarchy (H1 through H6) for screen reader navigation</li>
+            <li>Color is never used as the sole means of conveying information</li>
+            <li>Dark mode option for users who prefer reduced brightness</li>
+          </ul>
+
+          <h3>1.2 Auditory Accessibility</h3>
+          <ul>
+            <li>All audio content includes text transcripts</li>
+            <li>Visual notifications supplement all audio alerts</li>
+            <li>Transaction notifications are delivered via email and in-app text alerts</li>
+            <li>Video content (when available) includes closed captions</li>
+          </ul>
+
+          <h3>1.3 Motor Accessibility</h3>
+          <ul>
+            <li>Full keyboard navigation support across all pages and interactive elements</li>
+            <li>Skip-to-main-content link for keyboard users</li>
+            <li>Focus indicators are clearly visible on all interactive elements</li>
+            <li>Touch targets are a minimum of 44x44 pixels for mobile users</li>
+            <li>No time-limited interactions without the option to extend or disable the time limit</li>
+            <li>Form inputs are properly labeled and associated with their labels</li>
+          </ul>
+
+          <h3>1.4 Cognitive Accessibility</h3>
+          <ul>
+            <li>Clear, simple, and consistent navigation structure</li>
+            <li>Predictable page layouts and interaction patterns</li>
+            <li>Error messages are descriptive and provide guidance for correction</li>
+            <li>Complex financial information is presented in plain language</li>
+            <li>Consistent terminology throughout the platform</li>
+            <li>Breadcrumb navigation on all pages</li>
+          </ul>
+
+          <h3>1.5 Assistive Technology Compatibility</h3>
+          <ul>
+            <li>Compatible with major screen readers (JAWS, NVDA, VoiceOver, TalkBack)</li>
+            <li>ARIA (Accessible Rich Internet Applications) labels and roles on all dynamic content</li>
+            <li>Proper form field associations and error announcements</li>
+            <li>Live region announcements for real-time balance updates and notifications</li>
+          </ul>
+
+          <!-- Section 2: Ongoing Efforts -->
+          <h2 id="section-2">2. Ongoing Efforts</h2>
+          <p>Accessibility is an ongoing commitment, not a one-time achievement. WB CREDIT UNION takes the following steps to ensure continuous improvement:</p>
+          <ul>
+            <li>Regular accessibility audits conducted by internal and external experts</li>
+            <li>User testing with individuals who use assistive technologies</li>
+            <li>Staff training on accessibility best practices and inclusive design</li>
+            <li>Integration of accessibility testing into our development workflow</li>
+            <li>Monitoring of user feedback and accessibility-related support requests</li>
+            <li>Periodic review and update of this Accessibility Statement</li>
+          </ul>
+
+          <!-- Section 3: Known Limitations -->
+          <h2 id="section-3">3. Known Limitations</h2>
+          <p>While we strive for full accessibility, some areas of our platform may have limitations:</p>
+          <ul>
+            <li>Third-party integrations (e.g., embedded maps, external payment processors) may not be fully accessible</li>
+            <li>PDF documents and downloadable statements may not be fully optimized for screen readers</li>
+            <li>Some legacy content may not yet meet current accessibility standards</li>
+            <li>Cryptocurrency wallet QR codes may require alternative text descriptions for screen reader users</li>
+          </ul>
+          <p>
+            We are actively working to address these limitations and welcome your feedback to help us prioritize improvements.
+          </p>
+
+          <!-- Section 4: Feedback & Support -->
+          <h2 id="section-4">4. Feedback &amp; Support</h2>
+          <p>
+            We welcome your feedback on the accessibility of our platform. If you encounter any barriers or have suggestions for improvement, please contact us:
+          </p>
+
+          <div class="legal-contact-box">
+            <p><strong>WB CREDIT UNION Accessibility Team</strong></p>
+            <p>109, Feldgüetliweg Meilen</p>
+            <p>Bezirk Meilen, Zurich 8706</p>
+            <p>Switzerland</p>
+            <p style="margin-top:0.75rem;"><strong>Email:</strong> <a href="mailto:support@wbcu.net?subject=Accessibility%20Feedback" style="color:#2563eb;">support@wbcu.net</a> <em>(Subject line: 'Accessibility Feedback')</em></p>
+            <p><strong>Phone:</strong> <a href="tel:+12076131332" style="color:#2563eb;">001 (207) 613-1332</a></p>
+            <p><strong>ABA Routing #:</strong> 251480576</p>
+          </div>
+          <p style="margin-top:1rem;">
+            We aim to respond to accessibility feedback within 2 business days and will work diligently to resolve any issues you report.
+          </p>
+
+          <!-- Section 5: Formal Complaints -->
+          <h2 id="section-5">5. Formal Complaints</h2>
+          <p>
+            If you are not satisfied with our response to an accessibility concern, you may file a formal complaint with the relevant accessibility authority in your jurisdiction. We are committed to working with you to find a satisfactory resolution.
+          </p>
+
+          <!-- Section 6: Third-Party Content -->
+          <h2 id="section-6">6. Third-Party Content</h2>
+          <p>
+            Our website may contain links to third-party websites that are not operated by WB CREDIT UNION. We are not responsible for the accessibility of these external sites and encourage you to review their accessibility policies.
+          </p>
+        </article>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       SHARED FOOTER (INJECTED BY js/navigation.js)
+       ======================================================================== -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts: Theme & Shared Navigation Injection -->
+  <script type="module" src="/js/theme.js"></script>
+  <script type="module" src="/js/navigation.js"></script>
+
+  <!-- Scrollspy & Table of Contents Interaction Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Mobile TOC toggle
+      const tocSidebar = document.getElementById('tocSidebar');
+      const tocToggleBtn = document.getElementById('tocToggleBtn');
+
+      if (tocSidebar && tocToggleBtn) {
+        tocToggleBtn.addEventListener('click', () => {
+          tocSidebar.classList.toggle('is-open');
+          const isOpen = tocSidebar.classList.contains('is-open');
+          tocToggleBtn.setAttribute('aria-expanded', String(isOpen));
+        });
+      }
+
+      // 2. Active Scrollspy for Table of Contents
+      const sections = document.querySelectorAll('article h2, #commitment');
+      const tocLinks = document.querySelectorAll('.toc-nav-list a');
+
+      window.addEventListener('scroll', () => {
+        let currentId = '';
+        const scrollPosition = window.scrollY + 140;
+
+        sections.forEach(section => {
+          const top = section.offsetTop;
+          if (scrollPosition >= top) {
+            currentId = section.getAttribute('id');
+          }
+        });
+
+        tocLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === `#${currentId}`) {
+            link.classList.add('active');
+          }
+        });
+      }, { passive: true });
+    });
+  </script>
+</body>
+</html>

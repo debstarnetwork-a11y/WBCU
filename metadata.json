@@ -1,0 +1,6 @@
+{
+  "name": "WB Credit Union",
+  "description": "A premier multi-currency digital and multi-purpose banking platform offering secure personal, commercial, and international treasury management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,581 @@
+/**
+ * ============================================================================
+ * WB CREDIT UNION - ABOUT PAGE STYLESHEET (css/about.css)
+ * ============================================================================
+ */
+
+/* ----------------------------------------------------------------------------
+ * 1. ABOUT HERO BANNER (~50vh)
+ * ---------------------------------------------------------------------------- */
+.about-hero-section {
+  position: relative;
+  min-height: 48vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 130px 1.5rem 60px 1.5rem;
+  background: radial-gradient(circle at 50% 30%, #1e3a8a 0%, #1a3a6b 50%, #0f172a 100%);
+  color: #ffffff;
+  overflow: hidden;
+  text-align: center;
+}
+
+.about-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #93c5fd;
+  margin-bottom: 1.25rem;
+  background: rgba(37, 99, 235, 0.2);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  padding: 0.35rem 1rem;
+  border-radius: 9999px;
+}
+
+.about-breadcrumb a {
+  color: #bfdbfe;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.about-breadcrumb a:hover {
+  color: #ffffff;
+}
+
+.about-breadcrumb span.divider {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.about-hero-title {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 1.15rem;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+}
+
+.about-hero-subtitle {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* ----------------------------------------------------------------------------
+ * 2. OUR STORY SECTION
+ * ---------------------------------------------------------------------------- */
+.story-section {
+  padding: 6rem 1.5rem;
+  background: var(--bg-primary, #ffffff);
+  color: var(--text-primary, #1e293b);
+}
+
+.story-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 4rem;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.story-content .section-subtitle-tag {
+  color: #2563eb;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+}
+
+.story-content .story-heading {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text-primary, #1e293b);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.story-content .story-tagline {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #2563eb;
+  margin-bottom: 1.75rem;
+}
+
+.story-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--text-secondary, #475569);
+}
+
+/* Story Graphic Card Right */
+.story-graphic-card {
+  background: linear-gradient(135deg, #1a3a6b 0%, #1e3a8a 100%);
+  border-radius: 20px;
+  padding: 3rem 2.5rem;
+  color: #ffffff;
+  box-shadow: 0 20px 45px rgba(26, 58, 107, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.story-graphic-pattern {
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.25) 0%, transparent 70%);
+}
+
+.story-badge-hq {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 0.4rem 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.story-graphic-card h3 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.story-graphic-card p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+  margin-bottom: 1.5rem;
+}
+
+.story-specs-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 1.25rem;
+}
+
+.story-specs-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.88rem;
+  color: #e2e8f0;
+}
+
+/* ----------------------------------------------------------------------------
+ * 3. MISSION & VISION SECTION (PROMINENT DISPLAY)
+ * ---------------------------------------------------------------------------- */
+.mission-vision-section {
+  padding: 6.5rem 1.5rem;
+  background: var(--bg-secondary, #f8fafc);
+}
+
+.mission-vision-header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 3.5rem auto;
+}
+
+.mission-vision-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.mv-card {
+  border-radius: 24px;
+  padding: 3.5rem 3rem;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.mv-card:hover {
+  transform: translateY(-8px);
+}
+
+/* Mission Card: Deep Blue Gradient */
+.mv-card.mission-card {
+  background: linear-gradient(145deg, #1a3a6b 0%, #2563eb 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 45px rgba(37, 99, 235, 0.25);
+}
+
+.mv-card.mission-card:hover {
+  box-shadow: 0 26px 55px rgba(37, 99, 235, 0.35);
+}
+
+/* Vision Card: Vibrant Orange Gradient */
+.mv-card.vision-card {
+  background: linear-gradient(145deg, #f97316 0%, #ea580c 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 45px rgba(249, 115, 22, 0.25);
+}
+
+.mv-card.vision-card:hover {
+  box-shadow: 0 26px 55px rgba(249, 115, 22, 0.35);
+}
+
+.mv-card-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.mv-card-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+.mv-card-body {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #f8fafc;
+  font-weight: 400;
+}
+
+/* ----------------------------------------------------------------------------
+ * 4. OUR CORE VALUES SECTION (2x2 GRID)
+ * ---------------------------------------------------------------------------- */
+.values-section {
+  padding: 6.5rem 1.5rem;
+  background: var(--bg-primary, #ffffff);
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.value-card {
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 18px;
+  padding: 2.5rem 2.25rem;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.value-card:hover {
+  transform: translateY(-6px);
+  border-color: #3b82f6;
+  box-shadow: 0 16px 36px rgba(37, 99, 235, 0.1);
+}
+
+.value-icon-box {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: rgba(37, 99, 235, 0.1);
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.value-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary, #1e293b);
+  margin-bottom: 0.85rem;
+  letter-spacing: -0.01em;
+}
+
+.value-desc {
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--text-secondary, #64748b);
+}
+
+/* ----------------------------------------------------------------------------
+ * 5. WHY CHOOSE US SECTION
+ * ---------------------------------------------------------------------------- */
+.why-us-section {
+  padding: 6.5rem 1.5rem;
+  background: var(--bg-secondary, #f8fafc);
+}
+
+.why-us-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 18px;
+  padding: 2.75rem 2rem;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08);
+}
+
+.feature-icon-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1a3a6b, #2563eb);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem auto;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+}
+
+.feature-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary, #1e293b);
+  margin-bottom: 0.85rem;
+}
+
+.feature-desc {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text-secondary, #64748b);
+}
+
+/* ----------------------------------------------------------------------------
+ * 6. LEADERSHIP TEAM SECTION
+ * ---------------------------------------------------------------------------- */
+.team-section {
+  padding: 6.5rem 1.5rem;
+  background: var(--bg-primary, #ffffff);
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1.75rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.team-card {
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 18px;
+  padding: 2.25rem 1.5rem;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.team-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
+}
+
+.team-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 1.25rem auto;
+  border: 3px solid #3b82f6;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.team-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.team-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary, #1e293b);
+  margin-bottom: 0.25rem;
+}
+
+.team-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #2563eb;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 1.15rem;
+}
+
+.team-bio {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--text-secondary, #64748b);
+}
+
+/* ----------------------------------------------------------------------------
+ * 7. BY THE NUMBERS SECTION (STATS)
+ * ---------------------------------------------------------------------------- */
+.stats-section {
+  padding: 5.5rem 1.5rem;
+  background: #0f172a;
+  color: #ffffff;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.stat-item {
+  padding: 1rem;
+}
+
+.stat-number {
+  font-size: 3.2rem;
+  font-weight: 800;
+  color: #60a5fa;
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.stat-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ----------------------------------------------------------------------------
+ * 8. CTA BANNER (BLUE GRADIENT)
+ * ---------------------------------------------------------------------------- */
+.about-cta-section {
+  padding: 6rem 1.5rem;
+  background: linear-gradient(135deg, #1a3a6b 0%, #2563eb 100%);
+  color: #ffffff;
+  text-align: center;
+}
+
+.about-cta-container {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.about-cta-title {
+  font-size: 2.6rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 1.15rem;
+  letter-spacing: -0.02em;
+}
+
+.about-cta-body {
+  font-size: 1.15rem;
+  line-height: 1.65;
+  color: #e2e8f0;
+  margin-bottom: 2.25rem;
+}
+
+/* ----------------------------------------------------------------------------
+ * 9. RESPONSIVE MEDIA QUERIES
+ * ---------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .story-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .team-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-hero-title {
+    font-size: 2.2rem;
+  }
+  .mission-vision-grid {
+    grid-template-columns: 1fr;
+  }
+  .values-grid {
+    grid-template-columns: 1fr;
+  }
+  .why-us-grid {
+    grid-template-columns: 1fr;
+  }
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .stat-number {
+    font-size: 2.6rem;
+  }
+  .about-cta-title {
+    font-size: 2rem;
+  }
+}

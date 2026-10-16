@@ -1,0 +1,1739 @@
+/**
+ * ============================================================================
+ * WB CREDIT UNION - AUTHENTICATION & LOGIN/REGISTRATION STYLESHEET
+ * ============================================================================
+ * 
+ * Styles for Member Login, Account Registration, Admin Portal, and Security Modals.
+ * Features:
+ * - Desktop Split-Screen Layout (Left: Institutional Brand Showcase, Right: Form)
+ * - Animated gradient border on cards
+ * - Tabbed Login Switcher (Email & Password, Account & PIN, Biometric)
+ * - Biometric pulsing scanner with WebAuthn feedback
+ * - Segmented 4-Digit PIN boxes with auto-advance and masking
+ * - CAPTCHA math security challenge card
+ * - Forgot Password Modal popup
+ * - Dedicated Admin Portal layout with shield badge and high-security inputs
+ * ============================================================================
+ */
+
+/* ----------------------------------------------------------------------------
+ * 1. GENERAL AUTH PAGE & SPLIT LAYOUT
+ * ---------------------------------------------------------------------------- */
+.auth-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #1d4ed8 100%);
+  color: var(--text-dark);
+  font-family: var(--font-family-base);
+  overflow-x: hidden;
+}
+
+.auth-split-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .auth-split-layout {
+    grid-template-columns: 42% 58%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .auth-split-layout {
+    grid-template-columns: 38% 62%;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+ * 2. LEFT DECORATIVE BRAND PANEL (DESKTOP)
+ * ---------------------------------------------------------------------------- */
+.auth-split-brand {
+  display: none;
+  position: relative;
+  background: linear-gradient(145deg, #1e3a8a 0%, #2563eb 60%, #1d4ed8 100%);
+  color: var(--white);
+  padding: 3rem 2.5rem;
+  overflow: hidden;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 2.5rem;
+}
+
+@media (min-width: 1024px) {
+  .auth-split-brand {
+    display: flex;
+  }
+}
+
+.brand-mesh-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.brand-orb-1 {
+  position: absolute;
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.35) 0%, transparent 70%);
+  top: -60px;
+  right: -80px;
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.brand-orb-2 {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.25) 0%, transparent 70%);
+  bottom: 80px;
+  left: -60px;
+  filter: blur(50px);
+  pointer-events: none;
+}
+
+.brand-panel-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: flex-start;
+  gap: 4rem;
+}
+
+.brand-top-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  text-decoration: none;
+}
+
+.brand-logo-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #1a3a6b 0%, #2563eb 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  box-shadow: 0 4px 14px rgba(26, 58, 107, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.brand-logo-text {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: -0.02em;
+}
+
+.brand-logo-text span {
+  color: var(--primary-orange);
+}
+
+.brand-hero-copy {
+  margin: 3.5rem 0;
+}
+
+.brand-kicker-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--light-orange);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.35rem 0.875rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  margin-bottom: 1.25rem;
+}
+
+.brand-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--white);
+  margin-bottom: 1rem;
+}
+
+.brand-subtitle {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.65;
+  margin-bottom: 2rem;
+}
+
+.brand-benefits-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.brand-benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  font-size: 0.85rem;
+  color: var(--white);
+  font-weight: 500;
+}
+
+.brand-benefit-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(37, 99, 235, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #60a5fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.brand-footer-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  backdrop-filter: blur(8px);
+}
+
+.brand-footer-quote {
+  font-size: 0.82rem;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+.brand-footer-author {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--light-orange);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ----------------------------------------------------------------------------
+ * 3. RIGHT FORM PANEL & ANIMATED GRADIENT CARD
+ * ---------------------------------------------------------------------------- */
+.auth-split-form {
+  background-color: var(--white);
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.25rem 2rem 1.25rem;
+  position: relative;
+  overflow-y: auto;
+  min-height: 100vh;
+}
+
+@media (min-width: 640px) {
+  .auth-split-form {
+    padding: 1.25rem 2rem 2.5rem 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .auth-split-form {
+    padding: 1.5rem 2.5rem 3rem 2.5rem;
+  }
+}
+
+.auth-form-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding: 0.85rem 1.25rem;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border: 1px solid #bfdbfe;
+  border-left: 5px solid #2563eb;
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.12);
+}
+
+[data-theme="dark"] .auth-form-topbar {
+  background: linear-gradient(135deg, #1e293b 0%, #1e3a8a 100%);
+  border-color: #3b82f6;
+  border-left-color: #60a5fa;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.auth-topbar-brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  gap: 0.5rem;
+}
+
+.auth-topbar-logo-img {
+  height: 48px;
+  max-height: 56px;
+  width: auto;
+  max-width: 240px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(37, 99, 235, 0.15));
+}
+
+.mobile-brand-header {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  text-decoration: none;
+}
+
+@media (min-width: 1024px) {
+  .mobile-brand-header {
+    display: none;
+  }
+}
+
+.form-auth-switch {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.form-auth-switch a {
+  color: var(--primary-bright-blue);
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 0.25rem;
+}
+
+.form-auth-switch a:hover {
+  text-decoration: underline;
+}
+
+.form-content-inner {
+  max-width: 520px;
+  width: 100%;
+  margin: 0 auto;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Animated Gradient Border Card */
+.animated-card-border-wrap {
+  position: relative;
+  border-radius: var(--radius-2xl);
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.4), rgba(249, 115, 22, 0.4), rgba(37, 99, 235, 0.4));
+  background-size: 200% 200%;
+  animation: gradientShift 6s ease infinite;
+  box-shadow: 0 16px 40px -8px rgba(15, 23, 42, 0.1);
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-card-inner {
+  background-color: var(--white);
+  border-radius: calc(var(--radius-2xl) - 2px);
+  padding: 2rem 1.75rem;
+}
+
+@media (min-width: 480px) {
+  .animated-card-inner {
+    padding: 2.25rem 2rem;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+ * 4. LOGIN METHOD TABS (EMAIL, ACCOUNT/PIN, BIOMETRIC)
+ * ---------------------------------------------------------------------------- */
+.login-tabs-nav {
+  display: flex;
+  background-color: var(--light-gray);
+  border-radius: var(--radius-lg);
+  padding: 0.35rem;
+  gap: 0.35rem;
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-light);
+}
+
+.login-tab-btn {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.65rem 0.5rem;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.login-tab-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.login-tab-btn:hover {
+  color: var(--primary-navy);
+}
+
+.login-tab-btn.is-active {
+  background-color: var(--white);
+  color: var(--primary-navy);
+  box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 480px) {
+  .login-tabs-nav {
+    flex-direction: column;
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
+  .login-tab-btn {
+    padding: 0.75rem;
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Tab Panels */
+.login-tab-pane {
+  display: none;
+  animation: fadeIn 250ms ease forwards;
+}
+
+.login-tab-pane.is-active {
+  display: block;
+}
+
+/* ----------------------------------------------------------------------------
+ * 5. FORM FIELDS WITH FLOATING LABELS & ICONS
+ * ---------------------------------------------------------------------------- */
+.form-floating-wrap {
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+
+.form-floating-input,
+.form-floating-select {
+  width: 100%;
+  height: 54px;
+  padding: 1.25rem 2.5rem 0.35rem 2.75rem;
+  font-size: var(--font-size-sm);
+  color: var(--text-dark);
+  background-color: var(--white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.form-floating-input.no-icon {
+  padding-left: 1rem;
+}
+
+.field-prefix-icon {
+  position: absolute;
+  left: 1rem;
+  top: 17px;
+  color: var(--text-light);
+  pointer-events: none;
+  transition: color var(--transition-fast);
+}
+
+.form-floating-label {
+  position: absolute;
+  top: 17px;
+  left: 2.75rem;
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  pointer-events: none;
+  transform-origin: 0 0;
+  transition: transform 180ms ease, color 180ms ease, font-size 180ms ease;
+}
+
+.form-floating-input.no-icon ~ .form-floating-label {
+  left: 1rem;
+}
+
+/* Floating Label Active / Filled States */
+.form-floating-input:focus ~ .form-floating-label,
+.form-floating-input:not(:placeholder-shown) ~ .form-floating-label,
+.form-floating-select:focus ~ .form-floating-label,
+.form-floating-select:not([value=""]) ~ .form-floating-label,
+.form-floating-select.has-value ~ .form-floating-label {
+  transform: translateY(-9px) scale(0.78);
+  color: var(--primary-bright-blue);
+  font-weight: 600;
+}
+
+.form-floating-input:focus {
+  outline: none;
+  border-color: var(--primary-bright-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.form-floating-input:focus ~ .field-prefix-icon {
+  color: var(--primary-bright-blue);
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 1rem;
+  top: 16px;
+  background: none;
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle-btn:hover {
+  color: var(--primary-navy);
+}
+
+/* ----------------------------------------------------------------------------
+ * 6. PIN INPUT BOXES (ACCOUNT & PIN LOGIN)
+ * ---------------------------------------------------------------------------- */
+.pin-segmented-grid {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.pin-cell-input {
+  width: 54px;
+  height: 58px;
+  text-align: center;
+  font-size: 1.75rem;
+  font-family: var(--font-family-mono);
+  font-weight: 700;
+  color: var(--primary-navy);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background-color: var(--white);
+  transition: all var(--transition-fast);
+}
+
+.pin-cell-input:focus {
+  outline: none;
+  border-color: var(--primary-bright-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+/* ----------------------------------------------------------------------------
+ * 7. BIOMETRIC WEBAUTHN SCANNER PANEL
+ * ---------------------------------------------------------------------------- */
+.biometric-scanner-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+}
+
+.biometric-touch-target {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #eff6ff 0%, #dbeafe 100%);
+  border: 2px solid var(--primary-bright-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-bright-blue);
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  position: relative;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.2);
+}
+
+.biometric-touch-target:hover {
+  transform: scale(1.05);
+}
+
+.biometric-touch-target:active {
+  transform: scale(0.97);
+}
+
+.biometric-pulse-ring {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid var(--primary-bright-blue);
+  opacity: 0;
+  animation: biometricPulse 2s infinite ease-out;
+}
+
+@keyframes biometricPulse {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+.biometric-scanner-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--primary-navy);
+  margin-bottom: 0.25rem;
+}
+
+.biometric-scanner-sub {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  max-width: 300px;
+  margin: 0 auto 1.5rem auto;
+}
+
+.biometric-status-msg {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  min-height: 20px;
+}
+
+/* ----------------------------------------------------------------------------
+ * 8. CAPTCHA MATH CHALLENGE & LOCKOUT ALERTS
+ * ---------------------------------------------------------------------------- */
+.captcha-challenge-panel {
+  display: none;
+  background-color: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.captcha-label {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--dark-orange);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.captcha-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.captcha-question-badge {
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: var(--font-family-mono);
+  background-color: var(--white);
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-md);
+  border: 1px solid #fed7aa;
+  color: var(--primary-navy);
+}
+
+.captcha-answer-input {
+  width: 90px;
+  height: 42px;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+
+/* Remaining attempts counter banner */
+.attempts-counter-banner {
+  display: none;
+  font-size: 0.75rem;
+  color: var(--accent-red);
+  background-color: var(--accent-red-soft);
+  border: 1px solid var(--accent-red-border);
+  padding: 0.65rem 0.875rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.25rem;
+}
+
+/* Account Suspension / Freeze Modal */
+.account-status-modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: var(--z-modal);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.account-status-card {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  max-width: 460px;
+  width: 100%;
+  padding: 2.25rem 2rem;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 250ms ease forwards;
+}
+
+/* ----------------------------------------------------------------------------
+ * 9. FORGOT PASSWORD MODAL
+ * ---------------------------------------------------------------------------- */
+.modal-backdrop-wrap {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: var(--z-modal);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.modal-dialog-card {
+  background-color: var(--white);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  animation: slideUp 250ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  overflow: hidden;
+}
+
+.modal-dialog-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-dialog-body {
+  padding: 1.75rem 1.5rem;
+}
+
+/* ----------------------------------------------------------------------------
+ * 10. ADMIN LOGIN PORTAL (HIGH SECURITY & SHIELD)
+ * ---------------------------------------------------------------------------- */
+.admin-login-layout {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(circle at 50% 20%, #172554 0%, #0a1120 70%, #030712 100%);
+  color: var(--white);
+  padding: 2rem 1rem;
+}
+
+.admin-card-container {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-portal-card {
+  width: 100%;
+  max-width: 480px;
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: var(--radius-2xl);
+  padding: 2.75rem 2.25rem;
+  box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.6);
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-portal-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #dc2626 0%, #f97316 50%, #dc2626 100%);
+}
+
+.admin-shield-icon-box {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-xl);
+  background: rgba(220, 38, 38, 0.15);
+  border: 1px solid rgba(220, 38, 38, 0.35);
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem auto;
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.2);
+}
+
+.admin-portal-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--white);
+  text-align: center;
+  margin-bottom: 0.35rem;
+}
+
+.admin-portal-sub {
+  font-size: var(--font-size-xs);
+  color: #94a3b8;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* ----------------------------------------------------------------------------
+ * DARK MODE THEME OVERRIDES FOR AUTH PAGES
+ * ---------------------------------------------------------------------------- */
+[data-theme="dark"] .auth-split-form {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .animated-card-inner {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .login-tabs-nav {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .login-tab-btn {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .login-tab-btn.active {
+  background-color: var(--bg-card);
+  color: var(--primary-bright-blue);
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .demo-quick-auth {
+  background-color: rgba(37, 99, 235, 0.12);
+  border-color: rgba(37, 99, 235, 0.3);
+}
+
+[data-theme="dark"] .auth-heading {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .auth-subheading {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .pin-input-box {
+  background-color: var(--bg-input);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .biometric-scanner-box {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .captcha-card {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+/* ----------------------------------------------------------------------------
+ * 11. REGISTRATION PORTAL & STEPPER (MISSING STYLES)
+ * ---------------------------------------------------------------------------- */
+.stepper-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.step-count-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background-color: var(--primary-blue-soft);
+  color: var(--primary-bright-blue);
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.step-main-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-navy);
+  margin-bottom: 0.25rem;
+}
+
+.step-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.stepper-progress-track {
+  height: 6px;
+  background-color: var(--bg-tertiary);
+  border-radius: var(--radius-pill);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.stepper-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-bright-blue), var(--primary-medium-blue));
+  border-radius: var(--radius-pill);
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stepper-pills {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.step-pill-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  opacity: 0.5;
+  transition: all 0.3s;
+}
+
+.step-pill-item.is-active {
+  opacity: 1;
+}
+
+.step-pill-item.is-completed {
+  opacity: 1;
+  color: var(--accent-green);
+}
+
+.step-pill-number {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.is-active .step-pill-number {
+  background-color: var(--primary-bright-blue);
+  color: var(--white);
+}
+
+.is-completed .step-pill-number {
+  background-color: var(--accent-green);
+  color: var(--white);
+}
+
+.step-pill-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .step-pill-label {
+    display: none;
+  }
+}
+
+.step-pane {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.step-pane.is-current {
+  display: block;
+}
+
+/* Avatar Upload Card */
+.avatar-upload-card {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.25rem;
+  background-color: var(--bg-secondary);
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-lg);
+  margin-bottom: 2rem;
+}
+
+.avatar-preview-box {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: var(--white);
+  border: 2px solid var(--white);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.avatar-preview-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+.avatar-upload-btn-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary-navy);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.avatar-upload-btn-label:hover {
+  background-color: var(--primary-blue-soft);
+  border-color: var(--primary-medium-blue);
+}
+
+/* Account Selection Dropdown Helper Styles */
+.form-floating-select.has-value {
+  border-color: var(--primary-bright-blue);
+}
+
+/* Success Panel */
+.registration-success-panel {
+  display: none;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.success-badge-circle {
+  width: 80px;
+  height: 80px;
+  background-color: var(--accent-green-soft);
+  color: var(--accent-green);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem auto;
+  box-shadow: 0 0 0 10px rgba(16, 185, 129, 0.05);
+}
+
+.success-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--primary-navy);
+  margin-bottom: 0.5rem;
+}
+
+.success-account-card {
+  background-color: var(--bg-tertiary);
+  padding: 1.5rem;
+  border-radius: var(--radius-xl);
+  margin: 2rem 0;
+  border: 1px solid var(--border-light);
+}
+
+.success-acct-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.success-acct-num {
+  font-size: 2rem;
+  font-family: var(--font-family-mono);
+  font-weight: 700;
+  color: var(--primary-navy);
+  letter-spacing: 0.05em;
+}
+
+.success-email-notice {
+  margin-bottom: 2rem;
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}
+
+/* Stepper Actions */
+.stepper-actions-bar {
+  display: flex;
+  align-items: center;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.btn-step-prev {
+  background-color: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  padding: 0.75rem 1.25rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-step-prev:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.btn-step-next,
+.btn-step-submit {
+  background-color: var(--primary-bright-blue);
+  border: none;
+  color: var(--white);
+  padding: 0.75rem 1.75rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.btn-step-next:hover,
+.btn-step-submit:hover {
+  background-color: var(--primary-bright-blue-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+}
+
+/* Crypto Panel */
+.crypto-toggle-panel {
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.toggle-switch-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.switch-toggle-label {
+  font-weight: 600;
+  color: var(--primary-navy);
+  font-size: var(--font-size-sm);
+}
+
+.switch-toggle-sub {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.switch-control {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.switch-control input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #cbd5e1;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .switch-slider {
+  background-color: var(--primary-bright-blue);
+}
+
+input:checked + .switch-slider:before {
+  transform: translateX(20px);
+}
+
+.crypto-tokens-grid {
+  display: none;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.crypto-tokens-grid.is-visible {
+  display: grid;
+}
+
+.crypto-token-chip {
+  padding: 0.35rem;
+  background-color: var(--white);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.crypto-token-chip.is-selected {
+  background-color: var(--primary-bright-blue);
+  color: var(--white);
+  border-color: var(--primary-bright-blue);
+}
+
+/* PIN Inputs */
+.pin-inputs-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.pin-digit-box {
+  width: 48px;
+  height: 48px;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background-color: var(--white);
+}
+
+.pin-digit-box:focus {
+  border-color: var(--primary-bright-blue);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Tooltip Badge */
+.tooltip-badge {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  background-color: var(--text-muted);
+  color: var(--white);
+  border-radius: 50%;
+  font-size: 10px;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+  cursor: help;
+  position: relative;
+}
+
+.tooltip-badge:after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--primary-navy);
+  color: var(--white);
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.tooltip-badge:hover:after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Dark Mode Overrides for Registration Portal */
+[data-theme="dark"] .auth-form-topbar {
+  border-bottom: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .mobile-brand-header .text-navy {
+  color: var(--white) !important;
+}
+
+[data-theme="dark"] .form-auth-switch {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .step-main-title {
+  color: var(--white);
+}
+
+[data-theme="dark"] .step-pill-number {
+  background-color: var(--bg-secondary);
+}
+
+[data-theme="dark"] .avatar-upload-card {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .avatar-preview-box {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .avatar-upload-btn-label {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--white);
+}
+
+[data-theme="dark"] .crypto-toggle-panel {
+  background-color: var(--bg-secondary);
+}
+
+[data-theme="dark"] .pin-digit-box {
+  background-color: var(--bg-input);
+  border-color: var(--border-color);
+  color: var(--white);
+}
+
+[data-theme="dark"] .btn-step-prev {
+  border-color: var(--border-color);
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .success-account-card {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .success-title {
+  color: var(--white);
+}
+
+/* ----------------------------------------------------------------------------
+ * 15. INPUT VALIDATION, ERROR MESSAGES & ALERT BANNERS
+ * ---------------------------------------------------------------------------- */
+.field-error-msg {
+  display: none;
+  font-size: 0.78rem;
+  color: #ef4444;
+  margin-top: 0.35rem;
+  font-weight: 500;
+  line-height: 1.3;
+  animation: fadeInDown 150ms ease forwards;
+}
+
+.field-error-msg.is-visible {
+  display: block !important;
+}
+
+.form-floating-wrap.is-invalid .field-error-msg {
+  display: block;
+}
+
+.form-floating-wrap.is-invalid .form-floating-input,
+.form-floating-wrap.is-invalid .form-floating-select {
+  border-color: #ef4444 !important;
+  background-color: rgba(239, 68, 68, 0.02) !important;
+}
+
+.form-floating-wrap.is-invalid .form-floating-input:focus,
+.form-floating-wrap.is-invalid .form-floating-select:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+}
+
+.form-floating-wrap.is-invalid .field-prefix-icon {
+  color: #ef4444 !important;
+}
+
+.form-floating-wrap.is-valid .form-floating-input {
+  border-color: #10b981;
+}
+
+.form-floating-wrap.is-valid .field-valid-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 1rem;
+  top: 17px;
+  color: #10b981;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* High-Visibility Auth Inline Alert Banner */
+.auth-inline-alert {
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.25rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  animation: slideUp 200ms ease forwards;
+}
+
+.auth-inline-alert.auth-alert-danger {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+.auth-inline-alert.auth-alert-warning {
+  background-color: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+}
+
+.auth-inline-alert.auth-alert-success {
+  background-color: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+}
+
+.auth-inline-alert .alert-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.auth-inline-alert .alert-body {
+  flex: 1;
+}
+
+.auth-inline-alert .alert-title {
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+  font-size: 0.85rem;
+}
+
+.auth-inline-alert .alert-action-link {
+  color: #1d4ed8;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: 0.25rem;
+  display: inline-block;
+}
+
+/* ----------------------------------------------------------------------------
+ * 16. ENHANCED PASSWORD STRENGTH METER (WEAK, MEDIUM, STRONG)
+ * ---------------------------------------------------------------------------- */
+.password-strength-wrap {
+  margin-top: -0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.strength-bar-track {
+  width: 100%;
+  height: 6px;
+  background-color: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.4rem;
+}
+
+.strength-bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  transition: width 250ms ease, background-color 250ms ease;
+  background-color: #ef4444;
+}
+
+.strength-segments-row {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 0.4rem;
+}
+
+.strength-segment-bar {
+  flex: 1;
+  height: 5px;
+  background-color: #e2e8f0;
+  border-radius: 999px;
+  transition: background-color 200ms ease;
+}
+
+.strength-segment-bar.is-weak {
+  background-color: #ef4444;
+}
+
+.strength-segment-bar.is-medium {
+  background-color: #f59e0b;
+}
+
+.strength-segment-bar.is-strong {
+  background-color: #10b981;
+}
+
+.strength-text-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.strength-pill-badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  transition: all 200ms ease;
+}
+
+.strength-pill-weak {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+.strength-pill-medium {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.strength-pill-strong {
+  background-color: #d1fae5;
+  color: #059669;
+}
+
+.password-criteria-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.criteria-chip {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background-color: #f1f5f9;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 180ms ease;
+}
+
+.criteria-chip.is-met {
+  background-color: #ecfdf5;
+  color: #059669;
+  font-weight: 600;
+}
+
+/* ----------------------------------------------------------------------------
+ * 17. BIOMETRICS ENROLLMENT & WEBAUTHN HARDWARE INTERACTION
+ * ---------------------------------------------------------------------------- */
+.biometric-unconfigured-card {
+  background: #f8fafc;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  margin-bottom: 1.25rem;
+  transition: all 200ms ease;
+}
+
+.biometric-enrolled-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #059669;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  margin-bottom: 0.75rem;
+}
+
+.biometric-enroll-modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.biometric-enroll-modal.is-active {
+  display: flex;
+}
+
+.biometric-enroll-dialog {
+  background: #ffffff;
+  border-radius: var(--radius-xl);
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  animation: slideUp 250ms ease forwards;
+}
+
+.biometric-scan-target {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #eff6ff 0%, #dbeafe 100%);
+  border: 3px solid #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2563eb;
+  cursor: pointer;
+  margin: 1.5rem auto;
+  position: relative;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.2);
+  user-select: none;
+  touch-action: manipulation;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.biometric-scan-target:active,
+.biometric-scan-target.is-scanning {
+  transform: scale(0.96);
+  border-color: #10b981;
+  color: #10b981;
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);
+}
+
+.finger-chips-grid {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.finger-chip {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  font-size: 0.75rem;
+  cursor: pointer;
+  color: #475569;
+  font-weight: 500;
+  transition: all 150ms ease;
+}
+
+.finger-chip.is-active {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+/* Dark Theme Overrides */
+[data-theme="dark"] .field-error-msg {
+  color: #f87171;
+}
+
+[data-theme="dark"] .auth-inline-alert.auth-alert-danger {
+  background-color: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+}
+
+[data-theme="dark"] .strength-bar-track,
+[data-theme="dark"] .strength-segment-bar {
+  background-color: var(--bg-tertiary);
+}
+
+[data-theme="dark"] .criteria-chip {
+  background-color: var(--bg-secondary);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .biometric-unconfigured-card {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .biometric-enroll-dialog {
+  background-color: var(--bg-card);
+  color: var(--white);
+  border: 1px solid var(--border-color);
+}
+
+
+
+
