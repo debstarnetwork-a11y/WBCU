@@ -126,15 +126,15 @@ export function wrapEmailHtml(contentHtml, previewText = 'WB Credit Union Notifi
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                 <tr>
                   <td align="center">
-                    <!-- Brand Crest Icon -->
+                    <!-- Official WB Credit Union Logo -->
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td align="center" style="background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 12px; width: 48px; height: 48px; text-align: center; vertical-align: middle;">
-                          <span style="font-size: 24px; line-height: 48px; color: #ffffff;">🏛️</span>
+                        <td align="center" style="padding-bottom: 12px;">
+                          <img src="https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png" alt="WB Credit Union" style="height: 52px; width: auto; max-width: 240px; object-fit: contain; display: block; margin: 0 auto;" />
                         </td>
                       </tr>
                     </table>
-                    <h1 style="margin: 14px 0 2px 0; font-family: 'Poppins', Arial, sans-serif; font-size: 22px; font-weight: 800; letter-spacing: 1.5px; color: #ffffff; text-transform: uppercase;">
+                    <h1 style="margin: 0 0 4px 0; font-family: 'Poppins', Arial, sans-serif; font-size: 20px; font-weight: 800; letter-spacing: 1.5px; color: #ffffff; text-transform: uppercase;">
                       WB CREDIT UNION
                     </h1>
                     <p style="margin: 0; font-family: 'Poppins', Arial, sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 2px; color: #93c5fd; text-transform: uppercase;">
@@ -558,6 +558,71 @@ export function getOTPEmailHtml(data = {}) {
 }
 
 /**
+ * 4B. Password Reset Email Template
+ */
+export function getPasswordResetEmailHtml(data = {}) {
+  const resetLink = data.resetLink || `${typeof window !== 'undefined' ? window.location.origin : 'https://www.wbcu.net'}/pages/login.html?type=recovery&email=${encodeURIComponent(data.email || '')}`;
+  const resetCode = data.resetCode || `${Math.floor(100000 + Math.random() * 900000)}`;
+  const email = data.email || 'member@wbcu.net';
+
+  const body = `
+    <!-- Top Security Tag -->
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 16px;">
+      <tr>
+        <td style="background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 20px; padding: 6px 16px; font-family: 'Poppins', Arial, sans-serif; font-size: 12px; font-weight: 700; color: #1d4ed8; text-transform: uppercase; letter-spacing: 0.5px;">
+          🔐 MASTER CREDENTIAL RECOVERY
+        </td>
+      </tr>
+    </table>
+
+    <h2 style="margin: 0 0 8px 0; font-family: 'Poppins', Arial, sans-serif; font-size: 22px; font-weight: 700; color: #0f172a;">
+      Reset Your Master Passcode
+    </h2>
+    <p style="margin: 0 0 24px 0; font-family: 'Poppins', Arial, sans-serif; font-size: 14px; color: #64748b;">
+      We received a request to reset the access credentials for the WB Credit Union vault registered under <strong>${email}</strong>.
+    </p>
+
+    <!-- Large Security Code Box -->
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 24px;">
+      <tr>
+        <td align="center">
+          <div style="background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%); border: 2px dashed #0284c7; border-radius: 12px; padding: 20px 30px; display: inline-block; text-align: center;">
+            <p style="margin: 0 0 6px 0; font-family: 'Poppins', Arial, sans-serif; font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 1px;">
+              Verification Recovery Code
+            </p>
+            <span style="font-family: 'Courier New', Courier, monospace; font-size: 34px; font-weight: 800; letter-spacing: 8px; color: #0f2b48; display: block;">
+              ${resetCode}
+            </span>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <p style="margin: 0 0 24px 0; font-family: 'Poppins', Arial, sans-serif; font-size: 13px; font-weight: 600; color: #ea580c; text-align: center;">
+      ⏱️ This reset passcode will securely expire in <strong>15 minutes</strong>.
+    </p>
+
+    <div style="text-align: center; margin-bottom: 28px;">
+      <a href="${resetLink}" style="display: inline-block; background: #0f2b48; color: #ffffff; font-family: 'Poppins', Arial, sans-serif; font-size: 14px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; box-shadow: 0 4px 12px rgba(15, 43, 72, 0.25);">
+        Reset Master Passcode &rarr;
+      </a>
+    </div>
+
+    <!-- Security Alert Box -->
+    <div style="background-color: #fef2f2; border: 1px solid #fee2e2; border-radius: 8px; padding: 14px 18px; margin-bottom: 20px;">
+      <p style="margin: 0 0 6px 0; font-family: 'Poppins', Arial, sans-serif; font-size: 12px; font-weight: 700; color: #991b1b;">
+        Did not initiate this request?
+      </p>
+      <p style="margin: 0; font-family: 'Poppins', Arial, sans-serif; font-size: 11px; line-height: 16px; color: #7f1d1d;">
+        If you did not request a password reset, please contact Treasury Cyber Defense immediately at <a href="mailto:support@wbcu.net" style="color: #991b1b; font-weight: 700; text-decoration: underline;">support@wbcu.net</a> to prevent unauthorized vault access.
+      </p>
+    </div>
+  `;
+
+  return wrapEmailHtml(body, `Master Passcode Reset Request - WB CREDIT UNION`);
+}
+
+/**
  * 5. Card Issued Email Template
  */
 export function getCardIssuedEmailHtml(data = {}) {
@@ -860,32 +925,46 @@ async function dispatchEmailPayload({ to, subject, html, emailType, userId }) {
 }
 
 /**
- * 3. sendWelcomeEmail(userId)
+ * 3. sendWelcomeEmail(userIdOrUser)
  */
-export async function sendWelcomeEmail(userId) {
-  const user = getDemoStorageUser() || { fullName: 'Valued Member', email: 'member@wbcu.net', accountNumber: '2514809281' };
-  const firstName = (user.fullName || 'Member').split(' ')[0];
-  const subject = 'Welcome to WB CREDIT UNION! 🎉';
+export async function sendWelcomeEmail(userIdOrUser) {
+  let user = null;
+  if (typeof userIdOrUser === 'object' && userIdOrUser !== null) {
+    user = userIdOrUser;
+  } else if (typeof userIdOrUser === 'string') {
+    try {
+      const adminUsersRaw = localStorage.getItem('wb_credit_union_admin_users_db');
+      if (adminUsersRaw) {
+        const list = JSON.parse(adminUsersRaw);
+        user = list.find((u) => u.id === userIdOrUser || (u.email && u.email.toLowerCase() === userIdOrUser.toLowerCase()));
+      }
+    } catch (e) {}
+  }
+  if (!user) user = getDemoStorageUser() || { fullName: 'Valued Member', email: 'member@wbcu.net', accountNumber: '2514809281' };
+
+  const firstName = (user.firstName || user.fullName || 'Member').split(' ')[0];
+  const targetEmail = user.email || 'mizbrymo@gmail.com';
+  const subject = 'Welcome to WB CREDIT UNION! Application Received (Awaiting Activation) 🎉';
   const html = getWelcomeEmailHtml({
     firstName,
     accountNumber: user.accountNumber || '2514809281',
-    accountType: 'Multi-Currency Sovereign Checking',
-    routingNumber: '251480576',
-    email: user.email || 'member@wbcu.net',
+    accountType: user.accountType || 'Multi-Currency Sovereign Checking',
+    routingNumber: user.routingNumber || '251480576',
+    email: targetEmail,
   });
 
   // 1. Dispatch/log email
   await dispatchEmailPayload({
-    to: user.email || 'mizbrymo@gmail.com',
+    to: targetEmail,
     subject,
     html,
     emailType: 'welcome',
-    userId,
+    userId: user.id || (typeof userIdOrUser === 'string' ? userIdOrUser : 'new-user'),
   });
 
   // 2. Create corresponding in-app notification
   await createNotification(
-    userId,
+    user.id || (typeof userIdOrUser === 'string' ? userIdOrUser : 'new-user'),
     'account',
     'Welcome to WB Credit Union!',
     `Your institutional depository account has been successfully provisioned. Welcome aboard, ${firstName}!`,
@@ -893,6 +972,41 @@ export async function sendWelcomeEmail(userId) {
   );
 
   return { success: true, subject };
+}
+
+/**
+ * 3B. sendPasswordResetEmail(targetEmail)
+ */
+export async function sendPasswordResetEmail(targetEmail) {
+  const email = (targetEmail || '').trim() || 'mizbrymo@gmail.com';
+  const resetCode = `${Math.floor(100000 + Math.random() * 900000)}`;
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://www.wbcu.net';
+  const resetLink = `${origin}/pages/login.html?type=recovery&code=${resetCode}&email=${encodeURIComponent(email)}`;
+
+  // Store recovery token in admin users database so member can reset credentials
+  try {
+    const raw = localStorage.getItem('wb_credit_union_admin_users_db');
+    if (raw) {
+      const users = JSON.parse(raw);
+      const u = users.find((usr) => usr.email && usr.email.toLowerCase() === email.toLowerCase());
+      if (u) {
+        u.passwordResetToken = resetCode;
+        u.passwordResetExpires = Date.now() + 15 * 60 * 1000;
+        localStorage.setItem('wb_credit_union_admin_users_db', JSON.stringify(users));
+      }
+    }
+  } catch (e) {}
+
+  const subject = 'WB Credit Union - Master Passcode Reset Instructions 🔐';
+  const html = getPasswordResetEmailHtml({ email, resetCode, resetLink });
+
+  return await dispatchEmailPayload({
+    to: email,
+    subject,
+    html,
+    emailType: 'password_reset',
+    userId: 'pwd-reset-' + Date.now(),
+  });
 }
 
 /**

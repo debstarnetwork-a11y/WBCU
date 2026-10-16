@@ -35,6 +35,11 @@
         if (activeUserRaw) {
           try {
             u = JSON.parse(activeUserRaw);
+            if (u && (u.status === 'inactive' || u.status === 'pending_approval' || u.account_status === 'inactive' || u.accountStatus === 'dormant')) {
+              localStorage.removeItem('wb_credit_union_active_user');
+              window.location.replace('/pages/login.html?notice=inactive');
+              return;
+            }
             if (u && u.fullName && u.fullName !== 'Alexander Morgan' && u.fullName.toLowerCase() !== 'google') uName = u.fullName;
             if (!uName || uName.toLowerCase() === 'google') uName = 'Miz Brymo';
             if (u && u.accountNumber) uAcct = u.accountNumber;

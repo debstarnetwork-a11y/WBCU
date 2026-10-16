@@ -28,7 +28,7 @@ import {
   getDemoStorageUser,
   showToast,
 } from './supabase-config.js';
-import { sendWelcomeEmail } from './notifications-email.js';
+import { sendWelcomeEmail, sendPasswordResetEmail } from './notifications-email.js';
 import { Validator } from './validation.js';
 import { initI18n } from './i18n.js';
 import { getAdminUsersList, initialSeedUsers } from './admin-users.js';
@@ -707,6 +707,21 @@ export function initLoginForm() {
     }
   });
 
+  // Handle URL notice parameters like ?notice=pending_approval or ?notice=inactive
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const notice = urlParams.get('notice');
+    if (notice === 'pending_approval' || notice === 'inactive') {
+      if (emailAlertBanner) {
+        emailAlertBanner.style.display = 'flex';
+        emailAlertBanner.className = 'auth-inline-alert auth-alert-warning';
+        if (emailAlertTitle) emailAlertTitle.textContent = 'Account Inactive &mdash; Awaiting Admin Approval';
+        if (emailAlertDesc) emailAlertDesc.textContent = 'Your account application has been received and remains inactive until approved by an administrator. Vault access will be unlocked once approved.';
+      }
+      showToast('Your account remains inactive until approved by an administrator.', 'info', 'Awaiting Approval');
+    }
+  } catch (e) {}
+
   // --------------------------------------------------------------------------
   // TAB 1: EMAIL & PASSWORD LOGIN
   // --------------------------------------------------------------------------
@@ -915,38 +930,28 @@ export function initLoginForm() {
 
         // STRICT CHECK: Account must be registered in the system or database
         if (!dbUser) {
-          const err = new Error(`No account found registered with "${email}". Please verify your credentials or click Register to open an account.`);
+          const err = new Error(`Invalid login credentials: No account found registered with "${email}". Please verify your credentials or register.`);
           err.field = 'email';
           throw err;
         }
 
-        // Validate password against user's stored password, seed master passwords, or PIN
-        const masterPasscodes = [
-          'DemoPass123!', 'MemberPass123!', '12345', '123456', 'Password123!', 
-          'password', 'password123', 'admin', 'admin123', 'Admin123!', 
-          'MasterPass123!', 'Vanguard@2026!', 'Sterling#884!', 'Debstar@123!', 'Debstar123!'
-        ];
-
+        // Validate password strictly against user's registered credentials
         let isPassOk = false;
         if (dbUser.password && (password === dbUser.password || password.trim() === (dbUser.password || '').trim())) {
           isPassOk = true;
-        } else if (masterPasscodes.includes(password)) {
-          isPassOk = true;
         } else if (dbUser.pin && (password === dbUser.pin || password === dbUser.transactionPin)) {
           isPassOk = true;
-        } else if (dbUser.transactionPin && (password === dbUser.transactionPin)) {
-          isPassOk = true;
-        } else if (dbUser.id === 'usr-659' && (password === '8869' || password === 'Password123!')) {
+        } else if (dbUser.passwordResetToken && password === dbUser.passwordResetToken && (!dbUser.passwordResetExpires || Date.now() < dbUser.passwordResetExpires)) {
           isPassOk = true;
         }
 
         if (!isPassOk) {
-          const err = new Error(`Incorrect password or security PIN entered for "${email}". Please check your credentials.`);
+          const err = new Error(`Invalid login credentials: The password entered is incorrect. Please check your credentials or click Forgot Password to reset.`);
           err.field = 'password';
           throw err;
         }
 
-        let mockStatus = dbUser.status || 'active';
+        let mockStatus = dbUser.status || dbUser.account_status || 'inactive';
         if (isSuspended) mockStatus = 'suspended';
         if (isFrozen) mockStatus = 'frozen';
 
@@ -959,10 +964,16 @@ export function initLoginForm() {
 
       }
 
-      // 3. Post-Login Check: Active vs Suspended/Frozen/Closed
-      const status = userProfile.account_status || userProfile.status || 'active';
+      // 3. Post-Login Check: Strict Inactive / Pending Admin Approval Enforcement
+      const status = (userProfile.account_status || userProfile.status || 'inactive').toLowerCase();
       if (status !== 'active') {
         displayAccountStatusHold(status);
+        if (emailAlertBanner) {
+          emailAlertBanner.style.display = 'flex';
+          if (emailAlertTitle) emailAlertTitle.textContent = 'Account Inactive &mdash; Pending Approval';
+          if (emailAlertDesc) emailAlertDesc.textContent = 'Your account remains inactive by default until approved by an administrator. Vault access is prohibited until an admin activates your account.';
+        }
+        showToast('Access Denied: Your account is inactive until approved by an administrator.', 'error', 'Account Inactive');
         if (submitBtn) {
           submitBtn.disabled = false;
           submitBtn.innerHTML = 'Login to Banking Vault';
@@ -1187,27 +1198,37 @@ export function initLoginForm() {
         }
 
         if (!dbUser) {
-          throw new Error(`Account number "${acctNumInput?.value}" not recognized in credit union ledger.`);
+          throw new Error(`Invalid login details: Account number "${acctNumInput?.value}" is invalid or not registered.`);
         }
 
-        // Verify PIN
-        const validPin = dbUser.pin || dbUser.transactionPin || '8869';
-        const isPinMatch = (pin === validPin) || (pin === dbUser.transactionPin) || (pin === dbUser.pin) || (pin === '8869') || (pin === '1234');
+        // Verify PIN strictly against user's registered credentials
+        const validPin = dbUser.pin || dbUser.transactionPin;
+        const isPinMatch = Boolean(validPin && (pin === validPin || pin === dbUser.transactionPin || pin === dbUser.pin));
         if (!isPinMatch) {
-          throw new Error('Invalid 4-digit security PIN entered. Please try again.');
+          throw new Error('Invalid login details: The 4-digit security PIN entered is incorrect. Please try again.');
         }
 
         userProfile = {
           ...dbUser,
-          account_status: dbUser.status || 'active',
+          account_status: dbUser.status || dbUser.account_status || 'inactive',
+          status: dbUser.status || dbUser.account_status || 'inactive',
           device: captureDeviceFingerprint(),
         };
       }
 
-      // Check account status
-      const status = userProfile.account_status || 'active';
+      // Check account status - strict inactive blocking
+      const status = (userProfile.account_status || userProfile.status || 'inactive').toLowerCase();
       if (status !== 'active') {
         displayAccountStatusHold(status);
+        const pinAlertBanner = document.getElementById('loginPinAlertBanner');
+        const pinAlertTitle = document.getElementById('loginPinAlertTitle');
+        const pinAlertDesc = document.getElementById('loginPinAlertDesc');
+        if (pinAlertBanner) {
+          pinAlertBanner.style.display = 'flex';
+          if (pinAlertTitle) pinAlertTitle.textContent = 'Account Inactive &mdash; Pending Approval';
+          if (pinAlertDesc) pinAlertDesc.textContent = 'Your account remains inactive by default until approved by an administrator.';
+        }
+        showToast('Access Denied: Your account is inactive until approved by an administrator.', 'error', 'Account Inactive');
         if (submitBtn) {
           submitBtn.disabled = false;
           submitBtn.innerHTML = 'Verify PIN & Sign In';
@@ -1280,12 +1301,28 @@ export function initLoginForm() {
       const fails = getFailedAttempts() + 1;
       setFailedAttempts(fails);
 
+      const pinAlertBanner = document.getElementById('loginPinAlertBanner');
+      const pinAlertTitle = document.getElementById('loginPinAlertTitle');
+      const pinAlertDesc = document.getElementById('loginPinAlertDesc');
+      if (pinAlertBanner) {
+        pinAlertBanner.style.display = 'flex';
+        if (pinAlertTitle) pinAlertTitle.textContent = 'Invalid Login Details';
+        if (pinAlertDesc) pinAlertDesc.textContent = err.message || 'Invalid account number or 4-digit security PIN entered.';
+      }
+
+      const wrapLoginAcct = document.getElementById('wrapLoginAccount');
+      const acctErr = document.getElementById('loginAccountError');
+      const pinErr = document.getElementById('loginPinError');
+      if (wrapLoginAcct) wrapLoginAcct.classList.add('is-invalid');
+      if (acctErr) acctErr.textContent = err.message || 'Invalid account number.';
+      if (pinErr) pinErr.textContent = err.message || 'Invalid security PIN.';
+
       if (fails >= MAX_FAILED_ATTEMPTS) {
         setLockoutUntil(Date.now() + LOCKOUT_DURATION_MS);
         showToast('Too many failed attempts. Account locked for 30 minutes.', 'error', 'Lockout Triggered');
       } else {
         const remaining = MAX_FAILED_ATTEMPTS - fails;
-        showToast(`${err.message || 'Invalid account or PIN.'} (${remaining} attempts remaining)`, 'error');
+        showToast(`${err.message || 'Invalid account or security PIN.'} (${remaining} attempts remaining)`, 'error', 'Invalid Credentials');
       }
 
       updateSecurityBanners();
@@ -1524,17 +1561,21 @@ export function initLoginForm() {
 
     try {
       if (isConfigured && supabase?.auth) {
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/pages/login.html?type=recovery`,
-        });
-        if (error) throw error;
+        try {
+          await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${window.location.origin}/pages/login.html?type=recovery`,
+          });
+        } catch (e) {}
       }
 
-      showToast(`Password reset link has been sent to ${email}`, 'success', 'Reset Dispatched');
+      // Automatically dispatch password reset instructions email with bank logo
+      await sendPasswordResetEmail(email);
+
+      showToast(`Master passcode reset email has been dispatched to ${email}`, 'success', 'Reset Dispatched');
       forgotModal.style.display = 'none';
       formForgot.reset();
     } catch (err) {
-      showToast(err.message || 'Unable to dispatch reset link.', 'error');
+      showToast(err.message || 'Unable to dispatch reset email.', 'error');
     } finally {
       if (submitBtn) {
         submitBtn.disabled = false;
@@ -2348,8 +2389,8 @@ export function initMultiStepRegistration() {
       };
       userAtmCard.userId = newUser.id;
 
-      // 1. Set Active User Session
-      setDemoStorageUser(newUser);
+      // 1. Inactive by default until approved by an admin — DO NOT set as active logged in session
+      setDemoStorageUser(null);
 
       // 2. Automatically generate and replace test cards with user's official bank ATM card bearing full name
       localStorage.setItem('wb_credit_union_atm_cards', JSON.stringify([userAtmCard]));
@@ -2452,7 +2493,6 @@ export function initMultiStepRegistration() {
         localStorage.setItem('wb_credit_union_admin_users_db', JSON.stringify(adminUsers));
         localStorage.setItem('wb_credit_union_registered_members_list', JSON.stringify(adminUsers));
         try {
-          // Explicitly target the PHP endpoint for cPanel compatibility
           fetch('/api/admin-users.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -2463,7 +2503,8 @@ export function initMultiStepRegistration() {
         console.warn('Admin users sync:', e);
       }
 
-      sendWelcomeEmail(newUser.id).catch((e) => console.warn('Welcome email trigger note:', e));
+      // Automatically dispatch real welcome email with bank logo to registered member
+      sendWelcomeEmail(newUser).catch((e) => console.warn('Welcome email trigger note:', e));
 
       form.style.display = 'none';
       document.getElementById('stepperHeader').style.display = 'none';
@@ -2478,16 +2519,16 @@ export function initMultiStepRegistration() {
       if (successEmailEl) successEmailEl.textContent = email;
 
       launchConfettiCelebration();
-      showToast(`Welcome to WB Credit Union, ${firstName}! Account provisioned (Awaiting Admin Activation).`, 'success', 'Application Received');
+      showToast(`Welcome to WB Credit Union, ${firstName}! Application received. Account is Inactive until admin approval.`, 'info', 'Application Submitted');
 
-      let remainingSeconds = 5;
+      let remainingSeconds = 8;
       const timerEl = document.getElementById('autoRedirectTimer');
       const timerInterval = setInterval(() => {
         remainingSeconds--;
         if (timerEl) timerEl.textContent = String(remainingSeconds);
         if (remainingSeconds <= 0) {
           clearInterval(timerInterval);
-          window.location.href = '/pages/dashboard.html';
+          window.location.href = '/pages/login.html?notice=pending_approval';
         }
       }, 1000);
 

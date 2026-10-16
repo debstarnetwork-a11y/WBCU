@@ -469,6 +469,10 @@ export function selectUserForCodeManagement(userId) {
           ${isSet ? `
             <div class="d-flex items-center gap-2">
               <span class="admin-code-value-chip">${codeObj.code}</span>
+              <label class="admin-switch" title="Toggle ${key} code ON or OFF for this member">
+                <input type="checkbox" class="user-code-inline-toggle" data-code-key="${key}" ${isActive ? 'checked' : ''} />
+                <span class="admin-slider"></span>
+              </label>
               <span class="action-chip ${isActive ? 'action-chip-approve' : 'action-chip-flag'}">
                 ${isActive ? '✓ Active' : '✕ Inactive'}
               </span>
@@ -487,6 +491,21 @@ export function selectUserForCodeManagement(userId) {
       </div>
     `;
   }).join('');
+
+  // Bind Inline Switch Toggles
+  container.querySelectorAll('.user-code-inline-toggle').forEach((toggle) => {
+    toggle.onchange = (e) => {
+      const codeKey = toggle.getAttribute('data-code-key');
+      if (!codeKey) return;
+      const isChecked = e.target.checked;
+      if (user.wireTransferCodes && user.wireTransferCodes[codeKey]) {
+        user.wireTransferCodes[codeKey].active = isChecked;
+        updateUser(user);
+        selectUserForCodeManagement(user.id);
+        showToast(`${codeKey} code for ${user.fullName} is now ${isChecked ? 'ACTIVATED (ON)' : 'DEACTIVATED (OFF)'}.`, isChecked ? 'success' : 'warning', 'Code Status Updated');
+      }
+    };
+  });
 
   // Bind Assign Buttons
   container.querySelectorAll('.btn-assign-user-code').forEach((btn) => {

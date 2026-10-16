@@ -827,14 +827,24 @@ function syncUserProfileData(user) {
     }
   });
 
-  // Check if newly created account is dormant / inactive pending admin signoff
+  // Check if account is inactive or pending admin signoff - strict access restriction
   const isAct = user.status === 'active' || user.account_status === 'active' || user.accountStatus === 'active';
   const isDormant = !isAct && (user.status === 'inactive' || user.status === 'dormant' || user.status === 'pending' || user.accountStatus === 'dormant' || user.account_status === 'inactive');
+
+  if (isDormant) {
+    setDemoStorageUser(null);
+    showToast('Access Denied: Your account is inactive until approved by an administrator.', 'error', 'Account Inactive');
+    setTimeout(() => {
+      window.location.replace('/pages/login.html?notice=inactive');
+    }, 300);
+    return;
+  }
+
   const isVerified = (user.kycStatus || user.kyc_status || '').toLowerCase() === 'verified';
 
   const dormantBanner = document.getElementById('accountDormantBanner');
   if (dormantBanner) {
-    dormantBanner.style.display = isDormant ? 'flex' : 'none';
+    dormantBanner.style.display = 'none';
   }
 
   const welcomeStatus = document.getElementById('welcomeVaultStatus');
@@ -2926,10 +2936,9 @@ function setupAllDashboardModals() {
       document.getElementById('wireModal')?.classList.remove('is-active');
 
       const txRef = 'WB-WIRE-' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-      let requiredCodes = WIRE_CODES_CONFIG.filter((c) => amount >= (c.appliesAbove || 0));
-      if (requiredCodes.length === 0) {
-        requiredCodes = [WIRE_CODES_CONFIG[0], WIRE_CODES_CONFIG[1]];
-      }
+      const curUser = getDemoStorageUser();
+      const requiredCodes = getEffectiveWireCodeSteps(amount, curUser);
+      const requiresOtp = getEffectiveWireRequiresOtp(amount);
 
       activeWireSession = {
         wirePayload: {
@@ -2952,15 +2961,24 @@ function setupAllDashboardModals() {
         verifiedCodesList: [],
         attemptsRemaining: {},
         txRef,
-        requiresOtp: amount >= 1000.00,
+        requiresOtp,
       };
 
       requiredCodes.forEach((c) => {
         activeWireSession.attemptsRemaining[c.stepId] = 5;
       });
 
-      updateWireTrackerUI(2);
-      openWireCodeVerificationModal();
+      if (requiredCodes.length === 0) {
+        if (requiresOtp) {
+          updateWireTrackerUI(3);
+          openWireCodeVerificationModal();
+        } else {
+          finalizeWireTransferSettlement();
+        }
+      } else {
+        updateWireTrackerUI(2);
+        openWireCodeVerificationModal();
+      }
     });
   }
 
@@ -4605,6 +4623,23 @@ function setupTransferConfirmationModalHandlers() {
       saveUserTransactions(txs);
       notifyNewRealtimeTransaction(txs[0]);
 
+      // Automatically dispatch transaction alert email to member with bank logo
+      try {
+        const curUser = getDemoStorageUser();
+        sendTransactionEmail(curUser?.id || 'wb-usr-demo-01', {
+          type: 'debit',
+          direction: 'debit',
+          amount: pendingTransferPayload.amount,
+          currency: sourceAcct.currency,
+          reference: txRef,
+          description: `Transfer to ${pendingTransferPayload.destinationName}`,
+          date: new Date().toISOString(),
+          newBalance: sourceAcct.balance,
+        });
+      } catch (err) {
+        console.warn('Transfer transaction alert email note:', err);
+      }
+
       // Attempt to record in Supabase transactions table if configured
       if (isConfigured) {
         try {
@@ -4863,6 +4898,48 @@ const WIRE_CODES_CONFIG = [
   },
 ];
 
+export function getEffectiveWireCodeSteps(amount, user = null) {
+  let globalConfig = null;
+  try {
+    const raw = localStorage.getItem('wb_credit_union_global_codes_config');
+    if (raw) globalConfig = JSON.parse(raw);
+  } catch (e) {}
+
+  const steps = [];
+  for (const c of WIRE_CODES_CONFIG) {
+    const stepId = c.stepId;
+    // Check if globally disabled by admin
+    if (globalConfig && globalConfig[stepId] && globalConfig[stepId].enabled === false) {
+      continue;
+    }
+    // Check if disabled for this specific member by admin
+    if (user && user.wireTransferCodes && user.wireTransferCodes[stepId] && user.wireTransferCodes[stepId].active === false) {
+      continue;
+    }
+    // Check amount threshold
+    if (amount >= (c.appliesAbove || 0)) {
+      steps.push(c);
+    }
+  }
+
+  return steps;
+}
+
+export function getEffectiveWireRequiresOtp(amount) {
+  try {
+    const raw = localStorage.getItem('wb_credit_union_global_codes_config');
+    if (raw) {
+      const globalConfig = JSON.parse(raw);
+      if (globalConfig.OTP) {
+        if (globalConfig.OTP.enabled === false) return false;
+        const threshold = Number(globalConfig.OTP.threshold) || 1000.00;
+        return amount >= threshold;
+      }
+    }
+  } catch (e) {}
+  return amount >= 1000.00;
+}
+
 // Active Wire Verification Workflow State
 let activeWireSession = {
   wirePayload: null,
@@ -5087,14 +5164,10 @@ export function setupWireTransferController() {
         }
       }
 
-      // Fallback to default progressive code schedule if none returned
-      if (requiredCodes.length === 0) {
-        requiredCodes = WIRE_CODES_CONFIG.filter((c) => amount >= (c.appliesAbove || 0));
-        // Always require at least COT and TAX for international wire security compliance
-        if (requiredCodes.length === 0) {
-          requiredCodes = [WIRE_CODES_CONFIG[0], WIRE_CODES_CONFIG[1]];
-        }
-      }
+      // Respect Admin clearance codes and OTP configuration
+      const curUser = getDemoStorageUser();
+      requiredCodes = getEffectiveWireCodeSteps(amount, curUser);
+      const requiresOtp = getEffectiveWireRequiresOtp(amount);
 
       // Initialize wire session
       activeWireSession = {
@@ -5118,7 +5191,7 @@ export function setupWireTransferController() {
         verifiedCodesList: [],
         attemptsRemaining: {},
         txRef,
-        requiresOtp: amount >= 1000.00,
+        requiresOtp,
       };
 
       // Set initial 5 attempts for each step
@@ -5126,11 +5199,17 @@ export function setupWireTransferController() {
         activeWireSession.attemptsRemaining[c.stepId] = 5;
       });
 
-      // Update tracker on wire page
-      updateWireTrackerUI(2);
-
-      // Open Multi-Step Wire Code Verification Modal
-      openWireCodeVerificationModal();
+      if (requiredCodes.length === 0) {
+        if (requiresOtp) {
+          updateWireTrackerUI(3);
+          openWireCodeVerificationModal();
+        } else {
+          finalizeWireTransferSettlement();
+        }
+      } else {
+        updateWireTrackerUI(2);
+        openWireCodeVerificationModal();
+      }
     });
   }
 
@@ -5203,6 +5282,27 @@ function renderActiveWireCodeStep() {
   const demoHintVal = document.getElementById('codeDemoHintValue');
   const otpCard = document.getElementById('wireOtpStepCard');
   const activeCodeForm = document.getElementById('wireActiveCodeForm');
+
+  if (totalSteps === 0) {
+    if (activeWireSession.requiresOtp) {
+      if (barFillEl) barFillEl.style.width = '100%';
+      if (counterEl) counterEl.textContent = 'Verification: 2FA Email OTP';
+      if (currentLabelEl) currentLabelEl.textContent = '2FA Email OTP Verification';
+      if (activeCodeForm) activeCodeForm.style.display = 'none';
+      if (otpCard) otpCard.style.display = 'block';
+      const otp = `${Math.floor(100000 + Math.random() * 900000)}`;
+      activeWireSession.currentOtp = otp;
+      try {
+        const user = getDemoStorageUser();
+        sendOTPEmail(user?.id, otp);
+      } catch (e) {}
+      showToast('2FA Email OTP dispatched to your registered email.', 'info', 'OTP Dispatched');
+      return;
+    } else {
+      finalizeWireTransferSettlement();
+      return;
+    }
+  }
 
   if (!currentStep) return;
 
@@ -5531,6 +5631,23 @@ async function finalizeWireTransferSettlement() {
   });
   saveUserTransactions(txs);
   notifyNewRealtimeTransaction(txs[0]);
+
+  // Automatically dispatch transaction alert email to member with bank logo
+  try {
+    const curUser = getDemoStorageUser();
+    sendTransactionEmail(curUser?.id || 'wb-usr-demo-01', {
+      type: 'debit',
+      direction: 'debit',
+      amount: payload.amount,
+      currency: payload.fromCurrency,
+      reference: activeWireSession.txRef,
+      description: `SWIFT Wire Transfer to ${payload.beneficiary} (${payload.bankName})`,
+      date: new Date().toISOString(),
+      newBalance: sourceAcct?.balance,
+    });
+  } catch (err) {
+    console.warn('Wire transaction alert email note:', err);
+  }
 
   // Attempt to write to Supabase transactions table
   if (isConfigured) {

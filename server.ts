@@ -229,6 +229,9 @@ Respond concisely, politely, professionally, and in the language specified (${la
       <body style="margin:0; padding:24px; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color:#0b1120; color:#e2e8f0;">
         <div style="max-width:600px; margin:0 auto; background:#1e293b; border-radius:12px; border:1px solid #334155; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.5);">
           <div style="background:linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%); padding:24px; text-align:center;">
+            <div style="text-align:center; padding-bottom:12px;">
+              <img src="https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png" alt="WB Credit Union" style="height:48px; width:auto; max-width:220px; object-fit:contain; display:block; margin:0 auto;" />
+            </div>
             <h1 style="margin:0; color:#ffffff; font-size:22px; font-weight:700; letter-spacing:0.5px;">WB CREDIT UNION</h1>
             <p style="margin:6px 0 0 0; color:#93c5fd; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Swiss Depository & Institutional Wealth Management</p>
           </div>
@@ -743,6 +746,25 @@ Respond concisely, politely, professionally, and in the language specified (${la
   }
 
   // --- MYSQL DATABASE INTEGRATION (Authoritative cPanel Database Store) ---
+  function isConnRefusedError(err: any): boolean {
+    if (!err) return false;
+    const msg = String(err.message || err || '');
+    const code = String(err.code || err.errno || err.cause?.code || '');
+    return (
+      code === 'ECONNREFUSED' ||
+      code === 'ETIMEDOUT' ||
+      code === 'ENOTFOUND' ||
+      code === 'EHOSTUNREACH' ||
+      code === 'ER_ACCESS_DENIED_ERROR' ||
+      msg.includes('ECONNREFUSED') ||
+      msg.includes('ETIMEDOUT') ||
+      msg.includes('ENOTFOUND') ||
+      msg.includes('connect ECONNREFUSED') ||
+      msg.includes('Access denied') ||
+      msg.includes('PROTOCOL_CONNECTION_LOST')
+    );
+  }
+
   let mysqlPool: any = null;
   function getDbPool() {
     if (mysqlPool) return mysqlPool;
@@ -764,7 +786,9 @@ Respond concisely, politely, professionally, and in the language specified (${la
       });
       return mysqlPool;
     } catch (err) {
-      console.warn('[MYSQL POOL INIT WARN]', err);
+      if (!isConnRefusedError(err)) {
+        console.warn('[MYSQL POOL INIT WARN]', err);
+      }
       return null;
     }
   }
@@ -780,8 +804,8 @@ Respond concisely, politely, professionally, and in the language specified (${la
         const [rows]: any = await pool.query('SELECT * FROM users');
         if (Array.isArray(rows)) userRows = rows;
       } catch (err: any) {
-        if (err.code !== 'ECONNREFUSED' && err.code !== 'ETIMEDOUT' && err.code !== 'ENOTFOUND') {
-          console.warn('[FETCH USERS FROM MYSQL ERROR]', err.message);
+        if (!isConnRefusedError(err)) {
+          console.warn('[FETCH USERS FROM MYSQL ERROR]', err?.message || err);
         }
         return null;
       }
@@ -971,8 +995,10 @@ Respond concisely, politely, professionally, and in the language specified (${la
       }
 
       return finalUsers;
-    } catch (err) {
-      console.warn('[FETCH MYSQL USERS ERROR]', err);
+    } catch (err: any) {
+      if (!isConnRefusedError(err)) {
+        console.warn('[FETCH MYSQL USERS ERROR]', err?.message || err);
+      }
       return null;
     }
   }
@@ -1008,8 +1034,10 @@ Respond concisely, politely, professionally, and in the language specified (${la
             };
           }
         }
-      } catch (e) {
-        console.warn('[ADMINS TABLE QUERY NOTICE]', e);
+      } catch (e: any) {
+        if (!isConnRefusedError(e)) {
+          console.warn('[ADMINS TABLE QUERY NOTICE]', e?.message || e);
+        }
       }
 
       // 2. Check 'users' table directly (no join required so table schema differences never fail)
@@ -1050,13 +1078,17 @@ Respond concisely, politely, professionally, and in the language specified (${la
             };
           }
         }
-      } catch (e) {
-        console.warn('[USERS TABLE QUERY NOTICE]', e);
+      } catch (e: any) {
+        if (!isConnRefusedError(e)) {
+          console.warn('[USERS TABLE QUERY NOTICE]', e?.message || e);
+        }
       }
 
       return null;
-    } catch (err) {
-      console.warn('[VERIFY MYSQL ADMIN ERROR]', err);
+    } catch (err: any) {
+      if (!isConnRefusedError(err)) {
+        console.warn('[VERIFY MYSQL ADMIN ERROR]', err?.message || err);
+      }
       return null;
     }
   }

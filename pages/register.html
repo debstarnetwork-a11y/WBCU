@@ -665,33 +665,39 @@
              POST-REGISTRATION SUCCESS VIEW (SHOWN AFTER REGISTRATION)
              ================================================================ -->
         <div class="registration-success-panel" id="registrationSuccessPanel">
-          <div class="success-badge-circle" aria-hidden="true">
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-              <polyline points="20 6 9 17 4 12"></polyline>
+          <div class="success-badge-circle" style="background:#fef3c7; color:#d97706;" aria-hidden="true">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
           </div>
 
-          <h2 class="success-title">Membership Approved!</h2>
-          <p class="text-sm text-muted">Welcome to WB Credit Union. Your primary digital vault has been provisioned.</p>
+          <h2 class="success-title">Application Submitted &mdash; Pending Approval</h2>
+          <p class="text-sm text-muted">Your WB Credit Union membership application has been received. In accordance with banking security protocols, your account remains <strong>Inactive</strong> until reviewed and approved by an administrator.</p>
 
           <div class="success-account-card">
-            <div class="success-acct-label">Your New 10-Digit Account Number</div>
+            <div class="success-acct-label">Provisioned Account Number</div>
             <div class="success-acct-num" id="successAccountNumber">2514809281</div>
-            <div class="text-xs text-muted mt-2">Routing Number: <strong>251480576</strong></div>
+            <div class="text-xs text-muted mt-2">Status: <span class="badge" style="background:#fef3c7; color:#92400e; padding:3px 10px; border-radius:12px; font-weight:700; border:1px solid #fde68a;">INACTIVE / AWAITING ADMIN APPROVAL</span></div>
+            <div class="text-xs text-muted mt-1">Routing Number: <strong>251480576</strong></div>
+          </div>
+
+          <div class="alert alert-warning text-xs mb-3" style="background:#fffbeb; border:1px solid #fde68a; color:#92400e; border-radius:8px; padding:12px; text-align:left;">
+            <strong>Security Protection:</strong> You cannot log in or access your banking vault until an administrator activates your account. You will receive an official activation email once clearance is granted.
           </div>
 
           <p class="success-email-notice">
-            A confirmation welcome package and security instructions have been dispatched to <strong id="successEmailTarget" class="text-dark">your email</strong>.
+            A confirmation welcome package with details has been automatically dispatched to <strong id="successEmailTarget" class="text-dark">your email</strong>.
           </p>
 
           <div class="d-flex justify-center gap-3">
-            <a href="/pages/dashboard.html" class="btn btn-primary btn-lg" id="btnGoToDashboard">
-              Enter Member Dashboard &rarr;
+            <a href="/pages/login.html" class="btn btn-primary btn-lg" id="btnGoToLogin">
+              Go to Member Sign In &rarr;
             </a>
           </div>
 
           <div class="text-xs text-muted mt-4">
-            Auto-routing to your banking vault in <span id="autoRedirectTimer" class="font-bold text-navy">5</span> seconds...
+            Routing to sign in page in <span id="autoRedirectTimer" class="font-bold text-navy">8</span> seconds...
           </div>
         </div>
       </div>
