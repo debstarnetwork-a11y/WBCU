@@ -668,6 +668,16 @@ Respond concisely, politely, professionally, and in the language specified (${la
       const data = JSON.parse(fs.readFileSync(USERS_FILE, "utf-8"));
       if (Array.isArray(data) && data.length > 0) {
         serverUsersStore = data;
+        let added = false;
+        defaultSeedUsers.forEach((seed) => {
+          if (!serverUsersStore.some((u) => u.id === seed.id || (u.email && seed.email && u.email.toLowerCase() === seed.email.toLowerCase()))) {
+            serverUsersStore.push(seed);
+            added = true;
+          }
+        });
+        if (added) {
+          fs.writeFileSync(USERS_FILE, JSON.stringify(serverUsersStore, null, 2), "utf-8");
+        }
       }
     } else {
       fs.writeFileSync(USERS_FILE, JSON.stringify(defaultSeedUsers, null, 2), "utf-8");

@@ -239,6 +239,137 @@ export const initialSeedUsers = [
       OTP: '806158'
     },
     activityLog: []
+  },
+  {
+    id: 'usr-34400',
+    fullName: 'Kristin Willis',
+    firstName: 'Kristin',
+    lastName: 'Willis',
+    username: 'kwillis',
+    email: 'kwillis.member@wbcu-reserve.ch',
+    password: 'MemberPass123!',
+    pin: '8869',
+    transactionPin: '8869',
+    role: 'Member',
+    is_admin: false,
+    phone: '9377334076',
+    avatar: 'KW',
+    avatarColor: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+    dob: '1988-03-24',
+    nationality: 'United States',
+    address: '742 Evergreen Terrace, Springfield, OR 97477',
+    status: 'active',
+    account_status: 'active',
+    accountStatus: 'active',
+    statusReason: 'Account Active & Verified',
+    kycStatus: 'verified',
+    kyc_status: 'verified',
+    createdAt: '2026-10-13T10:00:00Z',
+    accounts: [
+      {
+        accountNumber: '09331164041',
+        type: 'Checking',
+        name: 'Premier Checking Account',
+        currency: 'USD',
+        balance: 145000.00,
+        status: 'active',
+        routingNumber: '021000089',
+        isPrimary: true,
+      }
+    ],
+    transactions: [],
+    cards: [
+      {
+        id: 'crd-34400',
+        cardNumber: '4532 9918 2041 3310',
+        cardHolder: 'KRISTIN WILLIS',
+        type: 'Visa Platinum Debit',
+        expiry: '09/31',
+        cvv: '884',
+        pin: '8869',
+        status: 'active',
+        dailyAtmLimit: 10000,
+        onlineLimit: 50000,
+      }
+    ],
+    cryptoWallets: [
+      { currency: 'BTC', balance: 1.45, address: 'bc1q9x48v2m9sl3k0pw84mz789xq4e9', status: 'active' }
+    ],
+    wireTransferCodes: {
+      COT: { code: '0467799', active: true, notes: 'Cost of Transfer clearance token' },
+      TAX: { code: 'TX-88392', active: true, notes: 'Tax Clearance certificate' },
+      IMF: { code: '9498779', active: true, notes: 'IMF Clearance signoff' },
+      AML: { code: 'AML-86902', active: true, notes: 'Anti-Money Laundering verification key' },
+      PAP: { code: 'PAP-70216', active: true, notes: 'Proof of Anti-Piracy clearance' },
+      OTP: '806158'
+    },
+    activityLog: []
+  },
+  {
+    id: 'usr-659',
+    fullName: 'Olle Robert Christer Råström',
+    firstName: 'Olle Robert Christer',
+    lastName: 'Råström',
+    username: 'ollerobertrstrm52',
+    email: 'olle.rastrom@swissprivatevault.ch',
+    password: 'Password123!',
+    pin: '8869',
+    transactionPin: '8869',
+    role: 'Member',
+    is_admin: false,
+    phone: '+46702813441',
+    avatar: 'OR',
+    avatarColor: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
+    dob: '1982-05-18',
+    nationality: 'Sweden',
+    address: 'Korgmakargatan 32 621 53 Visby',
+    status: 'active',
+    account_status: 'active',
+    accountStatus: 'active',
+    statusReason: 'Active Member Clearance',
+    kycStatus: 'verified',
+    kyc_status: 'verified',
+    createdAt: '2026-10-07T10:00:00Z',
+    lastLogin: new Date().toISOString(),
+    accounts: [
+      {
+        accountNumber: '09372996993',
+        type: 'Checking',
+        name: 'Primary Checking Vault',
+        currency: 'USD',
+        balance: 100000.00,
+        status: 'active',
+        routingNumber: '021000089',
+        isPrimary: true
+      }
+    ],
+    transactions: [],
+    cards: [
+      {
+        id: 'crd-659',
+        cardNumber: '4532 7140 3114 3230',
+        cardHolder: 'OLLE ROBERT CHRISTER RÅSTRÖM',
+        type: 'Visa Platinum Debit',
+        expiry: '09/31',
+        cvv: '775',
+        pin: '8869',
+        status: 'active',
+        dailyAtmLimit: 10000,
+        onlineLimit: 50000,
+      }
+    ],
+    cryptoWallets: [
+      { currency: 'BTC', balance: 0.00, address: 'bc1q9x48v2m9sl3k0pw84mz789xq4e9', status: 'active' }
+    ],
+    wireTransferCodes: {
+      COT: { code: '0467799', active: true, notes: 'Cost of Transfer clearance token' },
+      TAX: { code: 'TX-88392', active: true, notes: 'Tax Clearance certificate' },
+      IMF: { code: '9498779', active: true, notes: 'IMF Clearance signoff' },
+      AML: { code: 'AML-86902', active: true, notes: 'Anti-Money Laundering key' },
+      PAP: { code: 'PAP-70216', active: true, notes: 'Proof of Anti-Piracy clearance' },
+      OTP: '806158'
+    },
+    activityLog: []
   }
 ];
 
@@ -929,11 +1060,94 @@ export async function syncAdminUsersWithServer() {
     }
 
     if (Array.isArray(data.users) && data.users.length > 0) {
-      // Server database records are authoritative: update roster immediately
-      currentUsers = [...data.users];
-      saveAdminUsersList(currentUsers);
+      // Non-destructive bidirectional merge: preserve all registered users
+      const mergedMap = new Map();
+
+      // 1. Gather all existing local users first
+      const existingRoster = Array.isArray(currentUsers) && currentUsers.length > 0 ? currentUsers : getAdminUsersList();
+      (existingRoster || []).forEach((u) => {
+        if (!u) return;
+        const key = (u.id || '') + '::' + (u.email || '').toLowerCase();
+        mergedMap.set(key, u);
+      });
+
+      // Also gather from any secondary storage keys so newly registered members are never lost
+      try {
+        const secondaryKeys = [
+          'wb_credit_union_admin_users_db',
+          'wb_credit_union_registered_members_list',
+          'wbcu_all_registered_users',
+          'wbcu_user_registered_accounts'
+        ];
+        secondaryKeys.forEach((k) => {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            const list = JSON.parse(raw);
+            if (Array.isArray(list)) {
+              list.forEach((u) => {
+                if (!u) return;
+                const match = Array.from(mergedMap.values()).find(
+                  (ex) => (u.id && ex.id === u.id) || (u.email && ex.email && ex.email.toLowerCase() === u.email.toLowerCase())
+                );
+                if (!match) {
+                  const key = (u.id || '') + '::' + (u.email || '').toLowerCase();
+                  mergedMap.set(key, u);
+                }
+              });
+            }
+          }
+        });
+      } catch (e) {}
+
+      // 2. Merge server users in (server users update existing fields or add new entries)
+      const localOnlyUsers = [];
+      data.users.forEach((srvUser) => {
+        if (!srvUser) return;
+        const existingEntry = Array.from(mergedMap.values()).find(
+          (loc) => (srvUser.id && loc.id === srvUser.id) || (srvUser.email && loc.email && loc.email.toLowerCase() === srvUser.email.toLowerCase())
+        );
+        if (existingEntry) {
+          // Merge server data onto existing local entry, keeping passwords/photos if server lacks them
+          Object.assign(existingEntry, srvUser);
+        } else {
+          const key = (srvUser.id || '') + '::' + (srvUser.email || '').toLowerCase();
+          mergedMap.set(key, srvUser);
+        }
+      });
+
+      // 3. Find any local users that server didn't have, so we push them to backend
+      mergedMap.forEach((u) => {
+        const onServer = data.users.some(
+          (srv) => (u.id && srv.id === u.id) || (u.email && srv.email && srv.email.toLowerCase() === u.email.toLowerCase())
+        );
+        if (!onServer && (u.id || u.email)) {
+          localOnlyUsers.push(u);
+        }
+      });
+
+      currentUsers = Array.from(mergedMap.values());
+      try {
+        localStorage.setItem(ADMIN_USERS_STORAGE_KEY, JSON.stringify(currentUsers));
+        localStorage.setItem('wb_credit_union_registered_members_list', JSON.stringify(currentUsers));
+      } catch (e) {}
+
       filteredUsers = [...currentUsers];
       renderUsersTable();
+
+      // If local storage had registered users the server didn't have, automatically push them
+      if (localOnlyUsers.length > 0) {
+        console.log('[ADMIN SYNC] Pushing locally registered users to server:', localOnlyUsers.length);
+        fetch('/api/admin-users.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ users: localOnlyUsers, is_chunk: true }),
+        }).catch(() => {});
+        fetch('/api/admin/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ users: localOnlyUsers, is_chunk: true }),
+        }).catch(() => {});
+      }
     } else if (data.db_connected && Array.isArray(data.users) && data.users.length === 0 && currentUsers.length > 0) {
       // Server is empty but we have local users: push local to server instead of wiping
       console.log('[ADMIN SYNC] Server is empty, pushing local roster to server...');

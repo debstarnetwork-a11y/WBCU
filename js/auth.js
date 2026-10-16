@@ -924,6 +924,34 @@ export function initLoginForm() {
           } catch (e) {}
         }
 
+        // Check backend server users store if not found in local cache
+        if (!dbUser) {
+          try {
+            const srvRes = await fetch('/api/admin/users');
+            if (srvRes && srvRes.ok) {
+              const srvData = await srvRes.json();
+              if (srvData && Array.isArray(srvData.users)) {
+                dbUser = srvData.users.find((u) => 
+                  (u.email && u.email.toLowerCase() === queryLower) ||
+                  (u.username && u.username.toLowerCase() === queryLower) ||
+                  (u.id && u.id.toLowerCase() === queryLower) ||
+                  (queryDigits.length >= 7 && u.phone && u.phone.replace(/\D/g, '').includes(queryDigits)) ||
+                  (queryDigits.length >= 8 && Array.isArray(u.accounts) && u.accounts.some(a => (a.accountNumber || '').replace(/\D/g, '') === queryDigits))
+                );
+                if (dbUser) {
+                  try {
+                    const localStore = JSON.parse(localStorage.getItem('wb_credit_union_admin_users_db') || '[]');
+                    if (!localStore.some(x => x.id === dbUser.id || (x.email && dbUser.email && x.email.toLowerCase() === dbUser.email.toLowerCase()))) {
+                      localStore.unshift(dbUser);
+                      localStorage.setItem('wb_credit_union_admin_users_db', JSON.stringify(localStore));
+                    }
+                  } catch (e) {}
+                }
+              }
+            }
+          } catch (e) {}
+        }
+
         const isMizbrymo = queryLower.includes('mizbrymo') || queryLower === 'mizbrymo@gmail.com';
         const isSuspended = queryLower.includes('suspended') || queryLower === 'suspended@wbcu.net';
         const isFrozen = queryLower.includes('frozen') || queryLower === 'frozen@wbcu.net';
@@ -2492,11 +2520,18 @@ export function initMultiStepRegistration() {
         adminUsers.unshift(adminUserRecord);
         localStorage.setItem('wb_credit_union_admin_users_db', JSON.stringify(adminUsers));
         localStorage.setItem('wb_credit_union_registered_members_list', JSON.stringify(adminUsers));
+        localStorage.setItem('wbcu_all_registered_users', JSON.stringify(adminUsers));
         try {
+          const syncBody = JSON.stringify({ users: [adminUserRecord], is_chunk: true });
           fetch('/api/admin-users.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ users: adminUsers }),
+            body: syncBody,
+          }).catch(() => {});
+          fetch('/api/admin/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: syncBody,
           }).catch(() => {});
         } catch (e) {}
       } catch (e) {

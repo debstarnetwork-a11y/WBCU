@@ -319,10 +319,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $isChunk = !empty($input['is_chunk']);
-    if (!$isChunk) {
-        saveUsersToFile($dataFile, $users);
+    $existingUsers = loadUsersFromFile($dataFile);
+    $mergedMap = [];
+    foreach ($existingUsers as $u) {
+        if (!empty($u['id'])) $mergedMap[$u['id']] = $u;
+        else if (!empty($u['email'])) $mergedMap[$u['email']] = $u;
     }
+    foreach ($users as $nu) {
+        if (!empty($nu['id'])) {
+            $mergedMap[$nu['id']] = isset($mergedMap[$nu['id']]) ? array_merge($mergedMap[$nu['id']], $nu) : $nu;
+        } else if (!empty($nu['email'])) {
+            $mergedMap[$nu['email']] = isset($mergedMap[$nu['email']]) ? array_merge($mergedMap[$nu['email']], $nu) : $nu;
+        }
+    }
+    $finalList = array_values($mergedMap);
+    saveUsersToFile($dataFile, $finalList);
 
     $syncErrors = [];
     $processedCount = 0;
