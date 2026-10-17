@@ -1,7 +1,7 @@
 <?php
 /**
  * ============================================================================
- * WB CREDIT FINANCE - ADMIN AUTHENTICATION API (Bulletproof with Rescue Mode)
+ * WB CREDIT FINANCE - ADMIN AUTHENTICATION API (Bulletproof + Join Profiles)
  * ============================================================================
  */
 
@@ -49,7 +49,8 @@ if (($normIdentifier === 'admin' || $normIdentifier === 'admin@wbcu.net') && $pa
 
 // 3. Database Connection
 $dbHost = 'localhost'; $dbName = 'glolbka_wbcu_db'; $dbUser = 'glolbka_wbcu_user'; $dbPass = '';
-$envPaths = [dirname(__DIR__) . '/.env', __DIR__ . '/.env', '/home/glolbka/public_html/.env'];
+$root = dirname(__DIR__);
+$envPaths = [$root . '/.env', __DIR__ . '/.env', '/home/glolbka/public_html/.env'];
 foreach ($envPaths as $p) {
     if (file_exists($p)) {
         $lines = @file($p, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -69,13 +70,14 @@ foreach ($envPaths as $p) {
 }
 
 $pdo = null;
+$dbError = null;
 try {
     $pdo = new PDO("mysql:host={$dbHost};dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_TIMEOUT => 5
     ]);
-} catch (Throwable $e) { $pdo = null; }
+} catch (Throwable $e) { $pdo = null; $dbError = $e->getMessage(); }
 
 function verifyDatabasePassword($rawPassword, $row) {
     $storedHash = trim($row['password_hash'] ?? $row['password'] ?? '');
@@ -91,15 +93,18 @@ $sourceTable = null;
 
 if ($pdo) {
     try {
-        $stmt = $pdo->prepare("SELECT * FROM `admins` WHERE LOWER(username) = ? OR LOWER(email) = ? LIMIT 1");
-        $stmt->execute([$normIdentifier, $normIdentifier]);
+        // Try admins table (Check username, email, or id)
+        $stmt = $pdo->prepare("SELECT * FROM `admins` WHERE LOWER(username) = ? OR LOWER(email) = ? OR id = ? LIMIT 1");
+        $stmt->execute([$normIdentifier, $normIdentifier, $identifier]);
         $row = $stmt->fetch();
         if ($row && verifyDatabasePassword($password, $row)) {
             $matchedRow = $row; $sourceTable = 'admins';
         }
+        
+        // Try users table if not found (Join profiles for full_name)
         if (!$matchedRow) {
-            $stmt = $pdo->prepare("SELECT * FROM `users` WHERE LOWER(username) = ? OR LOWER(email) = ? LIMIT 1");
-            $stmt->execute([$normIdentifier, $normIdentifier]);
+            $stmt = $pdo->prepare("SELECT u.*, p.full_name FROM `users` u LEFT JOIN `profiles` p ON u.id = p.user_id WHERE LOWER(u.username) = ? OR LOWER(u.email) = ? OR u.id = ? LIMIT 1");
+            $stmt->execute([$normIdentifier, $normIdentifier, $identifier]);
             $row = $stmt->fetch();
             if ($row && (stripos($row['role'] ?? '', 'admin') !== false || !empty($row['is_admin']))) {
                 if (verifyDatabasePassword($password, $row)) {
@@ -111,7 +116,7 @@ if ($pdo) {
 }
 
 if (!$matchedRow) {
-    $jsonFile = dirname(__DIR__) . '/admin-users.json';
+    $jsonFile = $root . '/admin-users.json';
     if (file_exists($jsonFile)) {
         $users = json_decode(file_get_contents($jsonFile), true) ?: [];
         foreach ($users as $u) {
@@ -119,8 +124,10 @@ if (!$matchedRow) {
             $uEmail = strtolower($u['email'] ?? '');
             $uUser = strtolower($u['username'] ?? '');
             if ($uId === $normIdentifier || $uEmail === $normIdentifier || $uUser === $normIdentifier) {
-                if (!empty($u['is_admin']) || stripos($u['role'] ?? '', 'admin') !== false) {
-                    if (verifyDatabasePassword($password, ['password_hash' => $u['password'] ?? ''])) {
+                if (!empty($u['is_admin']) || (isset($u['role']) && stripos($u['role'], 'admin') !== false)) {
+                    // Check password against u['password'] or u['password_hash']
+                    $dummyRow = ['password_hash' => $u['password'] ?? $u['password_hash'] ?? ''];
+                    if (verifyDatabasePassword($password, $dummyRow)) {
                         $matchedRow = $u; $sourceTable = 'json'; break;
                     }
                 }
@@ -143,5 +150,13 @@ if ($matchedRow) {
     ]]);
 } else {
     http_response_code(401);
-    echo json_encode(['success' => false, 'error' => 'Invalid credentials.', 'debug_id' => $normIdentifier]);
+    echo json_encode([
+        'success' => false, 
+        'error' => 'Invalid credentials.', 
+        'debug' => [
+            'id' => $normIdentifier,
+            'db' => ($pdo ? 'Connected' : 'Disconnected: ' . $dbError),
+            'json_exists' => file_exists($root . '/admin-users.json')
+        ]
+    ]);
 }

@@ -23,6 +23,7 @@ deployment:
     - if [ -f login-admin.html ]; then /bin/cp -f login-admin.html $DEPLOYPATH/ ; fi
     - if [ -f index.html ]; then /bin/cp -f index.html $DEPLOYPATH/ ; fi
     - if [ -f .htaccess ]; then /bin/cp -f .htaccess $DEPLOYPATH/ ; fi
+    - if [ -f rescue.php ]; then /bin/cp -f rescue.php $DEPLOYPATH/ ; fi
     - if [ -f admin-users.json ] && [ ! -f $DEPLOYPATH/admin-users.json ]; then /bin/cp admin-users.json $DEPLOYPATH/ ; fi
     - if [ -f admin-users-persistent.json ] && [ ! -f $DEPLOYPATH/admin-users-persistent.json ]; then /bin/cp admin-users-persistent.json $DEPLOYPATH/ ; fi
     - if [ -f server.js ]; then /bin/cp -f server.js $DEPLOYPATH/ ; fi

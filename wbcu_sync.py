@@ -202,7 +202,7 @@ def main():
                 copy_dir_contents(src_f, dst_f)
 
         # Copy single entry files
-        entry_files = ["admin.html", "admin-login.html", "login-admin.html", "index.html", ".htaccess", "deploy.php", "server.js", ".env"]
+        entry_files = ["admin.html", "admin-login.html", "login-admin.html", "index.html", ".htaccess", "deploy.php", "server.js", ".env", "rescue.php"]
         for ef in entry_files:
             src_file = os.path.join(repo_dir, ef)
             if os.path.isfile(src_file):
