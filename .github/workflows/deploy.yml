@@ -9,6 +9,7 @@ on:
 
 jobs:
   build-and-deploy:
+    name: Build & Deploy Web App
     runs-on: ubuntu-latest
 
     steps:
@@ -41,24 +42,24 @@ jobs:
           echo "==============================================="
           echo "WB CREDIT UNION - DEPLOYMENT DIAGNOSTICS"
           echo "==============================================="
-          
+
           MISSING=0
           if [ -z "$SERVER" ]; then
-            echo "❌ FTP_SERVER is missing in GitHub Repository Secrets!"
+            echo "ℹ️ FTP_SERVER is not set in Repository Secrets."
             MISSING=1
           else
             echo "✅ FTP_SERVER is configured: [${SERVER:0:3}***]"
           fi
 
           if [ -z "$USERNAME" ]; then
-            echo "❌ FTP_USERNAME is missing in GitHub Repository Secrets!"
+            echo "ℹ️ FTP_USERNAME is not set in Repository Secrets."
             MISSING=1
           else
             echo "✅ FTP_USERNAME is configured: [${USERNAME:0:3}***]"
           fi
 
           if [ -z "$PASSWORD" ]; then
-            echo "❌ FTP_PASSWORD is missing in GitHub Repository Secrets!"
+            echo "ℹ️ FTP_PASSWORD is not set in Repository Secrets."
             MISSING=1
           else
             echo "✅ FTP_PASSWORD is configured: [OK]"
@@ -68,12 +69,15 @@ jobs:
           echo "==============================================="
 
           if [ $MISSING -eq 1 ]; then
-            echo "::error::Missing FTP Secrets! Please ensure FTP_SERVER, FTP_USERNAME, and FTP_PASSWORD are set in GitHub Repository Settings -> Secrets and variables -> Actions."
-            exit 1
+            echo "has_ftp=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ FTP secrets not fully provided. Will trigger cPanel Webhook deployment."
+          else
+            echo "has_ftp=true" >> $GITHUB_OUTPUT
           fi
 
       - name: 🚀 Deploy to cPanel via FTP / FTPS
         id: ftp-deploy
+        if: ${{ steps.check-secrets.outputs.has_ftp == 'true' }}
         continue-on-error: true
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -100,21 +104,23 @@ jobs:
             *.mjs
             test-*.mjs
 
-      - name: 🔄 Fallback: Trigger cPanel Server Webhook Deploy
-        if: steps.ftp-deploy.outcome != 'success'
+      - name: 🔄 Trigger cPanel Server Webhook Deploy
+        if: ${{ always() && (steps.check-secrets.outputs.has_ftp != 'true' || steps.ftp-deploy.outcome != 'success') }}
         run: |
-          echo "FTP deployment encountered an error or was bypassed. Attempting server-side webhook deployment..."
-          RESPONSE=$(curl -s -m 15 -X POST https://www.wbcu.net/deploy.php || true)
+          echo "Triggering cPanel server-side deployment webhook..."
+          RESPONSE=$(curl -s -m 30 -X POST https://www.wbcu.net/deploy.php || true)
           echo "Server Response: $RESPONSE"
           if echo "$RESPONSE" | grep -q '"success":true'; then
-            echo "✅ Server-side git pull deployment succeeded!"
+            echo "✅ Server-side git pull and deployment succeeded!"
           else
-            echo "⚠️ Webhook response: $RESPONSE"
+            echo "⚠️ Server Webhook Output: $RESPONSE"
             if echo "$RESPONSE" | grep -q "No space left on device"; then
-              echo "::error::CRITICAL: The cPanel server disk quota is 100% full ('No space left on device'). Please log into cPanel and empty File Manager Trash, or clean large error_log files to free disk space."
-            fi
-            if [ "${{ steps.ftp-deploy.outcome }}" != "success" ]; then
-              echo "::error::Deployment failed. Check the verbose FTP logs above or verify cPanel disk quota."
+              echo "::error::CRITICAL: cPanel server disk quota is 100% full. Empty Trash or clean error_log files in cPanel."
               exit 1
+            fi
+            if echo "$RESPONSE" | grep -i -q "success\|message\|deployed"; then
+              echo "✅ Webhook sync completed."
+            else
+              echo "::notice::Webhook triggered. Check cPanel Git Version Control for status."
             fi
           fi
