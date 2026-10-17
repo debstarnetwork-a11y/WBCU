@@ -1,13 +1,9 @@
 -- ============================================================================
--- WB CREDIT FINANCE - SAFE CPANEL MYSQL DATABASE UPDATE SCRIPT (100% COMPATIBLE)
+-- WB CREDIT FINANCE - TARGETED CPANEL MYSQL DATABASE UPDATE SCRIPT
 -- ============================================================================
--- NOTE: THIS SCRIPT IS 100% NON-DESTRUCTIVE.
--- FOREIGN_KEY_CHECKS IS TEMPORARILY DISABLED FOR BULK UPSERT WITHOUT ERRORS.
--- ============================================================================
-
 SET FOREIGN_KEY_CHECKS = 0;
 
--- 1. UPSERT ALL 9 USERS
+-- 1. UPSERT USERS
 INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `role`, `transaction_pin`, `status`, `kyc_status`)
 VALUES
 ('wb-usr-y4rfbph', 'debeluemmanuel', 'debeluemmanuel@gmail.com', 'yeshuah.com', 'user', '4004', 'active', 'verified'),
@@ -20,15 +16,24 @@ VALUES
 ('usr-corp-02', 'msterling', 'treasury@sterlingmerchant.com', 'Password123!', 'user', '8869', 'active', 'verified'),
 ('usr-alex-01', 'amorgan', 'alexander.morgan@wbcu.net', 'Password123!', 'user', '1234', 'active', 'verified')
 ON DUPLICATE KEY UPDATE
-  `username` = VALUES(`username`),
-  `email` = VALUES(`email`),
   `password_hash` = VALUES(`password_hash`),
   `role` = VALUES(`role`),
   `transaction_pin` = VALUES(`transaction_pin`),
   `status` = VALUES(`status`),
   `kyc_status` = VALUES(`kyc_status`);
 
--- 2. UPSERT USER PROFILES
+-- 2. UPSERT ADMINS
+INSERT INTO `admins` (`id`, `username`, `email`, `password_hash`, `full_name`, `role`, `status`)
+VALUES
+('usr-admin-01', 'admin', 'admin@wbcu.net', '12345', 'Chief Treasury Auditor', 'super_admin', 'active'),
+('usr-101', 'mizbrymo', 'mizbrymo@gmail.com', '12345', 'Miz Brymo', 'super_admin', 'active')
+ON DUPLICATE KEY UPDATE
+  `password_hash` = VALUES(`password_hash`),
+  `full_name` = VALUES(`full_name`),
+  `role` = VALUES(`role`),
+  `status` = VALUES(`status`);
+
+-- 3. UPSERT PROFILES
 INSERT INTO `profiles` (`id`, `user_id`, `first_name`, `last_name`, `full_name`, `phone_number`)
 VALUES
 ('prof-wb-usr-y4rfbph', 'wb-usr-y4rfbph', 'DEBELU', 'EMMANUEL', 'DEBELU EMMANUEL', '+2347065096181'),
@@ -44,29 +49,24 @@ ON DUPLICATE KEY UPDATE
   `full_name` = VALUES(`full_name`),
   `phone_number` = VALUES(`phone_number`);
 
--- 3. UPSERT USER VAULT ACCOUNTS
-INSERT INTO `accounts` (`id`, `user_id`, `account_number`, `account_type`, `account_name`, `currency`, `balance`, `available_balance`, `routing_number`, `is_primary`, `status`)
+-- 4. UPSERT ACCOUNTS
+INSERT INTO `accounts` (`id`, `user_id`, `account_number`, `account_type`, `account_name`, `currency`, `balance`, `available_balance`, `routing_number`, `swift_bic`, `is_primary`, `status`)
 VALUES
-('acct-usd-wb-usr-y4rfbph', 'wb-usr-y4rfbph', '9482-1049-55', 'Checking', 'US Dollar Primary Vault', 'USD', 100000.00, 100000.00, '021000089', 1, 'active'),
-('acct-eur-wb-usr-y4rfbph', 'wb-usr-y4rfbph', 'WB-EUR-8841', 'Offshore', 'Euro Global Holding Vault', 'EUR', 0.00, 0.00, '021000089', 0, 'active'),
-('acct-usr-prof-mvb5wo7j-USD', 'usr-prof-mvb5wo7j', '09372996993', 'Checking', 'Primary Checking Vault', 'USD', 100000.00, 100000.00, '021000089', 1, 'active'),
-('acct-usr-admin-01-USD', 'usr-admin-01', '09331164002', 'Checking', 'Executive Reserve Vault', 'USD', 500000.00, 500000.00, '021000089', 1, 'active'),
-('acct-usr-101-USD', 'usr-101', 'WB-9482-1049-55', 'Checking', 'Premier Checking Vault', 'USD', 248500.00, 248500.00, '021000089', 1, 'active'),
-('acct-usr-101-CHF', 'usr-101', 'WB-9482-1049-56', 'Savings', 'Swiss Franc Reserve Vault', 'CHF', 1450000.00, 1450000.00, '021000089', 0, 'active'),
-('acct-usr-34400-USD', 'usr-34400', '2514809281', 'Checking', 'Primary Member Vault', 'USD', 145000.00, 145000.00, '021000089', 1, 'active'),
-('acct-usr-659-USD', 'usr-659', '09372996993', 'Checking', 'Primary Checking Vault', 'USD', 100000.00, 100000.00, '021000089', 1, 'active'),
-('acct-usr-corp-01-USD', 'usr-corp-01', '2514801192', 'Checking', 'Corporate Logistics Vault', 'USD', 312000.00, 312000.00, '021000089', 1, 'active'),
-('acct-usr-corp-02-USD', 'usr-corp-02', '2514808821', 'Checking', 'Merchant Treasury Vault', 'USD', 850000.00, 850000.00, '021000089', 1, 'active'),
-('acct-usr-alex-01-USD', 'usr-alex-01', '2514809901', 'Checking', 'Private Depository Vault', 'USD', 1250000.00, 1250000.00, '021000089', 1, 'active')
+('acct-usd-wb-usr-y4rfbph', 'wb-usr-y4rfbph', '9482-1049-55', 'Checking', 'US Dollar Primary Vault', 'USD', 100000.00, 100000.00, '251480576', 'WBCUUS33', 1, 'active'),
+('acct-eur-wb-usr-y4rfbph', 'wb-usr-y4rfbph', 'WB-EUR-8841', 'Offshore', 'Euro Global Holding Vault', 'EUR', 0.00, 0.00, '251480576', 'WBCUUS33', 0, 'active'),
+('acct-usr-prof-mvb5wo7j-USD', 'usr-prof-mvb5wo7j', '09372996993', 'Checking', 'Primary Checking Vault', 'USD', 100000.00, 100000.00, '251480576', 'WBCUUS33', 1, 'active'),
+('acct-usr-admin-01-USD', 'usr-admin-01', '09331164002', 'Checking', 'Executive Reserve Vault', 'USD', 500000.00, 500000.00, '251480576', 'WBCUUS33', 1, 'active'),
+('acct-usr-101-USD', 'usr-101', 'WB-9482-1049-55', 'Checking', 'Premier Checking Vault', 'USD', 248500.00, 248500.00, '251480576', 'WBCUUS33', 1, 'active'),
+('acct-usr-101-CHF', 'usr-101', 'WB-9482-1049-56', 'Savings', 'Swiss Franc Reserve Vault', 'CHF', 1450000.00, 1450000.00, '251480576', 'WBCUUS33', 0, 'active'),
+('acct-usr-34400-USD', 'usr-34400', '2514809281', 'Checking', 'Primary Member Vault', 'USD', 145000.00, 145000.00, '251480576', 'WBCUUS33', 1, 'active'),
+('acct-usr-659-USD', 'usr-659', '09372996993', 'Checking', 'Primary Checking Vault', 'USD', 100000.00, 100000.00, '251480576', 'WBCUUS33', 1, 'active'),
+('acct-usr-corp-01-USD', 'usr-corp-01', '2514801192', 'Checking', 'Corporate Logistics Vault', 'USD', 312000.00, 312000.00, '251480576', 'WBCUUS33', 1, 'active'),
+('acct-usr-corp-02-USD', 'usr-corp-02', '2514808821', 'Checking', 'Merchant Treasury Vault', 'USD', 850000.00, 850000.00, '251480576', 'WBCUUS33', 1, 'active'),
+('acct-usr-alex-01-USD', 'usr-alex-01', '2514809901', 'Checking', 'Private Depository Vault', 'USD', 1250000.00, 1250000.00, '251480576', 'WBCUUS33', 1, 'active')
 ON DUPLICATE KEY UPDATE
   `balance` = VALUES(`balance`),
   `available_balance` = VALUES(`available_balance`),
   `account_number` = VALUES(`account_number`);
-
--- 4. INSTITUTION SETTINGS
-INSERT INTO `system_settings` (`key_name`, `value_json`) VALUES
-('institution_info', '{"bankName":"WB Credit Finance","domain":"wbcu.net","routingNumber":"021000089","swiftCode":"WBCUUS33","supportEmail":"support@wbcu.net","headquarters":"109, Feldgüetliweg Meilen, Zurich 8706, Switzerland"}')
-ON DUPLICATE KEY UPDATE `value_json` = VALUES(`value_json`);
 
 
 SET FOREIGN_KEY_CHECKS = 1;
