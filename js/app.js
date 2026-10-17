@@ -2902,6 +2902,7 @@ function setupAllDashboardModals() {
       const currency = document.getElementById('wireCurrencySelect')?.value || 'USD';
       const amount = parseFloat(document.getElementById('wireAmountInput')?.value) || 0;
       const beneficiary = document.getElementById('wireBeneficiaryName')?.value.trim();
+      const bankName = document.getElementById('wireBankName')?.value.trim();
       const iban = document.getElementById('wireIbanInput')?.value.trim();
       const swift = document.getElementById('wireSwiftInput')?.value.trim().toUpperCase();
       const bankCountry = document.getElementById('wireBankCountry')?.value.trim();
@@ -2926,10 +2927,10 @@ function setupAllDashboardModals() {
         return;
       }
 
-      if (!beneficiary || !iban || !swift || !bankCountry) {
+      if (!beneficiary || !bankName || !iban || !swift || !bankCountry) {
         if (alertEl) {
           alertEl.style.display = 'block';
-          alertEl.innerHTML = '<strong>Error:</strong> Please provide all mandatory fields (Beneficiary Legal Name, IBAN, SWIFT Code, Country).';
+          alertEl.innerHTML = '<strong>Error:</strong> Please provide all mandatory fields (Recipient Legal Name, Beneficiary Bank Name, IBAN, SWIFT Code, Country).';
         }
         showToast('Please provide all mandatory wire clearing fields.', 'error');
         return;
@@ -2952,7 +2953,7 @@ function setupAllDashboardModals() {
           beneficiary,
           iban,
           swift,
-          bankName: `International Financial Corp (${swift.slice(0, 4)})`,
+          bankName: bankName || `International Financial Corp (${swift.slice(0, 4)})`,
           bankCountry,
           bankAddress: 'Central Clearing Gateway',
           purpose: 'International SWIFT Wire',

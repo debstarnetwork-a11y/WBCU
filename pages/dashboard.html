@@ -4612,18 +4612,23 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="wireBeneficiaryName">Beneficiary Legal Entity / Full Name</label>
-            <input type="text" id="wireBeneficiaryName" class="form-control" placeholder="e.g. Barclays Bank PLC / Apex Global AG" required />
+            <label class="form-label" for="wireBeneficiaryName">Recipient / Beneficiary Legal Name <span class="text-red">*</span></label>
+            <input type="text" id="wireBeneficiaryName" class="form-control" placeholder="e.g. Apex Global AG / John Doe" required />
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="wireIbanInput">IBAN / Account Number</label>
+            <label class="form-label" for="wireBankName">Beneficiary Bank Name <span class="text-red">*</span></label>
+            <input type="text" id="wireBankName" class="form-control" placeholder="e.g. Barclays Bank PLC / UBS AG / Deutsche Bank" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="wireIbanInput">IBAN / Account Number <span class="text-red">*</span></label>
             <input type="text" id="wireIbanInput" class="form-control font-numeric" placeholder="e.g. GB29 BUKB 2020 1555 9928 10" required />
           </div>
 
           <div class="d-grid grid-cols-2 gap-2">
             <div class="form-group">
-              <label class="form-label" for="wireSwiftInput">SWIFT / BIC Code</label>
+              <label class="form-label" for="wireSwiftInput">SWIFT / BIC Code <span class="text-red">*</span></label>
               <input type="text" id="wireSwiftInput" class="form-control font-numeric" placeholder="e.g. BARCGB22" required />
             </div>
             <div class="form-group">
