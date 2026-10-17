@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 """
 ============================================================================
-WB CREDIT FINANCE - UNIVERSAL PRODUCTION SYNCHRONIZATION SCRIPT (Python 3.5+)
+WB CREDIT FINANCE - MULTI-TARGET PRODUCTION SYNCHRONIZATION SCRIPT (Python 3.5+)
 ============================================================================
 
 Description:
-Automates fetching the latest codebase from GitHub main branch, building the
-app, updating PHP API backends, synchronizing dist/ assets into public_html,
-and protecting user databases (admin-users.json & admin-users-persistent.json).
+Synchronizes repository changes across ALL cPanel web root targets:
+  - /home/glolbka/public_html
+  - /home/glolbka/wbcu.net
+  - /home/glolbka/www.wbcu.net
+  - /home/glolbka/public_html/wbcu.net
 
-Compatible with Python 3.5, 3.6, 3.7, 3.8+ on cPanel CentOS / CloudLinux.
+Preserves user database files (admin-users.json & admin-users-persistent.json).
 
 Usage (Run in Terminal or cPanel SSH):
   python3 wbcu_sync.py
@@ -60,7 +62,7 @@ def run_cmd(cmd, cwd=None, ignore_errors=False):
 
 def copy_dir_contents(src, dst):
     """
-    Recursively copies directory contents. Compatible with Python 3.5+.
+    Recursively copies directory contents with force overwrite.
     """
     if not os.path.exists(src):
         return
@@ -73,9 +75,18 @@ def copy_dir_contents(src, dst):
             copy_dir_contents(s, d)
         else:
             try:
+                if os.path.exists(d):
+                    try:
+                        os.remove(d)
+                    except Exception:
+                        pass
                 shutil.copy2(s, d)
+                try:
+                    os.chmod(d, 0o644)
+                except Exception:
+                    pass
             except Exception as e:
-                log("Could not copy %s -> %s: %s" % (s, d, str(e)), "WARN")
+                log("Notice copying %s -> %s: %s" % (s, d, str(e)), "WARN")
 
 def main():
     print("\n" + BOLD + "======================================================" + RESET)
@@ -102,36 +113,46 @@ def main():
 
     log("Repository Path: %s" % repo_dir, "INFO")
 
-    # Detect Target public_html Directory
-    possible_deploy_paths = [
-        "/home/glolbka/public_html",
-        os.path.expanduser("~/public_html"),
-        repo_dir
+    # Detect ALL web root targets on cPanel server
+    base_home = "/home/glolbka" if os.path.exists("/home/glolbka") else os.path.expanduser("~")
+    candidate_names = [
+        "public_html",
+        "wbcu.net",
+        "www.wbcu.net",
+        "public_html/wbcu.net",
+        "public_html/wbcu",
+        "WBCU"
     ]
 
-    target_deploy_path = repo_dir
-    for p in possible_deploy_paths:
-        if os.path.isdir(p):
-            target_deploy_path = p
-            break
+    deploy_targets = []
+    for c in candidate_names:
+        p = os.path.join(base_home, c)
+        if os.path.isdir(p) and p != repo_dir and p not in deploy_targets:
+            deploy_targets.append(p)
 
-    log("Target Production Path: %s" % target_deploy_path, "INFO")
+    if not deploy_targets:
+        deploy_targets.append(repo_dir)
+
+    log("Detected Web Root Deployment Targets:", "INFO")
+    for t in deploy_targets:
+        log("  -> %s" % t, "INFO")
 
     # 1. Clean Disk Space (Truncate Error Logs > 1MB)
     log("Truncating oversized error logs to conserve quota...", "INFO")
-    log_files = [
-        os.path.join(target_deploy_path, "error_log"),
-        os.path.join(target_deploy_path, "api", "error_log"),
-        os.path.join(repo_dir, "error_log")
-    ]
-    for lf in log_files:
-        if os.path.exists(lf) and os.path.getsize(lf) > 1024 * 1024:
-            try:
-                with open(lf, "w") as f:
-                    f.truncate(0)
-                log("Truncated large log file: %s" % lf, "SUCCESS")
-            except Exception as e:
-                log("Could not truncate %s: %s" % (lf, str(e)), "WARN")
+    for target_path in deploy_targets:
+        log_files = [
+            os.path.join(target_path, "error_log"),
+            os.path.join(target_path, "api", "error_log"),
+            os.path.join(repo_dir, "error_log")
+        ]
+        for lf in log_files:
+            if os.path.exists(lf) and os.path.getsize(lf) > 1024 * 1024:
+                try:
+                    with open(lf, "w") as f:
+                        f.truncate(0)
+                    log("Truncated large log file: %s" % lf, "SUCCESS")
+                except Exception as e:
+                    log("Could not truncate %s: %s" % (lf, str(e)), "WARN")
 
     # 2. Git Fetch & Hard Reset to GitHub main (Run in Repo Directory)
     if os.path.isdir(os.path.join(repo_dir, ".git")):
@@ -157,23 +178,26 @@ def main():
         else:
             log("npm build notice. Relying on raw HTML/JS/CSS assets.", "WARN")
 
-    # 4. Copy Assets into Target Deployment Folder
-    if target_deploy_path != repo_dir:
-        log("Copying updated files: %s -> %s..." % (repo_dir, target_deploy_path), "INFO")
+    # 4. Copy Assets into ALL Deployment Targets
+    for target_path in deploy_targets:
+        if target_path == repo_dir:
+            continue
+            
+        log("Synchronizing updated assets -> %s..." % target_path, "INFO")
 
         # Ensure target subdirectories exist
         for d in ["api", "js", "pages", "admin", "css"]:
-            os.makedirs(os.path.join(target_deploy_path, d), exist_ok=True)
+            os.makedirs(os.path.join(target_path, d), exist_ok=True)
 
         # Copy Dist
         dist_dir = os.path.join(repo_dir, "dist")
         if os.path.isdir(dist_dir):
-            copy_dir_contents(dist_dir, target_deploy_path)
+            copy_dir_contents(dist_dir, target_path)
 
         # Copy source folders
         for folder in ["api", "js", "pages", "admin"]:
             src_f = os.path.join(repo_dir, folder)
-            dst_f = os.path.join(target_deploy_path, folder)
+            dst_f = os.path.join(target_path, folder)
             if os.path.isdir(src_f):
                 copy_dir_contents(src_f, dst_f)
 
@@ -182,26 +206,35 @@ def main():
         for ef in entry_files:
             src_file = os.path.join(repo_dir, ef)
             if os.path.isfile(src_file):
+                dst_file = os.path.join(target_path, ef)
                 try:
-                    shutil.copy2(src_file, os.path.join(target_deploy_path, ef))
+                    if os.path.exists(dst_file):
+                        try:
+                            os.remove(dst_file)
+                        except Exception:
+                            pass
+                    shutil.copy2(src_file, dst_file)
+                    try:
+                        os.chmod(dst_file, 0o644)
+                    except Exception:
+                        pass
+
                     if ef == "admin.html":
-                        shutil.copy2(src_file, os.path.join(target_deploy_path, "admin", "index.html"))
-                        shutil.copy2(src_file, os.path.join(target_deploy_path, "pages", "admin-dashboard.html"))
-                        shutil.copy2(src_file, os.path.join(target_deploy_path, "pages", "admin.html"))
+                        shutil.copy2(src_file, os.path.join(target_path, "admin", "index.html"))
+                        shutil.copy2(src_file, os.path.join(target_path, "pages", "admin-dashboard.html"))
+                        shutil.copy2(src_file, os.path.join(target_path, "pages", "admin.html"))
                 except Exception as e:
                     log("Copy notice for %s: %s" % (ef, str(e)), "WARN")
 
         # Preserve user database files safely
         for dbf in ["admin-users.json", "admin-users-persistent.json"]:
             src_db = os.path.join(repo_dir, dbf)
-            dst_db = os.path.join(target_deploy_path, dbf)
+            dst_db = os.path.join(target_path, dbf)
             if os.path.isfile(src_db) and not os.path.exists(dst_db):
                 try:
                     shutil.copy2(src_db, dst_db)
                 except Exception as e:
                     pass
-
-        log("File copying completed successfully.", "SUCCESS")
 
     # 5. Trigger cPanel update_deploy if available
     cpcmd_path = "/usr/local/cpanel/bin/cpcmd"
