@@ -294,27 +294,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    // If database returned no users or was offline, load from file
-    if (empty($users)) {
-        $users = loadUsersFromFile($dataFile);
-    } else {
-        // Guarantee Super Admin is present even if database only has member accounts
-        $hasAdminInList = false;
-        foreach ($users as $u) {
-            if (!empty($u['is_admin']) || in_array($u['role'] ?? '', ['Super Admin', 'Admin'])) {
-                $hasAdminInList = true;
-                break;
-            }
-        }
-        if (!$hasAdminInList) {
-            $fileUsers = loadUsersFromFile($dataFile);
-            foreach ($fileUsers as $fu) {
-                if (!empty($fu['is_admin']) || ($fu['role'] ?? '') === 'Super Admin') {
-                    $users[] = $fu;
-                }
-            }
+    // Always merge file-based persistent members and registered users with database users
+    $fileUsers = loadUsersFromFile($dataFile);
+    $mergedMap = [];
+    foreach ($fileUsers as $fu) {
+        if (!empty($fu['id'])) $mergedMap[$fu['id']] = $fu;
+        else if (!empty($fu['email'])) $mergedMap[strtolower($fu['email'])] = $fu;
+    }
+    foreach ($users as $du) {
+        $uid = $du['id'];
+        $uemail = strtolower($du['email'] ?? '');
+        $existingKey = isset($mergedMap[$uid]) ? $uid : ($uemail && isset($mergedMap[$uemail]) ? $uemail : null);
+        if ($existingKey) {
+            $mergedMap[$uid] = array_merge($mergedMap[$existingKey], $du);
+            if ($existingKey !== $uid) unset($mergedMap[$existingKey]);
+        } else {
+            $mergedMap[$uid] = $du;
         }
     }
+    $users = array_values($mergedMap);
 
     echo json_encode([
         'success' => true,

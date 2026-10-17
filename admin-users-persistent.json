@@ -49,28 +49,48 @@
     "wireTransferCodes": {
       "COT": {
         "code": "COT-99412",
-        "active": true,
-        "notes": "Cost of Transfer clearance token"
+        "name": "Cost of Transfer (COT) Code",
+        "desc": "Required by Swiss SWIFT clearing system for international wires",
+        "instruction": "Required by Swiss SWIFT clearing system for international wires",
+        "notes": "Cost of Transfer clearance token",
+        "alertText": "Cost of Transfer clearance token",
+        "active": true
       },
       "TAX": {
         "code": "TX-88392",
-        "active": true,
-        "notes": "Tax Clearance certificate"
+        "name": "Tax Clearance (TAX) Certificate Code",
+        "desc": "Ensures tax exemption compliance on cross-border wire outflows",
+        "instruction": "Ensures tax exemption compliance on cross-border wire outflows",
+        "notes": "Tax Clearance certificate",
+        "alertText": "Tax Clearance certificate",
+        "active": true
       },
       "IMF": {
         "code": "9498779",
-        "active": true,
-        "notes": "IMF Clearance signoff"
+        "name": "International Monetary Fund (IMF) Code",
+        "desc": "Dual IMF regulatory verification token",
+        "instruction": "Dual IMF regulatory verification token",
+        "notes": "IMF Clearance signoff",
+        "alertText": "IMF Clearance signoff",
+        "active": true
       },
       "AML": {
         "code": "AML-86902",
-        "active": true,
-        "notes": "Anti-Money Laundering key"
+        "name": "Anti-Money Laundering (AML) Key",
+        "desc": "Clears OFAC/AML automated risk threshold hold",
+        "instruction": "Clears OFAC/AML automated risk threshold hold",
+        "notes": "Anti-Money Laundering key",
+        "alertText": "Anti-Money Laundering key",
+        "active": true
       },
       "PAP": {
         "code": "PAP-70216",
-        "active": true,
-        "notes": "Proof of Anti-Piracy clearance"
+        "name": "Proof of Anti-Piracy / Swiss Clearance (PAP) Code",
+        "desc": "Authenticates genuine legal source of institutional capital",
+        "instruction": "Authenticates genuine legal source of institutional capital",
+        "notes": "Proof of Anti-Piracy clearance",
+        "alertText": "Proof of Anti-Piracy clearance",
+        "active": true
       },
       "OTP": {
         "code": "400400",
@@ -226,28 +246,48 @@
     "wireTransferCodes": {
       "COT": {
         "code": "COT-99412",
-        "active": true,
-        "notes": "Master COT"
+        "name": "Cost of Transfer (COT) Code",
+        "desc": "Required by Swiss SWIFT clearing system for international wires",
+        "instruction": "Required by Swiss SWIFT clearing system for international wires",
+        "notes": "Master COT",
+        "alertText": "Master COT",
+        "active": true
       },
       "TAX": {
         "code": "TX-88392",
-        "active": true,
-        "notes": "Tax Clearance"
+        "name": "Tax Clearance (TAX) Certificate Code",
+        "desc": "Ensures tax exemption compliance on cross-border wire outflows",
+        "instruction": "Ensures tax exemption compliance on cross-border wire outflows",
+        "notes": "Tax Clearance",
+        "alertText": "Tax Clearance",
+        "active": true
       },
       "IMF": {
         "code": "9498779",
-        "active": true,
-        "notes": "IMF Clearance"
+        "name": "International Monetary Fund (IMF) Code",
+        "desc": "Dual IMF regulatory verification token",
+        "instruction": "Dual IMF regulatory verification token",
+        "notes": "IMF Clearance",
+        "alertText": "IMF Clearance",
+        "active": true
       },
       "AML": {
         "code": "AML-86902",
-        "active": true,
-        "notes": "AML Key"
+        "name": "Anti-Money Laundering (AML) Key",
+        "desc": "Clears OFAC/AML automated risk threshold hold",
+        "instruction": "Clears OFAC/AML automated risk threshold hold",
+        "notes": "AML Key",
+        "alertText": "AML Key",
+        "active": true
       },
       "PAP": {
         "code": "PAP-70216",
-        "active": true,
-        "notes": "PAP Key"
+        "name": "Proof of Anti-Piracy / Swiss Clearance (PAP) Code",
+        "desc": "Authenticates genuine legal source of institutional capital",
+        "instruction": "Authenticates genuine legal source of institutional capital",
+        "notes": "PAP Key",
+        "alertText": "PAP Key",
+        "active": true
       },
       "OTP": {
         "code": "806158",
@@ -313,28 +353,48 @@
     "wireTransferCodes": {
       "COT": {
         "code": "COT-99412",
-        "active": true,
-        "notes": "Treasury Master COT"
+        "name": "Cost of Transfer (COT) Code",
+        "desc": "Required by Swiss SWIFT clearing system for international wires",
+        "instruction": "Required by Swiss SWIFT clearing system for international wires",
+        "notes": "Treasury Master COT",
+        "alertText": "Treasury Master COT",
+        "active": true
       },
       "TAX": {
         "code": "TX-88392",
-        "active": true,
-        "notes": "Tax Clearance"
+        "name": "Tax Clearance (TAX) Certificate Code",
+        "desc": "Ensures tax exemption compliance on cross-border wire outflows",
+        "instruction": "Ensures tax exemption compliance on cross-border wire outflows",
+        "notes": "Tax Clearance",
+        "alertText": "Tax Clearance",
+        "active": true
       },
       "IMF": {
         "code": "9498779",
-        "active": true,
-        "notes": "IMF Clearance"
+        "name": "International Monetary Fund (IMF) Code",
+        "desc": "Dual IMF regulatory verification token",
+        "instruction": "Dual IMF regulatory verification token",
+        "notes": "IMF Clearance",
+        "alertText": "IMF Clearance",
+        "active": true
       },
       "AML": {
         "code": "AML-86902",
-        "active": true,
-        "notes": "AML Key"
+        "name": "Anti-Money Laundering (AML) Key",
+        "desc": "Clears OFAC/AML automated risk threshold hold",
+        "instruction": "Clears OFAC/AML automated risk threshold hold",
+        "notes": "AML Key",
+        "alertText": "AML Key",
+        "active": true
       },
       "PAP": {
         "code": "PAP-70216",
-        "active": true,
-        "notes": "PAP Key"
+        "name": "Proof of Anti-Piracy / Swiss Clearance (PAP) Code",
+        "desc": "Authenticates genuine legal source of institutional capital",
+        "instruction": "Authenticates genuine legal source of institutional capital",
+        "notes": "PAP Key",
+        "alertText": "PAP Key",
+        "active": true
       },
       "OTP": {
         "code": "806158",
@@ -407,28 +467,48 @@
     "wireTransferCodes": {
       "COT": {
         "code": "0467799",
-        "active": true,
-        "notes": "Cost of Transfer clearance token"
+        "name": "Cost of Transfer (COT) Code",
+        "desc": "Required by Swiss SWIFT clearing system for international wires",
+        "instruction": "Required by Swiss SWIFT clearing system for international wires",
+        "notes": "Cost of Transfer clearance token",
+        "alertText": "Cost of Transfer clearance token",
+        "active": true
       },
       "TAX": {
         "code": "TX-88392",
-        "active": true,
-        "notes": "Tax Clearance certificate"
+        "name": "Tax Clearance (TAX) Certificate Code",
+        "desc": "Ensures tax exemption compliance on cross-border wire outflows",
+        "instruction": "Ensures tax exemption compliance on cross-border wire outflows",
+        "notes": "Tax Clearance certificate",
+        "alertText": "Tax Clearance certificate",
+        "active": true
       },
       "IMF": {
         "code": "9498779",
-        "active": true,
-        "notes": "IMF Clearance signoff"
+        "name": "International Monetary Fund (IMF) Code",
+        "desc": "Dual IMF regulatory verification token",
+        "instruction": "Dual IMF regulatory verification token",
+        "notes": "IMF Clearance signoff",
+        "alertText": "IMF Clearance signoff",
+        "active": true
       },
       "AML": {
         "code": "AML-86902",
-        "active": true,
-        "notes": "Anti-Money Laundering verification key"
+        "name": "Anti-Money Laundering (AML) Key",
+        "desc": "Clears OFAC/AML automated risk threshold hold",
+        "instruction": "Clears OFAC/AML automated risk threshold hold",
+        "notes": "Anti-Money Laundering verification key",
+        "alertText": "Anti-Money Laundering verification key",
+        "active": true
       },
       "PAP": {
         "code": "PAP-70216",
-        "active": true,
-        "notes": "Proof of Anti-Piracy clearance"
+        "name": "Proof of Anti-Piracy / Swiss Clearance (PAP) Code",
+        "desc": "Authenticates genuine legal source of institutional capital",
+        "instruction": "Authenticates genuine legal source of institutional capital",
+        "notes": "Proof of Anti-Piracy clearance",
+        "alertText": "Proof of Anti-Piracy clearance",
+        "active": true
       },
       "OTP": "806158"
     },
@@ -498,28 +578,48 @@
     "wireTransferCodes": {
       "COT": {
         "code": "0467799",
-        "active": true,
-        "notes": "Cost of Transfer clearance token"
+        "name": "Cost of Transfer (COT) Code",
+        "desc": "Required by Swiss SWIFT clearing system for international wires",
+        "instruction": "Required by Swiss SWIFT clearing system for international wires",
+        "notes": "Cost of Transfer clearance token",
+        "alertText": "Cost of Transfer clearance token",
+        "active": true
       },
       "TAX": {
         "code": "TX-88392",
-        "active": true,
-        "notes": "Tax Clearance certificate"
+        "name": "Tax Clearance (TAX) Certificate Code",
+        "desc": "Ensures tax exemption compliance on cross-border wire outflows",
+        "instruction": "Ensures tax exemption compliance on cross-border wire outflows",
+        "notes": "Tax Clearance certificate",
+        "alertText": "Tax Clearance certificate",
+        "active": true
       },
       "IMF": {
         "code": "9498779",
-        "active": true,
-        "notes": "IMF Clearance signoff"
+        "name": "International Monetary Fund (IMF) Code",
+        "desc": "Dual IMF regulatory verification token",
+        "instruction": "Dual IMF regulatory verification token",
+        "notes": "IMF Clearance signoff",
+        "alertText": "IMF Clearance signoff",
+        "active": true
       },
       "AML": {
         "code": "AML-86902",
-        "active": true,
-        "notes": "Anti-Money Laundering key"
+        "name": "Anti-Money Laundering (AML) Key",
+        "desc": "Clears OFAC/AML automated risk threshold hold",
+        "instruction": "Clears OFAC/AML automated risk threshold hold",
+        "notes": "Anti-Money Laundering key",
+        "alertText": "Anti-Money Laundering key",
+        "active": true
       },
       "PAP": {
         "code": "PAP-70216",
-        "active": true,
-        "notes": "Proof of Anti-Piracy clearance"
+        "name": "Proof of Anti-Piracy / Swiss Clearance (PAP) Code",
+        "desc": "Authenticates genuine legal source of institutional capital",
+        "instruction": "Authenticates genuine legal source of institutional capital",
+        "notes": "Proof of Anti-Piracy clearance",
+        "alertText": "Proof of Anti-Piracy clearance",
+        "active": true
       },
       "OTP": {
         "code": "463462",
@@ -573,28 +673,48 @@
     "wireTransferCodes": {
       "COT": {
         "code": "0467799",
-        "active": true,
-        "notes": "Corporate COT Token"
+        "name": "Cost of Transfer (COT) Code",
+        "desc": "Required by Swiss SWIFT clearing system for international wires",
+        "instruction": "Required by Swiss SWIFT clearing system for international wires",
+        "notes": "Corporate COT Token",
+        "alertText": "Corporate COT Token",
+        "active": true
       },
       "TAX": {
         "code": "TX-88392",
-        "active": true,
-        "notes": "Corporate Tax Clearance"
+        "name": "Tax Clearance (TAX) Certificate Code",
+        "desc": "Ensures tax exemption compliance on cross-border wire outflows",
+        "instruction": "Ensures tax exemption compliance on cross-border wire outflows",
+        "notes": "Corporate Tax Clearance",
+        "alertText": "Corporate Tax Clearance",
+        "active": true
       },
       "IMF": {
         "code": "9498779",
-        "active": true,
-        "notes": "IMF Clearance signoff"
+        "name": "International Monetary Fund (IMF) Code",
+        "desc": "Dual IMF regulatory verification token",
+        "instruction": "Dual IMF regulatory verification token",
+        "notes": "IMF Clearance signoff",
+        "alertText": "IMF Clearance signoff",
+        "active": true
       },
       "AML": {
         "code": "AML-86902",
-        "active": true,
-        "notes": "AML Key"
+        "name": "Anti-Money Laundering (AML) Key",
+        "desc": "Clears OFAC/AML automated risk threshold hold",
+        "instruction": "Clears OFAC/AML automated risk threshold hold",
+        "notes": "AML Key",
+        "alertText": "AML Key",
+        "active": true
       },
       "PAP": {
         "code": "PAP-70216",
-        "active": true,
-        "notes": "PAP Key"
+        "name": "Proof of Anti-Piracy / Swiss Clearance (PAP) Code",
+        "desc": "Authenticates genuine legal source of institutional capital",
+        "instruction": "Authenticates genuine legal source of institutional capital",
+        "notes": "PAP Key",
+        "alertText": "PAP Key",
+        "active": true
       },
       "OTP": "806158"
     },
@@ -642,28 +762,48 @@
     "wireTransferCodes": {
       "COT": {
         "code": "0467799",
-        "active": true,
-        "notes": "Treasury COT"
+        "name": "Cost of Transfer (COT) Code",
+        "desc": "Required by Swiss SWIFT clearing system for international wires",
+        "instruction": "Required by Swiss SWIFT clearing system for international wires",
+        "notes": "Treasury COT",
+        "alertText": "Treasury COT",
+        "active": true
       },
       "TAX": {
         "code": "TX-88392",
-        "active": true,
-        "notes": "Tax Clearance"
+        "name": "Tax Clearance (TAX) Certificate Code",
+        "desc": "Ensures tax exemption compliance on cross-border wire outflows",
+        "instruction": "Ensures tax exemption compliance on cross-border wire outflows",
+        "notes": "Tax Clearance",
+        "alertText": "Tax Clearance",
+        "active": true
       },
       "IMF": {
         "code": "9498779",
-        "active": true,
-        "notes": "IMF Clearance"
+        "name": "International Monetary Fund (IMF) Code",
+        "desc": "Dual IMF regulatory verification token",
+        "instruction": "Dual IMF regulatory verification token",
+        "notes": "IMF Clearance",
+        "alertText": "IMF Clearance",
+        "active": true
       },
       "AML": {
         "code": "AML-86902",
-        "active": true,
-        "notes": "AML Key"
+        "name": "Anti-Money Laundering (AML) Key",
+        "desc": "Clears OFAC/AML automated risk threshold hold",
+        "instruction": "Clears OFAC/AML automated risk threshold hold",
+        "notes": "AML Key",
+        "alertText": "AML Key",
+        "active": true
       },
       "PAP": {
         "code": "PAP-70216",
-        "active": true,
-        "notes": "PAP Key"
+        "name": "Proof of Anti-Piracy / Swiss Clearance (PAP) Code",
+        "desc": "Authenticates genuine legal source of institutional capital",
+        "instruction": "Authenticates genuine legal source of institutional capital",
+        "notes": "PAP Key",
+        "alertText": "PAP Key",
+        "active": true
       },
       "OTP": "806158"
     },

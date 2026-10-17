@@ -4905,22 +4905,69 @@ export function getEffectiveWireCodeSteps(amount, user = null) {
     if (raw) globalConfig = JSON.parse(raw);
   } catch (e) {}
 
+  if (!user) {
+    try {
+      user = getDemoStorageUser();
+    } catch (e) {}
+  }
+
+  const uCodes = (user && user.wireTransferCodes && typeof user.wireTransferCodes === 'object') ? user.wireTransferCodes : {};
   const steps = [];
+  const handledKeys = new Set();
+
   for (const c of WIRE_CODES_CONFIG) {
     const stepId = c.stepId;
+    handledKeys.add(stepId);
+
     // Check if globally disabled by admin
     if (globalConfig && globalConfig[stepId] && globalConfig[stepId].enabled === false) {
       continue;
     }
     // Check if disabled for this specific member by admin
-    if (user && user.wireTransferCodes && user.wireTransferCodes[stepId] && user.wireTransferCodes[stepId].active === false) {
+    const memberCodeObj = uCodes[stepId] || uCodes[stepId.toLowerCase()];
+    if (memberCodeObj && memberCodeObj.active === false) {
       continue;
     }
     // Check amount threshold
     if (amount >= (c.appliesAbove || 0)) {
-      steps.push(c);
+      const customCode = typeof memberCodeObj === 'object' && memberCodeObj !== null ? (memberCodeObj.code || '') : (memberCodeObj || '');
+      const customName = typeof memberCodeObj === 'object' && memberCodeObj !== null ? (memberCodeObj.name || '') : '';
+      const customDesc = typeof memberCodeObj === 'object' && memberCodeObj !== null ? (memberCodeObj.desc || memberCodeObj.instruction || '') : '';
+      const customAlert = typeof memberCodeObj === 'object' && memberCodeObj !== null ? (memberCodeObj.alertText || memberCodeObj.notes || '') : '';
+
+      steps.push({
+        stepId,
+        title: customName ? `${customName} Required` : c.title,
+        label: customName || c.label,
+        description: customDesc || c.description,
+        alertText: customAlert,
+        defaultCode: customCode || c.defaultCode,
+        appliesAbove: c.appliesAbove || 0,
+        maxAttempts: c.maxAttempts || 5
+      });
     }
   }
+
+  // Also include any custom clearance code gates added by Admin for this member
+  Object.keys(uCodes).forEach((key) => {
+    if (!key || handledKeys.has(key) || key.toUpperCase() === 'OTP') return;
+    const item = uCodes[key];
+    if (!item) return;
+    const isActive = typeof item === 'object' ? item.active !== false : true;
+    const codeVal = typeof item === 'object' ? (item.code || '') : item;
+    if (isActive && codeVal) {
+      steps.push({
+        stepId: key.toUpperCase(),
+        title: item.name ? `${item.name} Required` : `${key} Clearance Code Required`,
+        label: item.name || `${key} Clearance Code`,
+        description: item.desc || item.instruction || `Enter your ${key} regulatory clearance code to proceed.`,
+        alertText: item.alertText || item.notes || '',
+        defaultCode: codeVal,
+        appliesAbove: 0,
+        maxAttempts: 5
+      });
+    }
+  });
 
   return steps;
 }
@@ -5314,7 +5361,17 @@ function renderActiveWireCodeStep() {
 
   if (titleEl) titleEl.textContent = currentStep.title;
   if (descEl) descEl.textContent = currentStep.description;
-  if (inputLabel) inputLabel.textContent = `Enter ${currentStep.stepId} Code Value *`;
+  if (inputLabel) inputLabel.textContent = `Enter ${currentStep.label || currentStep.stepId} Value *`;
+
+  const alertEl = document.getElementById('codeStepAlertBanner');
+  if (alertEl) {
+    if (currentStep.alertText) {
+      alertEl.style.display = 'block';
+      alertEl.innerHTML = `⚠️ <strong>Compliance Notice:</strong> ${escapeHtml(currentStep.alertText)}`;
+    } else {
+      alertEl.style.display = 'none';
+    }
+  }
 
   if (inputEl) {
     inputEl.value = '';
