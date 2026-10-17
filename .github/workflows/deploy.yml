@@ -27,27 +27,67 @@ jobs:
       - name: 🏗️ Build Web App
         run: npm run build
 
-      - name: 🔍 Check FTP Credentials
+      - name: 🔍 Inspect & Validate Deployment Configuration
+        id: check-secrets
         run: |
-          if [ -z "${{ secrets.FTP_SERVER }}" ] || [ -z "${{ secrets.FTP_USERNAME }}" ] || [ -z "${{ secrets.FTP_PASSWORD }}" ]; then
+          SERVER="${{ secrets.FTP_SERVER || secrets.FTP_HOST || secrets.CPANEL_SERVER || secrets.CPANEL_HOST }}"
+          USERNAME="${{ secrets.FTP_USERNAME || secrets.FTP_USER || secrets.CPANEL_USERNAME || secrets.CPANEL_USER }}"
+          PASSWORD="${{ secrets.FTP_PASSWORD || secrets.FTP_PASS || secrets.CPANEL_PASSWORD || secrets.CPANEL_PASS }}"
+          PORT="${{ secrets.FTP_PORT || secrets.CPANEL_PORT || '21' }}"
+          PROTOCOL="${{ secrets.FTP_PROTOCOL || 'ftp' }}"
+          SECURITY="${{ secrets.FTP_SECURITY || 'loose' }}"
+          SERVER_DIR="${{ secrets.FTP_SERVER_DIR || './' }}"
+
+          echo "==============================================="
+          echo "WB CREDIT UNION - DEPLOYMENT DIAGNOSTICS"
+          echo "==============================================="
+          
+          MISSING=0
+          if [ -z "$SERVER" ]; then
+            echo "❌ FTP_SERVER is missing in GitHub Repository Secrets!"
+            MISSING=1
+          else
+            echo "✅ FTP_SERVER is configured: [${SERVER:0:3}***]"
+          fi
+
+          if [ -z "$USERNAME" ]; then
+            echo "❌ FTP_USERNAME is missing in GitHub Repository Secrets!"
+            MISSING=1
+          else
+            echo "✅ FTP_USERNAME is configured: [${USERNAME:0:3}***]"
+          fi
+
+          if [ -z "$PASSWORD" ]; then
+            echo "❌ FTP_PASSWORD is missing in GitHub Repository Secrets!"
+            MISSING=1
+          else
+            echo "✅ FTP_PASSWORD is configured: [OK]"
+          fi
+
+          echo "ℹ️ Protocol: $PROTOCOL | Port: $PORT | Security: $SECURITY | Target Dir: $SERVER_DIR"
+          echo "==============================================="
+
+          if [ $MISSING -eq 1 ]; then
             echo "::error::Missing FTP Secrets! Please ensure FTP_SERVER, FTP_USERNAME, and FTP_PASSWORD are set in GitHub Repository Settings -> Secrets and variables -> Actions."
             exit 1
           fi
-          echo "FTP Secrets are configured."
 
       - name: 🚀 Deploy to cPanel via FTP / FTPS
+        id: ftp-deploy
+        continue-on-error: true
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: ${{ secrets.FTP_PORT || 21 }}
+          server: ${{ secrets.FTP_SERVER || secrets.FTP_HOST || secrets.CPANEL_SERVER || secrets.CPANEL_HOST }}
+          username: ${{ secrets.FTP_USERNAME || secrets.FTP_USER || secrets.CPANEL_USERNAME || secrets.CPANEL_USER }}
+          password: ${{ secrets.FTP_PASSWORD || secrets.FTP_PASS || secrets.CPANEL_PASSWORD || secrets.CPANEL_PASS }}
+          port: ${{ secrets.FTP_PORT || secrets.CPANEL_PORT || 21 }}
           protocol: ${{ secrets.FTP_PROTOCOL || 'ftp' }}
           security: ${{ secrets.FTP_SECURITY || 'loose' }}
           server-dir: ${{ secrets.FTP_SERVER_DIR || './' }}
           local-dir: ./
           dangerous-clean-slate: false
           timeout: 60000
+          log-level: verbose
           exclude: |
             **/.git*
             **/.git*/**
@@ -59,3 +99,22 @@ jobs:
             *.log
             *.mjs
             test-*.mjs
+
+      - name: 🔄 Fallback: Trigger cPanel Server Webhook Deploy
+        if: steps.ftp-deploy.outcome != 'success'
+        run: |
+          echo "FTP deployment encountered an error or was bypassed. Attempting server-side webhook deployment..."
+          RESPONSE=$(curl -s -m 15 -X POST https://www.wbcu.net/deploy.php || true)
+          echo "Server Response: $RESPONSE"
+          if echo "$RESPONSE" | grep -q '"success":true'; then
+            echo "✅ Server-side git pull deployment succeeded!"
+          else
+            echo "⚠️ Webhook response: $RESPONSE"
+            if echo "$RESPONSE" | grep -q "No space left on device"; then
+              echo "::error::CRITICAL: The cPanel server disk quota is 100% full ('No space left on device'). Please log into cPanel and empty File Manager Trash, or clean large error_log files to free disk space."
+            fi
+            if [ "${{ steps.ftp-deploy.outcome }}" != "success" ]; then
+              echo "::error::Deployment failed. Check the verbose FTP logs above or verify cPanel disk quota."
+              exit 1
+            fi
+          fi

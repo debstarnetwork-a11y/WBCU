@@ -24,6 +24,19 @@ header('Content-Type: application/json');
 // ... (signature check logic)
 
 try {
+    // Pre-flight Disk Space Optimization: Truncate large error logs to free space
+    $logPaths = [
+        '/home/glolbka/public_html/error_log',
+        '/home/glolbka/public_html/api/error_log',
+        '/home/glolbka/repositories/WBCU/error_log'
+    ];
+    foreach ($logPaths as $lp) {
+        if (file_exists($lp) && filesize($lp) > 1024 * 1024) {
+            @file_put_contents($lp, '');
+        }
+    }
+    @exec("git -C /home/glolbka/repositories/WBCU gc --prune=now 2>&1");
+
     // 1. Pull changes from GitHub
     $output = [];
     $retval = 0;

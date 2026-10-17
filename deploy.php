@@ -32,6 +32,19 @@ if (!is_dir($repoPath)) {
 
 chdir($repoPath);
 
+// Pre-flight Disk Space Optimization: Truncate large error logs to free space
+$logPaths = [
+    '/home/glolbka/public_html/error_log',
+    '/home/glolbka/public_html/api/error_log',
+    $repoPath . '/error_log'
+];
+foreach ($logPaths as $lp) {
+    if (file_exists($lp) && filesize($lp) > 1024 * 1024) {
+        @file_put_contents($lp, '');
+    }
+}
+@exec("git gc --prune=now 2>&1");
+
 // 3. Perform the git pull
 // Note: We use 2>&1 to capture error output
 $output = [];
