@@ -202,7 +202,7 @@ def main():
                 copy_dir_contents(src_f, dst_f)
 
         # Copy single entry files
-        entry_files = ["admin.html", "admin-login.html", "login-admin.html", "index.html", ".htaccess", "deploy.php", "server.js"]
+        entry_files = ["admin.html", "admin-login.html", "login-admin.html", "index.html", ".htaccess", "deploy.php", "server.js", ".env"]
         for ef in entry_files:
             src_file = os.path.join(repo_dir, ef)
             if os.path.isfile(src_file):
@@ -226,15 +226,22 @@ def main():
                 except Exception as e:
                     log("Copy notice for %s: %s" % (ef, str(e)), "WARN")
 
-        # Preserve user database files safely
+        # Synchronize user database files (Overwrite to ensure dev changes go live)
         for dbf in ["admin-users.json", "admin-users-persistent.json"]:
             src_db = os.path.join(repo_dir, dbf)
             dst_db = os.path.join(target_path, dbf)
-            if os.path.isfile(src_db) and not os.path.exists(dst_db):
+            if os.path.isfile(src_db):
                 try:
+                    if os.path.exists(dst_db):
+                        os.remove(dst_db)
                     shutil.copy2(src_db, dst_db)
+                    try:
+                        os.chmod(dst_db, 0o644)
+                    except Exception:
+                        pass
+                    log("Synchronized database file: %s -> %s" % (dbf, target_path), "SUCCESS")
                 except Exception as e:
-                    pass
+                    log("Database sync notice for %s: %s" % (dbf, str(e)), "WARN")
 
     # 5. Trigger cPanel update_deploy if available
     cpcmd_path = "/usr/local/cpanel/bin/cpcmd"

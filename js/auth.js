@@ -1247,7 +1247,7 @@ export function initLoginForm() {
           .single();
 
         if (error || !profile) {
-          throw new Error('Account number not recognized in credit union ledger.');
+          throw new Error('Account number not recognized in financial institution ledger.');
         }
 
         userProfile = profile;

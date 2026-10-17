@@ -20,9 +20,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-$dataFile = dirname(__DIR__) . '/admin-users.json';
-if (!file_exists($dataFile)) {
-    $dataFile = __DIR__ . '/admin-users.json';
+$possibleDataPaths = [
+    dirname(__DIR__) . '/admin-users.json',
+    __DIR__ . '/admin-users.json',
+    __DIR__ . '/../admin-users.json',
+    ($_SERVER['DOCUMENT_ROOT'] ?? '') . '/admin-users.json',
+    '/home/glolbka/public_html/admin-users.json',
+    '/home/glolbka/WBCU/admin-users.json'
+];
+
+$dataFile = $possibleDataPaths[0];
+foreach ($possibleDataPaths as $p) {
+    if (file_exists($p) && filesize($p) > 10) {
+        $dataFile = $p;
+        break;
+    }
 }
 
 // Database Credentials (from cPanel schema)

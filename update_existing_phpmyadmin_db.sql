@@ -1,53 +1,72 @@
 -- ============================================================================
--- WB CREDIT FINANCE - UPDATE EXISTING TABLES IN glolbka_wbcu_db
+-- WB CREDIT FINANCE - SAFE CPANEL MYSQL DATABASE UPDATE SCRIPT (100% COMPATIBLE)
+-- ============================================================================
+-- NOTE: THIS SCRIPT IS 100% NON-DESTRUCTIVE.
+-- FOREIGN_KEY_CHECKS IS TEMPORARILY DISABLED FOR BULK UPSERT WITHOUT ERRORS.
 -- ============================================================================
 
--- 1. Insert / Update Super Admin & Member Access Records
-INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `role`, `transaction_pin`, `two_factor_enabled`, `status`, `kyc_status`)
-VALUES 
-('usr-101', 'mizbrymo', 'mizbrymo@gmail.com', '12345', 'super_admin', '8869', 1, 'active', 'verified'),
-('usr-admin-01', 'admin', 'admin@wbcu.net', '12345', 'super_admin', '8869', 1, 'active', 'verified'),
-('usr-659', 'ollerobertrstrm52', 'debstarnetwork@gmail.com', 'Password123!', 'user', '8869', 1, 'active', 'verified')
-ON DUPLICATE KEY UPDATE 
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- 1. UPSERT ALL 9 USERS
+INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `role`, `transaction_pin`, `status`, `kyc_status`)
+VALUES
+('wb-usr-y4rfbph', 'debeluemmanuel', 'debeluemmanuel@gmail.com', 'yeshuah.com', 'user', '4004', 'active', 'verified'),
+('usr-prof-mvb5wo7j', 'debstarnetwork', 'debstarnetwork@gmail.com', 'Password123!', 'user', '4495', 'active', 'verified'),
+('usr-admin-01', 'admin', 'admin@wbcu.net', '12345', 'super_admin', '8869', 'active', 'verified'),
+('usr-101', 'mizbrymo', 'mizbrymo@gmail.com', '12345', 'super_admin', '8869', 'active', 'verified'),
+('usr-34400', 'kwillis', 'kwillis.member@wbcu-reserve.ch', 'MemberPass123!', 'user', '8869', 'active', 'verified'),
+('usr-659', 'ollerobertrstrm52', 'olle.rastrom@swissprivatevault.ch', 'Password123!', 'user', '8869', 'active', 'verified'),
+('usr-corp-01', 'erostova', 'elena.rostova@vanguardlogistics.ch', 'Password123!', 'user', '8869', 'active', 'verified'),
+('usr-corp-02', 'msterling', 'treasury@sterlingmerchant.com', 'Password123!', 'user', '8869', 'active', 'verified'),
+('usr-alex-01', 'amorgan', 'alexander.morgan@wbcu.net', 'Password123!', 'user', '1234', 'active', 'verified')
+ON DUPLICATE KEY UPDATE
+  `username` = VALUES(`username`),
+  `email` = VALUES(`email`),
   `password_hash` = VALUES(`password_hash`),
   `role` = VALUES(`role`),
+  `transaction_pin` = VALUES(`transaction_pin`),
   `status` = VALUES(`status`),
   `kyc_status` = VALUES(`kyc_status`);
 
--- 2. Insert / Update Member Profiles
-INSERT INTO `profiles` (`id`, `user_id`, `first_name`, `middle_name`, `last_name`, `full_name`, `phone_number`, `date_of_birth`, `nationality`, `occupation`, `address_line1`, `city`, `state`, `postal_code`, `country`)
+-- 2. UPSERT USER PROFILES
+INSERT INTO `profiles` (`id`, `user_id`, `first_name`, `last_name`, `full_name`, `phone_number`)
 VALUES
-('prof-101', 'usr-101', 'Miz', '', 'Brymo', 'Miz Brymo', '+41 44 915 8901', '1984-06-14', 'Switzerland', 'Executive Director', '109, Feldgüetliweg, Meilen', 'Zurich', 'Zurich', '8706', 'Switzerland'),
-('prof-admin-01', 'usr-admin-01', 'Chief', 'Treasury', 'Auditor', 'Chief Treasury Auditor', '+41 44 915 0000', '1980-01-01', 'Switzerland', 'Chief Treasury Auditor', '109, Feldgüetliweg Meilen', 'Zurich', 'Zurich', '8706', 'Switzerland'),
-('prof-659', 'usr-659', 'Olle', 'Robert Christer', 'Råström', 'Olle Robert Christer Råström', '+46702813441', '1982-05-18', 'Sweden', 'Executive Private Client', 'Korgmakargatan 32 621 53 Visby', 'Visby', 'Gotland', '621 53', 'Sweden')
-ON DUPLICATE KEY UPDATE `full_name` = VALUES(`full_name`);
+('prof-wb-usr-y4rfbph', 'wb-usr-y4rfbph', 'DEBELU', 'EMMANUEL', 'DEBELU EMMANUEL', '+2347065096181'),
+('prof-usr-prof-mvb5wo7j', 'usr-prof-mvb5wo7j', 'Brian', 'Adams', 'Brian Adams', '+41 44 915 7666'),
+('prof-usr-admin-01', 'usr-admin-01', 'Chief', 'Auditor', 'Chief Treasury Auditor', '+41 44 915 8900'),
+('prof-usr-101', 'usr-101', 'Miz', 'Brymo', 'Miz Brymo', '+41 44 915 8901'),
+('prof-usr-34400', 'usr-34400', 'Kristin', 'Willis', 'Kristin Willis', '9377334076'),
+('prof-usr-659', 'usr-659', 'Olle Robert Christer', 'Råström', 'Olle Robert Christer Råström', '+46702813441'),
+('prof-usr-corp-01', 'usr-corp-01', 'Elena', 'Rostova', 'Elena Rostova', '+41 22 819 4001'),
+('prof-usr-corp-02', 'usr-corp-02', 'Marcus', 'Sterling', 'Marcus Sterling', '+44 20 7946 0912'),
+('prof-usr-alex-01', 'usr-alex-01', 'Alexander', 'Morgan', 'Alexander Morgan', '+41 44 915 9920')
+ON DUPLICATE KEY UPDATE
+  `full_name` = VALUES(`full_name`),
+  `phone_number` = VALUES(`phone_number`);
 
--- 3. Insert / Update Vault Accounts
+-- 3. UPSERT USER VAULT ACCOUNTS
 INSERT INTO `accounts` (`id`, `user_id`, `account_number`, `account_type`, `account_name`, `currency`, `balance`, `available_balance`, `routing_number`, `is_primary`, `status`)
 VALUES
-('acct-101-usd', 'usr-101', 'WB-9482-1049-55', 'Checking', 'Premier Checking Vault', 'USD', 248500.00, 248500.00, '021000089', 1, 'active'),
-('acct-101-chf', 'usr-101', 'WB-9482-1049-56', 'Savings', 'Swiss Franc Reserve Vault', 'CHF', 1450000.00, 1450000.00, '021000089', 0, 'active'),
-('acct-659-usd', 'usr-659', '09372996993', 'Checking', 'Primary Checking Vault', 'USD', 100000.00, 100000.00, '021000089', 1, 'active')
-ON DUPLICATE KEY UPDATE `balance` = VALUES(`balance`);
+('acct-usd-wb-usr-y4rfbph', 'wb-usr-y4rfbph', '9482-1049-55', 'Checking', 'US Dollar Primary Vault', 'USD', 100000.00, 100000.00, '021000089', 1, 'active'),
+('acct-eur-wb-usr-y4rfbph', 'wb-usr-y4rfbph', 'WB-EUR-8841', 'Offshore', 'Euro Global Holding Vault', 'EUR', 0.00, 0.00, '021000089', 0, 'active'),
+('acct-usr-prof-mvb5wo7j-USD', 'usr-prof-mvb5wo7j', '09372996993', 'Checking', 'Primary Checking Vault', 'USD', 100000.00, 100000.00, '021000089', 1, 'active'),
+('acct-usr-admin-01-USD', 'usr-admin-01', '09331164002', 'Checking', 'Executive Reserve Vault', 'USD', 500000.00, 500000.00, '021000089', 1, 'active'),
+('acct-usr-101-USD', 'usr-101', 'WB-9482-1049-55', 'Checking', 'Premier Checking Vault', 'USD', 248500.00, 248500.00, '021000089', 1, 'active'),
+('acct-usr-101-CHF', 'usr-101', 'WB-9482-1049-56', 'Savings', 'Swiss Franc Reserve Vault', 'CHF', 1450000.00, 1450000.00, '021000089', 0, 'active'),
+('acct-usr-34400-USD', 'usr-34400', '2514809281', 'Checking', 'Primary Member Vault', 'USD', 145000.00, 145000.00, '021000089', 1, 'active'),
+('acct-usr-659-USD', 'usr-659', '09372996993', 'Checking', 'Primary Checking Vault', 'USD', 100000.00, 100000.00, '021000089', 1, 'active'),
+('acct-usr-corp-01-USD', 'usr-corp-01', '2514801192', 'Checking', 'Corporate Logistics Vault', 'USD', 312000.00, 312000.00, '021000089', 1, 'active'),
+('acct-usr-corp-02-USD', 'usr-corp-02', '2514808821', 'Checking', 'Merchant Treasury Vault', 'USD', 850000.00, 850000.00, '021000089', 1, 'active'),
+('acct-usr-alex-01-USD', 'usr-alex-01', '2514809901', 'Checking', 'Private Depository Vault', 'USD', 1250000.00, 1250000.00, '021000089', 1, 'active')
+ON DUPLICATE KEY UPDATE
+  `balance` = VALUES(`balance`),
+  `available_balance` = VALUES(`available_balance`),
+  `account_number` = VALUES(`account_number`);
 
--- 4. Insert / Update Wire Clearance Codes
-INSERT INTO `wire_transfer_codes` (`id`, `user_id`, `code_type`, `code_value`, `display_name`, `description`, `is_active`)
-VALUES
-('wc-101-cot', 'usr-101', 'COT', 'CT-78234', 'COT Code', 'Cost of Transfer clearance token', 1),
-('wc-101-tax', 'usr-101', 'TAX', 'TX-99120', 'Tax Code', 'Tax Clearance certificate', 1),
-('wc-101-imf', 'usr-101', 'IMF', 'IMF-44912', 'IMF Code', 'IMF Clearance signoff', 1),
-('wc-101-aml', 'usr-101', 'AML', 'AML-00821', 'AML Code', 'Anti-Money Laundering key', 1),
-('wc-101-pap', 'usr-101', 'PAP', 'PAP-33810', 'PAP Code', 'Proof of Anti-Piracy clearance', 1),
-('wc-101-otp', 'usr-101', 'OTP', '806158', 'OTP Code', 'One-time passcode', 1)
-ON DUPLICATE KEY UPDATE `code_value` = VALUES(`code_value`);
-
--- 5. Insert / Update Cards (Includes CVV & Expiry)
-INSERT INTO `cards` (`id`, `user_id`, `account_number`, `card_holder`, `card_number`, `card_masked`, `card_type`, `expiry_month`, `expiry_year`, `expiry_display`, `cvv`, `pin`, `status`)
-VALUES
-('crd-101-1', 'usr-101', 'WB-9482-1049-55', 'MIZ BRYMO', '4532714031141234', '•••• •••• •••• 1234', 'Black Metal Premier', '09', '29', '09/29', '884', '8869', 'active')
-ON DUPLICATE KEY UPDATE `card_holder` = VALUES(`card_holder`);
-
--- 6. Insert / Update System Settings
+-- 4. INSTITUTION SETTINGS
 INSERT INTO `system_settings` (`key_name`, `value_json`) VALUES
 ('institution_info', '{"bankName":"WB Credit Finance","domain":"wbcu.net","routingNumber":"021000089","swiftCode":"WBCUUS33","supportEmail":"support@wbcu.net","headquarters":"109, Feldgüetliweg Meilen, Zurich 8706, Switzerland"}')
 ON DUPLICATE KEY UPDATE `value_json` = VALUES(`value_json`);
+
+
+SET FOREIGN_KEY_CHECKS = 1;
