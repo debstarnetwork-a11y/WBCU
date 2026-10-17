@@ -20,6 +20,20 @@ lines.append("-- ===============================================================
 
 lines.append("SET FOREIGN_KEY_CHECKS = 0;\n")
 
+# Role mapping for ENUM compatibility
+def map_role(role):
+    r = str(role).lower()
+    if "super" in r: return "super_admin"
+    if "admin" in r: return "admin"
+    if "auditor" in r: return "auditor"
+    return "user"
+
+# Status mapping for ENUM compatibility
+def map_status(status):
+    s = str(status).lower()
+    if s in ["active", "inactive", "suspended", "frozen", "pending_approval"]: return s
+    return "active"
+
 # 1. Users Table
 lines.append("-- 1. UPSERT USERS")
 user_rows = []
@@ -28,10 +42,10 @@ for u in users:
     username = str(u.get("username") or u.get("email", "").split("@")[0] or uid).replace("'", "''")
     email = str(u.get("email", "")).replace("'", "''")
     pwd = str(u.get("password") or "Password123!").replace("'", "''")
-    role = "super_admin" if u.get("is_admin") or u.get("role") == "Admin" else "user"
+    role = map_role(u.get("role", "user") if not u.get("is_admin") else "super_admin")
     pin = str(u.get("pin") or u.get("transactionPin") or "2026").replace("'", "''")
-    status = str(u.get("status") or u.get("account_status") or "active").replace("'", "''")
-    kyc = str(u.get("kycStatus") or u.get("kyc_status") or "verified").replace("'", "''")
+    status = map_status(u.get("status") or u.get("account_status") or "active")
+    kyc = "verified"
     user_rows.append(f"('{uid}', '{username}', '{email}', '{pwd}', '{role}', '{pin}', '{status}', '{kyc}')")
 
 lines.append("INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `role`, `transaction_pin`, `status`, `kyc_status`)\nVALUES")
@@ -48,13 +62,13 @@ lines.append("""ON DUPLICATE KEY UPDATE
 lines.append("-- 2. UPSERT ADMINS")
 admin_rows = []
 for u in users:
-    if u.get("is_admin") or "Admin" in str(u.get("role", "")):
+    if u.get("is_admin") or "admin" in str(u.get("role", "")).lower():
         uid = str(u.get("id", "")).replace("'", "''")
         username = str(u.get("username") or u.get("email", "").split("@")[0] or uid).replace("'", "''")
         email = str(u.get("email", "")).replace("'", "''")
         pwd = str(u.get("password") or "12345").replace("'", "''")
         fullname = str(u.get("fullName") or "Chief Treasury Auditor").replace("'", "''")
-        role = "super_admin" if "Super" in str(u.get("role", "")) else "admin"
+        role = map_role(u.get("role", "admin"))
         admin_rows.append(f"('{uid}', '{username}', '{email}', '{pwd}', '{fullname}', '{role}', 'active')")
 
 lines.append("INSERT INTO `admins` (`id`, `username`, `email`, `password_hash`, `full_name`, `role`, `status`)\nVALUES")
@@ -98,13 +112,16 @@ for u in users:
             if aid in seen_accts: continue
             seen_accts.add(aid)
             anum = str(a.get("accountNumber") or a.get("account_number") or "9482-1049-55").replace("'", "''")
-            atype = str(a.get("type") or "Checking").replace("'", "''")
+            atype = str(a.get("type") or "Checking")
+            if atype not in ['Checking','Savings','Business','Offshore','Fixed Deposit','Money Market']: atype = 'Checking'
             aname = str(a.get("name") or f"{a.get('currency', 'USD')} Vault").replace("'", "''")
             curr = str(a.get("currency") or "USD").replace("'", "''")
             bal = float(a.get("balance") or 0)
             avail = float(a.get("available") or bal)
             ispri = 1 if a.get("isPrimary") else 0
-            acct_rows.append(f"('{aid}', '{uid}', '{anum}', '{atype}', '{aname}', '{curr}', {bal:.2f}, {avail:.2f}, '251480576', 'WBCUUS33', {ispri}, 'active')")
+            astatus = map_status(a.get("status") or "active")
+            if astatus not in ['active','inactive','frozen','closed','dormant']: astatus = 'active'
+            acct_rows.append(f"('{aid}', '{uid}', '{anum}', '{atype}', '{aname}', '{curr}', {bal:.2f}, {avail:.2f}, '251480576', 'WBCUUS33', {ispri}, '{astatus}')")
 
 lines.append("INSERT INTO `accounts` (`id`, `user_id`, `account_number`, `account_type`, `account_name`, `currency`, `balance`, `available_balance`, `routing_number`, `swift_bic`, `is_primary`, `status`)\nVALUES")
 lines.append(",\n".join(acct_rows))
@@ -120,4 +137,4 @@ final_sql = "\n".join(lines)
 with open("cpanel_safe_update.sql", "w", encoding="utf-8") as f:
     f.write(final_sql)
 
-print("Generated comprehensive 2-table update SQL successfully!")
+print("Generated ENUM-compatible update SQL successfully!")
