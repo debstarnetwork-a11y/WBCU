@@ -27,19 +27,35 @@ jobs:
       - name: 🏗️ Build Web App
         run: npm run build
 
-      - name: 🚀 Deploy to cPanel via FTP
+      - name: 🔍 Check FTP Credentials
+        run: |
+          if [ -z "${{ secrets.FTP_SERVER }}" ] || [ -z "${{ secrets.FTP_USERNAME }}" ] || [ -z "${{ secrets.FTP_PASSWORD }}" ]; then
+            echo "::error::Missing FTP Secrets! Please ensure FTP_SERVER, FTP_USERNAME, and FTP_PASSWORD are set in GitHub Repository Settings -> Secrets and variables -> Actions."
+            exit 1
+          fi
+          echo "FTP Secrets are configured."
+
+      - name: 🚀 Deploy to cPanel via FTP / FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          port: ${{ secrets.FTP_PORT != '' && secrets.FTP_PORT || 21 }}
-          protocol: ftp
-          security: loose
-          server-dir: /WBCU/
+          port: ${{ secrets.FTP_PORT || 21 }}
+          protocol: ${{ secrets.FTP_PROTOCOL || 'ftps' }}
+          security: ${{ secrets.FTP_SECURITY || 'loose' }}
+          server-dir: ${{ secrets.FTP_SERVER_DIR || './' }}
           local-dir: ./
+          dangerous-clean-slate: false
+          timeout: 60000
           exclude: |
-            **/.git**
+            **/.git*
             **/.git*/**
             **/node_modules/**
             src/**
+            admin-users.json
+            admin-users-persistent.json
+            cpanel_wbcu_database.sql
+            *.log
+            *.mjs
+            test-*.mjs

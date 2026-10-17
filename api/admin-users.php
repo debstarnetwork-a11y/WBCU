@@ -84,16 +84,33 @@ try {
 }
 
 function loadUsersFromFile($dataFile) {
-    if (file_exists($dataFile)) {
-        $raw = file_get_contents($dataFile);
-        $data = json_decode($raw, true);
-        return is_array($data) ? $data : [];
+    $users = [];
+    $files = [$dataFile, dirname($dataFile) . '/admin-users-persistent.json', __DIR__ . '/admin-users-persistent.json'];
+    $seen = [];
+    foreach ($files as $f) {
+        if (!empty($f) && file_exists($f)) {
+            $raw = @file_get_contents($f);
+            $data = json_decode($raw, true);
+            if (is_array($data)) {
+                foreach ($data as $u) {
+                    $key = $u['id'] ?? $u['email'] ?? null;
+                    if ($key && !isset($seen[$key])) {
+                        $seen[$key] = true;
+                        $users[] = $u;
+                    }
+                }
+            }
+        }
     }
-    return [];
+    return $users;
 }
 
 function saveUsersToFile($dataFile, $users) {
-    return file_put_contents($dataFile, json_encode($users, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    $encoded = json_encode($users, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    @file_put_contents($dataFile, $encoded);
+    $persistentFile = dirname($dataFile) . '/admin-users-persistent.json';
+    @file_put_contents($persistentFile, $encoded);
+    return true;
 }
 
 // ----------------------------------------------------------------------------

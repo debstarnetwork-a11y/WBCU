@@ -80,7 +80,7 @@ export function wrapEmailHtml(contentHtml, previewText = 'WB Credit Union Notifi
     const rawSettings = typeof localStorage !== 'undefined' ? localStorage.getItem('wb_system_settings_db') : null;
     if (rawSettings) {
       const parsed = JSON.parse(rawSettings);
-      if (parsed.bankInfo?.address) {
+      if (parsed.bankInfo?.address && !parsed.bankInfo.address.toLowerCase().includes('new york') && !parsed.bankInfo.address.toLowerCase().includes('plaza')) {
         bankAddress = parsed.bankInfo.address;
       }
     }

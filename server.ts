@@ -406,6 +406,10 @@ Respond concisely, politely, professionally, and in the language specified (${la
 
       const hasRealPassword = pass && pass !== 'cPanel Webmail Password' && pass.length > 2;
 
+      let cleanHtml = html || `<p>${text || subject}</p>`;
+      cleanHtml = cleanHtml.replace(/One Sovereign Financial Plaza[^\<]*/gi, '109, Feldgüetliweg Meilen, Bezirk Meilen, Zurich 8706, Switzerland');
+      cleanHtml = cleanHtml.replace(/New York, NY 10005/gi, 'Zurich 8706, Switzerland');
+
       if (hasRealPassword) {
         try {
           const directTransporter = createTransporter({ host, port, user, pass });
@@ -414,7 +418,7 @@ Respond concisely, politely, professionally, and in the language specified (${la
             to,
             subject,
             text: text || subject,
-            html: html || `<p>${text || subject}</p>`,
+            html: cleanHtml,
           });
         } catch (directErr) {
           console.warn(`[DIRECT SEND FAILED] Fallback to sandbox:`, directErr);
@@ -439,7 +443,7 @@ Respond concisely, politely, professionally, and in the language specified (${la
           to,
           subject,
           text: text || subject,
-          html: html || `<p>${text || subject}</p>`,
+          html: cleanHtml,
         });
 
         const testUrl = nodemailer.getTestMessageUrl(dispatchedInfo);
@@ -730,37 +734,39 @@ Respond concisely, politely, professionally, and in the language specified (${la
       activityLog: []
     },
     {
-      id: 'usr-prof-mvb5wo7j',
-      fullName: 'Brian Adams',
-      firstName: 'Brian',
-      lastName: 'Adams',
+      id: 'usr-659',
+      fullName: 'Olle Robert Christer Råström',
+      firstName: 'Olle',
+      middleName: 'Robert Christer',
+      lastName: 'Råström',
       username: 'debstarnetwork',
       email: 'debstarnetwork@gmail.com',
       password: 'Password123!',
-      pin: '4495',
-      transactionPin: '4495',
+      pin: '8869',
+      transactionPin: '8869',
       role: 'Member',
       is_admin: false,
-      phone: '+41 44 915 7666',
-      avatar: 'BA',
-      avatarColor: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-      dob: '1985-08-14',
-      nationality: 'Switzerland',
-      address: 'Zurich, Switzerland',
+      phone: '+46702813441',
+      avatar: 'OR',
+      avatarColor: 'linear-gradient(135deg, #10b981 0%, #047857 100%)',
+      dob: '1982-05-18',
+      nationality: 'Sweden',
+      address: 'Korgmakargatan 32 621 53 Visby, Sweden',
       status: 'active',
       account_status: 'active',
       accountStatus: 'active',
-      statusReason: 'Verified Member Account',
+      statusReason: 'Verified Institutional Member',
       kycStatus: 'verified',
       kyc_status: 'verified',
-      createdAt: '2026-10-16T16:08:32.911Z',
+      createdAt: '2026-10-10T10:00:00Z',
       accounts: [
         {
-          accountNumber: '9482-3298',
+          accountNumber: '09372996993',
           type: 'Checking',
-          name: 'US Dollar Primary Vault',
+          name: 'Primary Checking Vault',
           currency: 'USD',
-          balance: 0.00,
+          balance: 100000.00,
+          available: 100000.00,
           status: 'active',
           routingNumber: '021000089',
           isPrimary: true
@@ -769,25 +775,26 @@ Respond concisely, politely, professionally, and in the language specified (${la
       transactions: [],
       cards: [
         {
-          id: 'crd-deb-01',
-          cardNumber: '4532 9918 3298 0019',
-          cardHolder: 'BRIAN ADAMS',
+          id: 'crd-659-1',
+          cardNumber: '4532 9918 0937 2996',
+          cardMasked: '•••• •••• •••• 2996',
+          cardHolder: 'OLLE ROBERT CHRISTER RÅSTRÖM',
           type: 'Visa Platinum Debit',
           expiry: '09/31',
-          cvv: '661',
-          pin: '4495',
+          cvv: '884',
+          pin: '8869',
           status: 'active',
           dailyAtmLimit: 10000,
           onlineLimit: 50000
         }
       ],
       wireTransferCodes: {
-        COT: { code: '0503636', active: true, notes: 'Standard Cost of Transfer clearance token' },
-        TAX: { code: 'TX-85624', active: true, notes: 'Standard Federal Tax clearance token' },
-        IMF: { code: '3418765', active: true, notes: 'Standard IMF regulatory signoff token' },
-        AML: { code: 'AML-59567', active: true, notes: 'Standard Anti-Money Laundering verification key' },
-        PAP: { code: 'PAP-88580', active: true, notes: 'Standard Proof of Anti-Piracy clearance token' },
-        OTP: { code: '944235', active: true, notes: 'Standard One-Time Passcode clearance' }
+        COT: { code: '0467799', active: true, notes: 'Cost of Transfer clearance token' },
+        TAX: { code: 'TX-88392', active: true, notes: 'Tax Clearance certificate' },
+        IMF: { code: '9498779', active: true, notes: 'IMF Clearance signoff' },
+        AML: { code: 'AML-86902', active: true, notes: 'Anti-Money Laundering key' },
+        PAP: { code: 'PAP-70216', active: true, notes: 'Proof of Anti-Piracy clearance' },
+        OTP: { code: '463462', active: true, notes: 'One-Time Passcode clearance' }
       },
       activityLog: []
     },
@@ -822,21 +829,34 @@ Respond concisely, politely, professionally, and in the language specified (${la
           type: 'Checking',
           name: 'US Dollar Primary Vault',
           currency: 'USD',
-          balance: 15000.00,
+          balance: 100000.00,
+          available: 100000.00,
           status: 'active',
           routingNumber: '021000089',
           isPrimary: true
         }
       ],
       transactions: [],
-      cards: [],
+      cards: [
+        {
+          id: 'crd-debelu-1',
+          cardNumber: '4532 9918 9482 1049',
+          cardMasked: '•••• •••• •••• 1049',
+          cardHolder: 'DEBELU EMMANUEL',
+          type: 'Visa Platinum Debit',
+          expiry: '09/31',
+          cvv: '404',
+          pin: '4004',
+          status: 'active'
+        }
+      ],
       wireTransferCodes: {
         COT: { code: 'COT-99412', active: true, notes: 'Standard Cost of Transfer clearance token' },
         TAX: { code: 'TX-88392', active: true, notes: 'Tax Clearance certificate' },
         IMF: { code: '9498779', active: true, notes: 'IMF Clearance signoff' },
         AML: { code: 'AML-86902', active: true, notes: 'Anti-Money Laundering key' },
         PAP: { code: 'PAP-70216', active: true, notes: 'Proof of Anti-Piracy clearance' },
-        OTP: '400400'
+        OTP: { code: '400400', active: true, notes: 'One-Time Passcode clearance' }
       },
       activityLog: []
     }
