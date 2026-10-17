@@ -59,6 +59,6 @@ os.system("python3 wbcu_sync.py")
 
 print("\nREPAIR COMPLETE.")
 print("1. Go to cPanel File Manager.")
-print("2. Open /home/glolbka/public_html/.env")
+print("2. Open /home/glolbka/WBCU/.env")
 print("3. Enter your database password in DB_PASS.")
 print("4. Try logging in again.")
