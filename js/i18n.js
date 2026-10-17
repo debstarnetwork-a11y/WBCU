@@ -114,7 +114,7 @@ export const PHRASE_DICTIONARY = {
     es: "Experiencia bancaria moderna", fr: "Expérience bancaire moderne", de: "Modernes Banking-Erlebnis", sv: "Modern bankupplevelse", zh: "现代数字银行体验", ar: "تجربة مصرفية حديثة", pt: "Experiência bancária moderna", ja: "最新のデジタルバンキング体験", it: "Esperienza bancaria moderna"
   },
   "WB CREDIT FINANCE": {
-    es: "WB CREDIT FINANCE", fr: "WB CREDIT FINANCE", de: "WB CREDIT FINANCE", sv: "WB CREDIT FINANCE", zh: "WB 信用合作社", ar: "اتحاد ائتمان WB", pt: "WB CREDIT FINANCE", ja: "WB信用組合", it: "WB CREDIT FINANCE"
+    es: "WB CREDIT FINANCE", fr: "WB CREDIT FINANCE", de: "WB CREDIT FINANCE", sv: "WB CREDIT FINANCE", zh: "WB 信用金融", ar: "تمويل ائتمان WB", pt: "WB CREDIT FINANCE", ja: "WBクレジット・ファイナンス", it: "WB CREDIT FINANCE"
   },
   "We do banking differently. We believe that people come first, and that everyone deserves a great experience every step of the way.": {
     es: "Hacemos banca de manera diferente. Creemos que las personas son lo primero y que todos merecen una experiencia extraordinaria en cada paso.",
@@ -151,7 +151,7 @@ export const PHRASE_DICTIONARY = {
 
   // Rates & Cards Section
   "WB CREDIT FINANCE Rates": {
-    es: "Tasas y Rendimientos WB CREDIT FINANCE", fr: "Taux WB CREDIT FINANCE", de: "WB CREDIT FINANCE Zinssätze", sv: "WB CREDIT FINANCE Räntor", zh: "WB 信用合作社优质利率", ar: "أسعار عوائد اتحاد ائتمان WB", pt: "Taxas WB CREDIT FINANCE", ja: "WB信用組合の優遇金利", it: "Tassi WB CREDIT FINANCE"
+    es: "Tasas y Rendimientos WB CREDIT FINANCE", fr: "Taux WB CREDIT FINANCE", de: "WB CREDIT FINANCE Zinssätze", sv: "WB CREDIT FINANCE Räntor", zh: "WB 信用金融优质利率", ar: "أسعار عوائد تمويل ائتمان WB", pt: "Taxas WB CREDIT FINANCE", ja: "WBクレジット・ファイナンスの優遇金利", it: "Tassi WB CREDIT FINANCE"
   },
   "Discover competitive rates designed to help your money grow faster": {
     es: "Descubra tasas competitivas diseñadas para hacer crecer su patrimonio más rápido",
@@ -247,7 +247,7 @@ export const PHRASE_DICTIONARY = {
 
   // About Us Page (about.html)
   "About WB CREDIT FINANCE": {
-    es: "Acerca de WB CREDIT FINANCE", fr: "À Propos de WB CREDIT FINANCE", de: "Über WB CREDIT FINANCE", sv: "Om WB CREDIT FINANCE", zh: "关于 WB 信用合作社", ar: "نبذة عن اتحاد ائتمان WB", pt: "Sobre o WB CREDIT FINANCE", ja: "WB信用組合について", it: "Informazioni su WB CREDIT FINANCE"
+    es: "Acerca de WB CREDIT FINANCE", fr: "À Propos de WB CREDIT FINANCE", de: "Über WB CREDIT FINANCE", sv: "Om WB CREDIT FINANCE", zh: "关于 WB 信用金融", ar: "نبذة عن تمويل ائتمان WB", pt: "Sobre o WB CREDIT FINANCE", ja: "WBクレジット・ファイナンスについて", it: "Informazioni su WB CREDIT FINANCE"
   },
   "Building financial strength together since day one. We're more than a bank — we're your partner in every financial milestone.": {
     es: "Construyendo solidez financiera juntos desde el primer día. Somos más que un banco: somos su socio en cada logro.",
@@ -355,10 +355,10 @@ export const PHRASE_DICTIONARY = {
     fr: "Rejoignez WB CREDIT FINANCE et découvrez une banque qui vous place véritablement au centre de ses priorités. Ouvrez votre compte en quelques minutes.",
     de: "Werden Sie Teil von WB CREDIT FINANCE und erleben Sie Banking, das Sie wirklich in den Mittelpunkt stellt. Eröffnen Sie Ihr Konto in Minuten.",
     sv: "Gå med i WB CREDIT FINANCE-familjen och upplev bankverksamhet som sätter dig först. Öppna ditt konto på några minuter.",
-    zh: "加入 WB 信用合作社大家庭，体验真正以您为先的银行业务。数分钟内轻松开户，构筑您的财富未来。",
-    ar: "انضم إلى عائلة اتحاد ائتمان WB وجرّب مصرفية تضعك دائماً في المقام الأول. افتح حسابك خلال دقائق.",
+    zh: "加入 WB 信用金融大家庭，体验真正以您为先的银行业务。数分钟内轻松开户，构筑您的财富未来。",
+    ar: "انضم إلى عائلة تمويل ائتمان WB وجرّب مصرفية تضعك دائماً في المقام الأول. افتح حسابك خلال دقائق.",
     pt: "Faça parte da família WB CREDIT FINANCE e experimente um banco que realmente coloca você em primeiro lugar. Abra sua conta em minutos.",
-    ja: "WB信用組合ファミリーに加わり、人を最優先する真のバンキングをご体感ください。数分で口座開設が完了します。",
+    ja: "WBクレジット・ファイナンスファミリーに加わり、人を最優先する真のバンキングをご体感ください。数分で口座開設が完了します。",
     it: "Unisciti alla famiglia WB CREDIT FINANCE e scopri una banca che ti mette davvero al primo posto. Apri il tuo conto in pochi minuti."
   },
 
@@ -403,16 +403,16 @@ export const PHRASE_DICTIONARY = {
     fr: "Ouvrez votre compte WB CREDIT FINANCE dès aujourd'hui et découvrez une nouvelle façon de gérer vos finances. Cela ne prend que quelques minutes.",
     de: "Eröffnen Sie noch heute Ihr WB CREDIT FINANCE Konto und erleben Sie erstklassiges Banking. Es dauert nur wenige Minuten.",
     sv: "Öppna ditt WB CREDIT FINANCE-konto idag och upptäck ett bättre sätt att hantera din ekonomi. Det tar bara några minuter.",
-    zh: "今天就开立您的 WB 信用合作社账户，发现更卓越的理财之道。仅需数分钟即可完成。",
-    ar: "افتح حسابك في اتحاد ائتمان WB اليوم واكتشف أسلوباً أفضل لإدارة أموالك. لن يستغرق الأمر سوى دقائق.",
+    zh: "今天就开立您的 WB 信用金融账户，发现更卓越的理财之道。仅需数分钟即可完成。",
+    ar: "افتح حسابك في تمويل ائتمان WB اليوم واكتشف أسلوباً أفضل لإدارة أموالك. لن يستغرق الأمر سوى دقائق.",
     pt: "Abra sua conta na WB CREDIT FINANCE hoje e descubra uma maneira superior de cuidar do seu dinheiro. Leva apenas alguns minutos.",
-    ja: "今すぐWB信用組合の口座を開設し、よりスマートな金融体験を。手続きはわずか数分です。",
+    ja: "今すぐWBクレジット・ファイナンスの口座を開設し、よりスマートな金融体験を。手続きはわずか数分です。",
     it: "Apri il tuo conto WB CREDIT FINANCE oggi stesso e scopri un modo migliore di fare banca. Bastano pochi minuti."
   },
 
   // Contact Page (contact.html)
   "Contact WB CREDIT FINANCE": {
-    es: "Contacte con WB CREDIT FINANCE", fr: "Contacter WB CREDIT FINANCE", de: "Kontakt zu WB CREDIT FINANCE", sv: "Kontakta WB CREDIT FINANCE", zh: "联系 WB 信用合作社", ar: "اتصل باتحاد ائتمان WB", pt: "Contate o WB CREDIT FINANCE", ja: "WB信用組合へのお問い合わせ", it: "Contatta WB CREDIT FINANCE"
+    es: "Contacte con WB CREDIT FINANCE", fr: "Contacter WB CREDIT FINANCE", de: "Kontakt zu WB CREDIT FINANCE", sv: "Kontakta WB CREDIT FINANCE", zh: "联系 WB 信用金融", ar: "اتصل بتمويل ائتمان WB", pt: "Contate o WB CREDIT FINANCE", ja: "WBクレジット・ファイナンスへのお問い合わせ", it: "Contatta WB CREDIT FINANCE"
   },
   "We're here to help. Reach out to our dedicated member services team through any of the channels below.": {
     es: "Estamos aquí para ayudarle. Póngase en contacto con nuestro equipo dedicado a través de cualquiera de los siguientes canales.",
@@ -491,7 +491,7 @@ export const PHRASE_DICTIONARY = {
     es: "Bienvenido de Nuevo", fr: "Bon Retour", de: "Willkommen zurück", sv: "Välkommen tillbaka", zh: "欢迎回来", ar: "مرحباً بعودتك", pt: "Bem-vindo de Volta", ja: "おかえりなさい", it: "Bentornato"
   },
   "Access your WB CREDIT FINANCE account": {
-    es: "Acceda a su cuenta de WB CREDIT FINANCE", fr: "Accédez à votre compte WB CREDIT FINANCE", de: "Greifen Sie auf Ihr WB CREDIT FINANCE Konto zu", sv: "Få tillgång till ditt WB CREDIT FINANCE-konto", zh: "安全登录您的 WB 信用合作社账户", ar: "الوصول إلى حساب اتحاد ائتمان WB الخاص بك", pt: "Acesse sua conta da WB CREDIT FINANCE", ja: "WB信用組合口座にアクセス", it: "Accedi al tuo conto WB CREDIT FINANCE"
+    es: "Acceda a su cuenta de WB CREDIT FINANCE", fr: "Accédez à votre compte WB CREDIT FINANCE", de: "Greifen Sie auf Ihr WB CREDIT FINANCE Konto zu", sv: "Få tillgång till ditt WB CREDIT FINANCE-konto", zh: "安全登录您的 WB 信用金融账户", ar: "الوصول إلى حساب تمويل ائتمان WB الخاص بك", pt: "Acesse sua conta da WB CREDIT FINANCE", ja: "WBクレジット・ファイナンス口座にアクセス", it: "Accedi al tuo conto WB CREDIT FINANCE"
   },
   "Password": {
     es: "Contraseña", fr: "Mot de passe", de: "Passwort", sv: "Lösenord", zh: "密码", ar: "كلمة المرور", pt: "Senha", ja: "パスワード", it: "Password"

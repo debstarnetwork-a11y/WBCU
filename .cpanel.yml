@@ -2,40 +2,35 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/glolbka/public_html
-    - # If public_html is not correct, change it to your domain folder like /home/glolbka/www.wbcu.net
     - /bin/mkdir -p $DEPLOYPATH/api
     - /bin/mkdir -p $DEPLOYPATH/js
     - /bin/mkdir -p $DEPLOYPATH/pages
     - /bin/mkdir -p $DEPLOYPATH/admin
-    - # Copy Vite build files
-    - if [ -d dist ] && [ "$(ls -A dist)" ]; then /bin/cp -R dist/* $DEPLOYPATH/ ; fi
-    - # Copy PHP backend files
-    - if [ -d api ] && [ "$(ls -A api)" ]; then /bin/cp -R api/* $DEPLOYPATH/api/ ; fi
-    - # Copy raw JS files
-    - if [ -d js ] && [ "$(ls -A js)" ]; then /bin/cp -R js/* $DEPLOYPATH/js/ ; fi
-    - # Copy pages and admin directories
-    - if [ -d pages ] && [ "$(ls -A pages)" ]; then /bin/cp -R pages/* $DEPLOYPATH/pages/ ; fi
-    - if [ -d admin ] && [ "$(ls -A admin)" ]; then /bin/cp -R admin/* $DEPLOYPATH/admin/ ; fi
-    - # Copy configuration and entry points
-    - if [ -f admin.html ]; then /bin/cp admin.html $DEPLOYPATH/ ; fi
-    - if [ -f admin.html ]; then /bin/cp admin.html $DEPLOYPATH/admin/index.html ; fi
-    - if [ -f admin.html ]; then /bin/cp admin.html $DEPLOYPATH/pages/admin-dashboard.html ; fi
-    - if [ -f admin.html ]; then /bin/cp admin.html $DEPLOYPATH/pages/admin.html ; fi
-    - if [ -f admin-login.html ]; then /bin/cp admin-login.html $DEPLOYPATH/ ; fi
-    - if [ -f admin-login.html ]; then /bin/cp admin-login.html $DEPLOYPATH/pages/admin-login.html ; fi
-    - if [ -f login-admin.html ]; then /bin/cp login-admin.html $DEPLOYPATH/ ; fi
-    - if [ -f index.html ]; then /bin/cp index.html $DEPLOYPATH/ ; fi
-    - if [ -f .htaccess ]; then /bin/cp .htaccess $DEPLOYPATH/ ; fi
+    - # Copy source directories with forced overwrite (-rf)
+    - if [ -d api ] && [ "$(ls -A api)" ]; then /bin/cp -rf api/* $DEPLOYPATH/api/ ; fi
+    - if [ -d js ] && [ "$(ls -A js)" ]; then /bin/cp -rf js/* $DEPLOYPATH/js/ ; fi
+    - if [ -d pages ] && [ "$(ls -A pages)" ]; then /bin/cp -rf pages/* $DEPLOYPATH/pages/ ; fi
+    - if [ -d admin ] && [ "$(ls -A admin)" ]; then /bin/cp -rf admin/* $DEPLOYPATH/admin/ ; fi
+    - # Copy Vite build files over root with forced overwrite (-rf)
+    - if [ -d dist ] && [ "$(ls -A dist)" ]; then /bin/cp -rf dist/* $DEPLOYPATH/ ; fi
+    - # Copy configuration and entry points with forced overwrite (-f)
+    - if [ -f admin.html ]; then /bin/cp -f admin.html $DEPLOYPATH/ ; fi
+    - if [ -f admin.html ]; then /bin/cp -f admin.html $DEPLOYPATH/admin/index.html ; fi
+    - if [ -f admin.html ]; then /bin/cp -f admin.html $DEPLOYPATH/pages/admin-dashboard.html ; fi
+    - if [ -f admin.html ]; then /bin/cp -f admin.html $DEPLOYPATH/pages/admin.html ; fi
+    - if [ -f admin-login.html ]; then /bin/cp -f admin-login.html $DEPLOYPATH/ ; fi
+    - if [ -f admin-login.html ]; then /bin/cp -f admin-login.html $DEPLOYPATH/pages/admin-login.html ; fi
+    - if [ -f login-admin.html ]; then /bin/cp -f login-admin.html $DEPLOYPATH/ ; fi
+    - if [ -f index.html ]; then /bin/cp -f index.html $DEPLOYPATH/ ; fi
+    - if [ -f .htaccess ]; then /bin/cp -f .htaccess $DEPLOYPATH/ ; fi
     - if [ -f admin-users.json ] && [ ! -f $DEPLOYPATH/admin-users.json ]; then /bin/cp admin-users.json $DEPLOYPATH/ ; fi
     - if [ -f admin-users-persistent.json ] && [ ! -f $DEPLOYPATH/admin-users-persistent.json ]; then /bin/cp admin-users-persistent.json $DEPLOYPATH/ ; fi
-    - if [ -f server.js ]; then /bin/cp server.js $DEPLOYPATH/ ; fi
+    - if [ -f server.js ]; then /bin/cp -f server.js $DEPLOYPATH/ ; fi
     - # Also synchronize to WBCU application root if present
-    - if [ -d /home/glolbka/WBCU ]; then /bin/cp -u server.js /home/glolbka/WBCU/ 2>/dev/null || true; fi
+    - if [ -d /home/glolbka/WBCU ]; then /bin/cp -uf server.js /home/glolbka/WBCU/ 2>/dev/null || true; fi
     - if [ -d /home/glolbka/WBCU ] && [ ! -f /home/glolbka/WBCU/admin-users.json ]; then /bin/cp admin-users.json /home/glolbka/WBCU/ 2>/dev/null || true; fi
-    - if [ -d /home/glolbka/WBCU ]; then /bin/cp -u admin-login.html /home/glolbka/WBCU/ 2>/dev/null || true; fi
-    - if [ -d /home/glolbka/WBCU ]; then /bin/cp -u admin.html /home/glolbka/WBCU/ 2>/dev/null || true; fi
-    - if [ -d /home/glolbka/WBCU/api ]; then /bin/cp -Ru api/* /home/glolbka/WBCU/api/ 2>/dev/null || true; fi
-    - if [ -d /home/glolbka/WBCU/js ]; then /bin/cp -Ru js/* /home/glolbka/WBCU/js/ 2>/dev/null || true; fi
-    - if [ -d /home/glolbka/WBCU/pages ]; then /bin/cp -Ru pages/* /home/glolbka/WBCU/pages/ 2>/dev/null || true; fi
-
-
+    - if [ -d /home/glolbka/WBCU ]; then /bin/cp -uf admin-login.html /home/glolbka/WBCU/ 2>/dev/null || true; fi
+    - if [ -d /home/glolbka/WBCU ]; then /bin/cp -uf admin.html /home/glolbka/WBCU/ 2>/dev/null || true; fi
+    - if [ -d /home/glolbka/WBCU/api ]; then /bin/cp -Ruf api/* /home/glolbka/WBCU/api/ 2>/dev/null || true; fi
+    - if [ -d /home/glolbka/WBCU/js ]; then /bin/cp -Ruf js/* /home/glolbka/WBCU/js/ 2>/dev/null || true; fi
+    - if [ -d /home/glolbka/WBCU/pages ]; then /bin/cp -Ruf pages/* /home/glolbka/WBCU/pages/ 2>/dev/null || true; fi
