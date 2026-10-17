@@ -1,7 +1,7 @@
 <?php
 /**
  * ============================================================================
- * WB CREDIT FINANCE - ADMIN AUTHENTICATION API (Path-Intelligent & Rescue)
+ * WB CREDIT FINANCE - ADMIN AUTHENTICATION API (Bulletproof Pathing)
  * ============================================================================
  */
 
@@ -10,10 +10,7 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit;
-}
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit; }
 
 $rawInput = file_get_contents('php://input');
 $inputData = json_decode($rawInput, true) ?: [];
@@ -27,34 +24,32 @@ if (empty($identifier) || empty($password)) {
     exit;
 }
 
-// 1. EMERGENCY RESCUE MODE (Bypasses everything)
+// 1. EMERGENCY HARDCODED BYPASS
 if (($normIdentifier === 'admin' || $normIdentifier === 'admin@wbcu.net') && $password === '12345') {
     echo json_encode(['success' => true, 'admin' => [
-        'id' => 'usr-admin-01', 'email' => 'admin@wbcu.net', 'username' => 'admin',
-        'fullName' => 'Chief Treasury Auditor', 'role' => 'Super Admin', 'is_admin' => true,
-        'authMethod' => 'HARDCODED_RESCUE', 'authenticatedAt' => date('c')
+        'id' => 'usr-admin-01', 'email' => 'admin@wbcu.net', 'fullName' => 'Chief Treasury Auditor',
+        'role' => 'Super Admin', 'is_admin' => true, 'authMethod' => 'HARDCODED_RESCUE'
     ]]);
     exit;
 }
 
-// 2. Locate Files (.env and admin-users.json)
-$searchPaths = [
+// 2. INTELLIGENT PATH DETECTION
+$possibleRoots = [
     __DIR__, 
     dirname(__DIR__), 
-    dirname(dirname(__DIR__)),
-    '/home/glolbka/public_html',
+    $_SERVER['DOCUMENT_ROOT'],
     '/home/glolbka/WBCU',
-    $_SERVER['DOCUMENT_ROOT'] ?? ''
+    '/home/glolbka/public_html'
 ];
 
 $dbPass = ''; $dbUser = 'glolbka_wbcu_user'; $dbName = 'glolbka_wbcu_db'; $dbHost = 'localhost';
 $jsonData = [];
 
-foreach ($searchPaths as $path) {
-    if (empty($path)) continue;
+foreach ($possibleRoots as $root) {
+    if (empty($root) || !is_dir($root)) continue;
     
     // Check .env
-    $env = $path . '/.env';
+    $env = $root . '/.env';
     if (file_exists($env)) {
         $lines = @file($env, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         if ($lines) {
@@ -71,15 +66,15 @@ foreach ($searchPaths as $path) {
     }
     
     // Check JSON
-    $json = $path . '/admin-users.json';
+    $json = $root . '/admin-users.json';
     if (file_exists($json) && empty($jsonData)) {
         $jsonData = json_decode(file_get_contents($json), true) ?: [];
     }
 }
 
-// 3. Try Database
+// 3. TRY DATABASE
 $matchedRow = null; $sourceTable = null;
-if (!empty($dbPass)) {
+if (!empty($dbPass) && $dbPass !== 'PLEASE_EDIT_THIS_IN_CPANEL_FILE_MANAGER') {
     try {
         $pdo = new PDO("mysql:host={$dbHost};dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 3
@@ -90,10 +85,20 @@ if (!empty($dbPass)) {
         if ($row && ($password === $row['password_hash'] || password_verify($password, $row['password_hash']))) {
             $matchedRow = $row; $sourceTable = 'db_admins';
         }
-    } catch (Throwable $e) {}
+        if (!$matchedRow) {
+            $stmt = $pdo->prepare("SELECT u.*, p.full_name FROM `users` u LEFT JOIN `profiles` p ON u.id = p.user_id WHERE LOWER(u.username) = ? OR LOWER(u.email) = ? LIMIT 1");
+            $stmt->execute([$normIdentifier, $normIdentifier]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($row && (stripos($row['role'] ?? '', 'admin') !== false || !empty($row['is_admin']))) {
+                if ($password === $row['password_hash'] || password_verify($password, $row['password_hash'])) {
+                    $matchedRow = $row; $sourceTable = 'db_users';
+                }
+            }
+        }
+    } catch (Throwable $e) { $dbError = $e->getMessage(); }
 }
 
-// 4. Try JSON
+// 4. TRY JSON FALLBACK
 if (!$matchedRow && !empty($jsonData)) {
     foreach ($jsonData as $u) {
         if (strtolower($u['email'] ?? '') === $normIdentifier || strtolower($u['username'] ?? '') === $normIdentifier) {
@@ -113,5 +118,5 @@ if ($matchedRow) {
     ]]);
 } else {
     http_response_code(401);
-    echo json_encode(['success' => false, 'error' => 'Access Denied.', 'db_connected' => !empty($dbPass)]);
+    echo json_encode(['success' => false, 'error' => 'Login failed.', 'debug_root' => $_SERVER['DOCUMENT_ROOT']]);
 }
