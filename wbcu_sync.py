@@ -125,11 +125,24 @@ def main():
     ]
 
     deploy_targets = []
+    found_specific_target = False
     for c in candidate_names:
         p = os.path.join(base_home, c)
-        if os.path.isdir(p) and p != repo_dir and p not in deploy_targets:
+        if os.path.isdir(p) and p != repo_dir:
+            if c != "public_html":
+                found_specific_target = True
             deploy_targets.append(p)
 
+    # Safety: If we found specific targets like 'WBCU' or 'wbcu.net', 
+    # and the user is worried about public_html, we should filter it out
+    # or at least warn. For now, let's keep all detected but allow 
+    # the user to see that it targets multiple.
+    # Actually, let's implement a "preferred target" logic.
+    if found_specific_target:
+        # If specific folders like WBCU exist, we should probably ONLY target those
+        # if public_html is known to host something else.
+        deploy_targets = [t for t in deploy_targets if "public_html" not in t or t.endswith("wbcu.net") or t.endswith("wbcu")]
+    
     if not deploy_targets:
         deploy_targets.append(repo_dir)
 

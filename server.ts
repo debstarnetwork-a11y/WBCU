@@ -166,7 +166,7 @@ async function startServer() {
       }
 
       const ai = new GoogleGenAI({ apiKey });
-      const systemInstruction = `You are the official 24/7 Digital Assistant and Duty Officer for WB Credit Union (www.wbcu.net) located at 109 Feldgüetliweg, Meilen, Zurich 8706, Switzerland.
+      const systemInstruction = `You are the official 24/7 Digital Assistant and Duty Officer for WB Credit Finance (www.wbcu.net) located at 109 Feldgüetliweg, Meilen, Zurich 8706, Switzerland.
 Official Details:
 - 24/7 Toll-Free Hotline: 1-800-BANKING (1-800-226-5464)
 - International Phone: +1 (207) 613-1332
@@ -177,7 +177,7 @@ Official Details:
 Respond concisely, politely, professionally, and in the language specified (${lang}). Use short bullet points or clear HTML line breaks (<br>) where appropriate.`;
 
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-flash-latest',
         contents: message,
         config: {
           systemInstruction,
@@ -232,7 +232,7 @@ Respond concisely, politely, professionally, and in the language specified (${la
             <div style="text-align:center; padding-bottom:12px;">
               <img src="https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png" alt="WB Credit Union" style="height:48px; width:auto; max-width:220px; object-fit:contain; display:block; margin:0 auto;" />
             </div>
-            <h1 style="margin:0; color:#ffffff; font-size:22px; font-weight:700; letter-spacing:0.5px;">WB CREDIT UNION</h1>
+            <h1 style="margin:0; color:#ffffff; font-size:22px; font-weight:700; letter-spacing:0.5px;">WB CREDIT FINANCE</h1>
             <p style="margin:6px 0 0 0; color:#93c5fd; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Swiss Depository & Institutional Wealth Management</p>
           </div>
           
@@ -1480,18 +1480,18 @@ Respond concisely, politely, professionally, and in the language specified (${la
       });
     } else {
       app.get('*', (_req, res) => {
-        res.send('<h1>WB Credit Union App Server Active</h1>');
+        res.send('<h1>WB Credit Finance App Server Active</h1>');
       });
     }
   }
 
   if (typeof PORT === 'string' && (PORT.startsWith('/') || PORT.startsWith('\\\\'))) {
     app.listen(PORT, () => {
-      console.log(`[WB Credit Union Server] Listening on Passenger socket ${PORT}`);
+      console.log(`[WB Credit Finance Server] Listening on Passenger socket ${PORT}`);
     });
   } else {
     app.listen(Number(PORT), HOST, () => {
-      console.log(`[WB Credit Union Server] Listening on http://${HOST}:${PORT}`);
+      console.log(`[WB Credit Finance Server] Listening on http://${HOST}:${PORT}`);
     });
   }
 }
