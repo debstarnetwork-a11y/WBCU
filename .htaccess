@@ -1,5 +1,5 @@
 # ==============================================================================
-# WB CREDIT UNION - CPANEL & APACHE REWRITE CONFIGURATION
+# WB CREDIT FINANCE - CPANEL & APACHE REWRITE CONFIGURATION
 # ==============================================================================
 
 <IfModule mod_rewrite.c>

@@ -1,7 +1,7 @@
 -- ============================================================================
--- WB CREDIT UNION - COMPLETE SUPABASE DATABASE SCHEMA
+-- WB CREDIT FINANCE - COMPLETE SUPABASE DATABASE SCHEMA
 -- ============================================================================
--- Description: Production-ready PostgreSQL schema for WB Credit Union digital banking.
+-- Description: Production-ready PostgreSQL schema for WB Credit Finance digital banking.
 -- Includes custom ENUM types, 14 relational tables, auto-generation generators for
 -- 10-digit account numbers and transaction references, Row Level Security (RLS)
 -- policies, automated updated_at triggers, auth.users onboarding trigger, and seed data.
@@ -703,7 +703,7 @@ BEGIN
   ) VALUES (
     NEW.id,
     'account',
-    'Welcome to WB Credit Union',
+    'Welcome to WB Credit Finance',
     'Your digital multi-currency vault has been provisioned. Review your accounts and deposit funds to begin.',
     '/pages/dashboard.html'
   );
@@ -1059,7 +1059,7 @@ ON CONFLICT (from_currency, to_currency) DO UPDATE SET
 -- ----------------------------------------------------------------------------
 INSERT INTO system_settings (setting_key, setting_value, description)
 VALUES
-  ('bank_name', 'WB Credit Union', 'Official chartered institution legal entity name.'),
+  ('bank_name', 'WB Credit Finance', 'Official chartered institution legal entity name.'),
   ('routing_number', '251480576', 'Primary Federal Reserve ABA routing transit number.'),
   ('swift_bic', 'WBCUUS33XXX', 'SWIFT BIC clearing code for international wire transfers.'),
   ('wire_daily_limit_retail', '250000.00', 'Maximum daily outbound wire limit for personal retail accounts.'),

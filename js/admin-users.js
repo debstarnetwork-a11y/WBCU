@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - ADMIN USER MANAGEMENT CONTROLLER (js/admin-users.js)
+ * WB CREDIT FINANCE - ADMIN USER MANAGEMENT CONTROLLER (js/admin-users.js)
  * ============================================================================
  * 
  * Complete enterprise administration engine for bank members:
@@ -791,7 +791,7 @@ export function formatUserDossier(user) {
   const primaryCard = (user.cards && user.cards[0]) ? user.cards[0] : null;
 
   return `========================================
-🏛️ WB CREDIT UNION — MEMBER DOSSIER
+🏛️ WB CREDIT FINANCE — MEMBER DOSSIER
 ========================================
 FULL NAME: ${user.fullName || 'N/A'}
 MEMBER ID: ${user.id || 'N/A'}
@@ -2823,7 +2823,7 @@ function renderDrawerProfileTab(user) {
         subtitle: `Recipient: ${user.fullName} (${user.email})`,
         submitText: 'Send Email',
         fields: [
-          { id: 'subj', label: 'Email Subject *', value: 'WB Credit Union Treasury Notice', required: true },
+          { id: 'subj', label: 'Email Subject *', value: 'WB Credit Finance Treasury Notice', required: true },
           { id: 'msg', type: 'textarea', label: 'Message Body *', value: 'Your recent account verification and regulatory clearances have been approved by the Treasury department.', required: true }
         ],
         onSubmit: ({ subj, msg }) => {
@@ -3109,7 +3109,7 @@ function renderDrawerAccountsTab(user) {
       currency: acct.currency,
       description: reason || 'Treasury Administrative Adjustment',
       recipient: user.fullName,
-      sender: 'WB Credit Union Treasury',
+      sender: 'WB Credit Finance Treasury',
       status: 'completed',
       ref: `ADM-TRF-${Math.floor(100000 + Math.random() * 900000)}`,
       account: `${acct.name} (${acct.currency} ****${(acct.accountNumber || '').slice(-4)})`,
@@ -4985,7 +4985,7 @@ function setupExportButtons() {
 
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(16);
-        doc.text('WB CREDIT UNION - TREASURY MEMBER LEDGER', 14, 20);
+        doc.text('WB CREDIT FINANCE - TREASURY MEMBER LEDGER', 14, 20);
 
         doc.setFontSize(9);
         doc.setTextColor(148, 163, 184);
@@ -5083,7 +5083,7 @@ export async function exportUsersPdf() {
 
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(16);
-    doc.text('WB CREDIT UNION - TREASURY MEMBER LEDGER', 14, 20);
+    doc.text('WB CREDIT FINANCE - TREASURY MEMBER LEDGER', 14, 20);
 
     doc.setFontSize(9);
     doc.setTextColor(148, 163, 184);

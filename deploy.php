@@ -1,7 +1,7 @@
 <?php
 /**
  * ============================================================================
- * WB CREDIT UNION - GITHUB AUTO-DEPLOYMENT WEBHOOK
+ * WB CREDIT FINANCE - GITHUB AUTO-DEPLOYMENT WEBHOOK
  * ============================================================================
  * 
  * Instructions:

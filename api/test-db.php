@@ -1,7 +1,7 @@
 <?php
 /**
  * ============================================================================
- * WB CREDIT UNION - DATABASE CONNECTION DIAGNOSTIC TOOL
+ * WB CREDIT FINANCE - DATABASE CONNECTION DIAGNOSTIC TOOL
  * ============================================================================
  */
 

@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - MASTER ADMINISTRATIVE DASHBOARD CONTROLLER (js/admin.js)
+ * WB CREDIT FINANCE - MASTER ADMINISTRATIVE DASHBOARD CONTROLLER (js/admin.js)
  * ============================================================================
  * 
  * Manages executive treasury analytics, aggregate banking metrics, interactive

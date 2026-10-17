@@ -1,5 +1,5 @@
 -- ============================================================================
--- WB CREDIT UNION - UPDATE EXISTING TABLES IN glolbka_wbcu_db
+-- WB CREDIT FINANCE - UPDATE EXISTING TABLES IN glolbka_wbcu_db
 -- ============================================================================
 
 -- 1. Insert / Update Super Admin & Member Access Records
@@ -49,5 +49,5 @@ ON DUPLICATE KEY UPDATE `card_holder` = VALUES(`card_holder`);
 
 -- 6. Insert / Update System Settings
 INSERT INTO `system_settings` (`key_name`, `value_json`) VALUES
-('institution_info', '{"bankName":"WB Credit Union","domain":"wbcu.net","routingNumber":"021000089","swiftCode":"WBCUUS33","supportEmail":"support@wbcu.net","headquarters":"109, Feldgüetliweg Meilen, Zurich 8706, Switzerland"}')
+('institution_info', '{"bankName":"WB Credit Finance","domain":"wbcu.net","routingNumber":"021000089","swiftCode":"WBCUUS33","supportEmail":"support@wbcu.net","headquarters":"109, Feldgüetliweg Meilen, Zurich 8706, Switzerland"}')
 ON DUPLICATE KEY UPDATE `value_json` = VALUES(`value_json`);

@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - HELP & SUPPORT CONTROLLER (js/help-support.js)
+ * WB CREDIT FINANCE - HELP & SUPPORT CONTROLLER (js/help-support.js)
  * ============================================================================
  * 
  * Manages all member assistance, FAQs, emergency actions, ticketing,
@@ -24,8 +24,8 @@ export const FAQ_DATA = [
     id: 'faq-acct-1',
     category: 'account',
     categoryName: 'Account',
-    question: 'What is my WB Credit Union account and routing transit number?',
-    answer: 'Your account number is available in the top right user menu and under the Accounts tab. WB Credit Union operates under Federal Reserve Routing Number (ABA) <strong>251480576</strong>. For international incoming wires, our SWIFT/BIC code is <strong>WBCUUS33</strong>.',
+    question: 'What is my WB Credit Finance account and routing transit number?',
+    answer: 'Your account number is available in the top right user menu and under the Accounts tab. WB Credit Finance operates under Federal Reserve Routing Number (ABA) <strong>251480576</strong>. For international incoming wires, our SWIFT/BIC code is <strong>WBCUUS33</strong>.',
     tags: ['routing', 'account number', 'swift', 'aba', 'wire info']
   },
   {
@@ -41,7 +41,7 @@ export const FAQ_DATA = [
     category: 'account',
     categoryName: 'Account',
     question: 'What are the monthly account maintenance and vault custody fees?',
-    answer: 'WB Credit Union provides zero-fee monthly maintenance on all sovereign multi-currency checking accounts for verified members maintaining an aggregate balance above $1,000 USD (or currency equivalent). Crypto cold-vault custody is included at zero additional charge.',
+    answer: 'WB Credit Finance provides zero-fee monthly maintenance on all sovereign multi-currency checking accounts for verified members maintaining an aggregate balance above $1,000 USD (or currency equivalent). Crypto cold-vault custody is included at zero additional charge.',
     tags: ['fees', 'maintenance', 'charges', 'minimum balance']
   },
   {
@@ -172,8 +172,8 @@ export const FAQ_DATA = [
     id: 'faq-card-5',
     category: 'cards',
     categoryName: 'Cards',
-    question: 'Can I use my WB Credit Union Platinum Debit Card abroad?',
-    answer: 'Yes! WB Credit Union debit cards feature <strong>zero foreign transaction fees</strong> worldwide across 200+ countries with automatic mid-market foreign exchange conversion at interbank rates.',
+    question: 'Can I use my WB Credit Finance Platinum Debit Card abroad?',
+    answer: 'Yes! WB Credit Finance debit cards feature <strong>zero foreign transaction fees</strong> worldwide across 200+ countries with automatic mid-market foreign exchange conversion at interbank rates.',
     tags: ['travel', 'international use', 'foreign transaction fee', 'abroad']
   },
   {
@@ -198,7 +198,7 @@ export const FAQ_DATA = [
     id: 'faq-cry-1',
     category: 'crypto',
     categoryName: 'Crypto',
-    question: 'How do I receive cryptocurrency into my WB Credit Union vault?',
+    question: 'How do I receive cryptocurrency into my WB Credit Finance vault?',
     answer: 'Go to <strong>Crypto</strong> in the sidebar, choose your digital asset (BTC, ETH, USDT, SOL, USDC), and click <strong>"Receive"</strong>. A permanent public blockchain deposit address and QR code will be generated for your secure vault.',
     tags: ['receive crypto', 'deposit btc', 'deposit eth', 'crypto address']
   },
@@ -214,7 +214,7 @@ export const FAQ_DATA = [
     id: 'faq-cry-3',
     category: 'crypto',
     categoryName: 'Crypto',
-    question: 'What cryptocurrencies are supported by WB Credit Union?',
+    question: 'What cryptocurrencies are supported by WB Credit Finance?',
     answer: 'We currently support native custody for <strong>Bitcoin (BTC), Ethereum (ETH), Solana (SOL), Tether (USDT), and USD Coin (USDC)</strong> with institutional cold storage HSM safeguards.',
     tags: ['supported assets', 'coins', 'tokens', 'crypto list']
   },
@@ -239,7 +239,7 @@ export const FAQ_DATA = [
     category: 'crypto',
     categoryName: 'Crypto',
     question: 'Why do outbound crypto withdrawals require a blockchain network miner fee?',
-    answer: 'Outbound transfers require native blockchain network miner/gas fees to prioritize transactions across distributed nodes. WB Credit Union does not charge any additional custodial markup on gas fees.',
+    answer: 'Outbound transfers require native blockchain network miner/gas fees to prioritize transactions across distributed nodes. WB Credit Finance does not charge any additional custodial markup on gas fees.',
     tags: ['gas fee', 'miner fee', 'network fee', 'crypto fee']
   },
 
@@ -296,7 +296,7 @@ export const FAQ_DATA = [
     id: 'faq-sec-7',
     category: 'security',
     categoryName: 'Security',
-    question: 'How do I recognize official correspondence from WB Credit Union?',
+    question: 'How do I recognize official correspondence from WB Credit Finance?',
     answer: 'Official email notifications will only originate from <code>@wbcu.net</code> or <code>@wbcredit.org</code>. We will never ask for your Master Password, 4-digit Security PIN, or 2FA OTP codes via phone or email.',
     tags: ['phishing', 'official email', 'scam prevention', 'verification']
   },
@@ -307,14 +307,14 @@ export const FAQ_DATA = [
     category: 'general',
     categoryName: 'General',
     question: 'What is the official Swiss headquarters address and location?',
-    answer: 'Our global sovereign clearing headquarters is located at:<br /><strong>WB CREDIT UNION</strong><br />109, Feldgüetliweg Meilen<br />Bezirk Meilen, Zurich 8706, Switzerland.<br />Coordinates: 47.2704° N, 8.6432° E (Lake Zurich Gold Coast).',
+    answer: 'Our global sovereign clearing headquarters is located at:<br /><strong>WB CREDIT FINANCE</strong><br />109, Feldgüetliweg Meilen<br />Bezirk Meilen, Zurich 8706, Switzerland.<br />Coordinates: 47.2704° N, 8.6432° E (Lake Zurich Gold Coast).',
     tags: ['address', 'zurich', 'switzerland', 'headquarters', 'location']
   },
   {
     id: 'faq-gen-2',
     category: 'general',
     categoryName: 'General',
-    question: 'What are WB Credit Union customer service and banking hours?',
+    question: 'What are WB Credit Finance customer service and banking hours?',
     answer: 'Telephone & Concierge Support: <strong>24/7/365</strong>.<br />Zurich Branch Visiting Hours: <strong>Monday – Friday: 9:00 AM – 5:00 PM CET</strong>, <strong>Saturday: 9:00 AM – 1:00 PM CET</strong>, Sunday: Closed.',
     tags: ['hours', 'opening times', 'support availability']
   },
@@ -330,8 +330,8 @@ export const FAQ_DATA = [
     id: 'faq-gen-4',
     category: 'general',
     categoryName: 'General',
-    question: 'Is WB Credit Union a chartered and regulated credit institution?',
-    answer: 'Yes. WB Credit Union is an institutional member-owned credit institution operating in compliance with international interbank standards, NCUA sovereign protections, and Swiss Federal Banking standards.',
+    question: 'Is WB Credit Finance a chartered and regulated credit institution?',
+    answer: 'Yes. WB Credit Finance is an institutional member-owned credit institution operating in compliance with international interbank standards, NCUA sovereign protections, and Swiss Federal Banking standards.',
     tags: ['license', 'regulation', 'charter', 'compliance']
   },
   {
@@ -486,7 +486,7 @@ export function getInitialLiveChatMessages() {
       sender: 'bot',
       name: 'WB Priority Concierge',
       time: 'Just now',
-      text: 'Hello Alexander, welcome to WB Credit Union 24/7 Priority Support. How can our Swiss clearing and banking operations assist you today?'
+      text: 'Hello Alexander, welcome to WB Credit Finance 24/7 Priority Support. How can our Swiss clearing and banking operations assist you today?'
     }
   ];
 }
@@ -873,7 +873,7 @@ function setupContactTicketForm() {
             attachment: selectedAttachmentFile || null
           },
           {
-            sender: 'WB Credit Union Standard Dispatch',
+            sender: 'WB Credit Finance Standard Dispatch',
             isStaff: true,
             avatar: 'WBCU',
             time: formattedDate,

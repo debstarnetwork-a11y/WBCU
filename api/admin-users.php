@@ -1,7 +1,7 @@
 <?php
 /**
  * ============================================================================
- * WB CREDIT UNION - ADMIN USERS BACKEND API (cPanel / PHP / MySQL / JSON)
+ * WB CREDIT FINANCE - ADMIN USERS BACKEND API (cPanel / PHP / MySQL / JSON)
  * ============================================================================
  */
 

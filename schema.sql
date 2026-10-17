@@ -1,5 +1,5 @@
 -- ============================================================================
--- WB CREDIT UNION (www.wbcu.net) - COMPLETE CPANEL / MySQL DATABASE SCHEMA
+-- WB CREDIT FINANCE (www.wbcu.net) - COMPLETE CPANEL / MySQL DATABASE SCHEMA
 -- ============================================================================
 -- Instructions for cPanel / phpMyAdmin Execution:
 -- 1. Log into your cPanel hosting account.
@@ -180,7 +180,7 @@ VALUES
 ON DUPLICATE KEY UPDATE `card_holder` = VALUES(`card_holder`);
 
 INSERT INTO `system_settings` (`key_name`, `value_json`) VALUES
-('institution_info', '{"bankName":"WB Credit Union","domain":"wbcu.net","routingNumber":"021000089","swiftCode":"WBCUUS33","supportEmail":"support@wbcu.net","headquarters":"109, Feldgüetliweg Meilen, Zurich 8706, Switzerland"}')
+('institution_info', '{"bankName":"WB Credit Finance","domain":"wbcu.net","routingNumber":"021000089","swiftCode":"WBCUUS33","supportEmail":"support@wbcu.net","headquarters":"109, Feldgüetliweg Meilen, Zurich 8706, Switzerland"}')
 ON DUPLICATE KEY UPDATE `value_json` = VALUES(`value_json`);
 
 SET FOREIGN_KEY_CHECKS = 1;

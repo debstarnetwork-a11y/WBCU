@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - ADMIN ATM CARD MANAGEMENT CONTROLLER (js/admin-cards.js)
+ * WB CREDIT FINANCE - ADMIN ATM CARD MANAGEMENT CONTROLLER (js/admin-cards.js)
  * ============================================================================
  * 
  * Manages institutional payment cards:
@@ -1210,7 +1210,7 @@ export function openCardDetailModal(cardId) {
         <!-- Top Row: WBCU Branding Logo, Grade, Contactless Icon -->
         <div class="d-flex justify-between items-start">
           <div>
-            <img src="https://i.ibb.co/qMPvkK0B/WBCU-LOGO-03.png" alt="WB Credit Union" style="height: 28px; width: auto; max-width: 130px; object-fit: contain; filter: brightness(0) invert(1); display: block;">
+            <img src="https://i.ibb.co/qMPvkK0B/WBCU-LOGO-03.png" alt="WB Credit Finance" style="height: 28px; width: auto; max-width: 130px; object-fit: contain; filter: brightness(0) invert(1); display: block;">
           </div>
           <div class="font-bold text-xs" style="letter-spacing:0.22em; color:#cbd5e1; text-transform:uppercase;">
             ${cardGrade}
@@ -1719,7 +1719,7 @@ function downloadCardAsPng(card, isUnmasked) {
   ctx.lineWidth = 3;
   ctx.stroke();
 
-  // 1. Top-Left Bank Brand Lockup: Official WB Credit Union Brand Logo
+  // 1. Top-Left Bank Brand Lockup: Official WB Credit Finance Brand Logo
   drawCardOfficialLogo(ctx, 55, 48, 140, 70);
 
   // 2. Top-Center Card Grade / Tier
@@ -1854,7 +1854,7 @@ function printPhysicalCardSlip(card) {
     <!DOCTYPE html>
     <html>
     <head>
-      <title>WB Credit Union - Physical Card Fulfillment Slip</title>
+      <title>WB Credit Finance - Physical Card Fulfillment Slip</title>
       <style>
         body { font-family: 'Helvetica Neue', Arial, sans-serif; padding: 40px; color: #1e293b; }
         .header { border-bottom: 2px solid #1e3a8a; padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; }
@@ -1869,7 +1869,7 @@ function printPhysicalCardSlip(card) {
     <body onload="window.print();">
       <div class="header">
         <div>
-          <div class="title">WB CREDIT UNION - SWISS TREASURY</div>
+          <div class="title">WB CREDIT FINANCE - SWISS TREASURY</div>
           <div style="font-size: 12px; color:#64748b;">Physical Debit / ATM Card Issuance Manifest</div>
         </div>
         <div style="text-align: right; font-size: 12px;">

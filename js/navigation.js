@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - SHARED HEADER & FOOTER NAVIGATION INJECTOR (js/navigation.js)
+ * WB CREDIT FINANCE - SHARED HEADER & FOOTER NAVIGATION INJECTOR (js/navigation.js)
  * ============================================================================
  */
 
@@ -17,8 +17,8 @@ export function injectHeaderAndFooter() {
       <header class="site-navbar" id="mainHeader">
         <div class="container nav-container">
           <!-- Brand Logo -->
-          <a href="/" class="brand-logo" aria-label="WB Credit Union Home">
-            <img src="https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png" alt="WB Credit Union Logo" style="height: 40px; width: auto; max-width: 220px; object-fit: contain;">
+          <a href="/" class="brand-logo" aria-label="WB Credit Finance Home">
+            <img src="https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png" alt="WB Credit Finance Logo" style="height: 40px; width: auto; max-width: 220px; object-fit: contain;">
           </a>
 
           <!-- Desktop Navigation Links -->
@@ -72,10 +72,10 @@ export function injectHeaderAndFooter() {
             <!-- Col 1: Brand & Bio -->
             <div class="footer-col brand-col">
               <div class="brand-logo footer-logo">
-                <img src="https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png" alt="WB Credit Union Logo" style="height: 38px; width: auto; max-width: 200px; object-fit: contain;">
+                <img src="https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png" alt="WB Credit Finance Logo" style="height: 38px; width: auto; max-width: 200px; object-fit: contain;">
               </div>
               <p class="footer-bio" data-i18n="footer.tagline">
-                We believe people come first. WB CREDIT UNION delivers premier personal, business, and high-yield financial solutions with state-of-the-art security and member-first care.
+                We believe people come first. WB CREDIT FINANCE delivers premier personal, business, and high-yield financial solutions with state-of-the-art security and member-first care.
               </p>
               <div class="footer-routing-badge">
                 <span>ROUTING NUMBER:</span>
@@ -138,8 +138,8 @@ export function injectHeaderAndFooter() {
 
           <div class="footer-bottom-bar">
             <div class="footer-legal">
-              <p>&copy; ${new Date().getFullYear()} WB CREDIT UNION. <span data-i18n="footer.rights">All rights reserved. Equal Housing Lender. Insured &amp; regulated cooperative financial institution.</span></p>
-              <p class="text-xs text-muted">*Annual Percentage Yield (APY) &amp; Annual Percentage Rate (APR) are accurate as of publication. Terms and conditions apply.</p>
+              <p>&copy; ${new Date().getFullYear()} WB CREDIT FINANCE. <span data-i18n="footer.rights">All rights reserved.</span></p>
+              
             </div>
           </div>
         </div>

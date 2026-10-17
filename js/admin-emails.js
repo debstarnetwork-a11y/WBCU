@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - ADMIN EMAIL MANAGEMENT CONTROLLER (js/admin-emails.js)
+ * WB CREDIT FINANCE - ADMIN EMAIL MANAGEMENT CONTROLLER (js/admin-emails.js)
  * ============================================================================
  * 
  * Manages institutional communications and email delivery telemetry:
@@ -105,7 +105,7 @@ const initialSeedEmailLogs = [
     recipientName: 'Marcus Vance',
     userId: 'usr-106',
     type: 'welcome',
-    subject: 'Welcome to WB Credit Union - Swiss Wealth Vault Opened',
+    subject: 'Welcome to WB Credit Finance - Swiss Wealth Vault Opened',
     body: 'Your institutional account 9901-2244-11 has been successfully provisioned with Level 3 KYC clearance.',
     status: 'sent',
     error: null,
@@ -538,8 +538,8 @@ function setupEmailComposeForm() {
 
   function loadTemplatePreset(templateKey) {
     if (templateKey === 'welcome') {
-      if (subjectInput) subjectInput.value = 'Welcome to WB Credit Union - Swiss Wealth Vault Opened';
-      if (bodyTextarea) bodyTextarea.value = 'Dear {first_name},\n\nWe are honored to confirm the successful activation of your private banking vault with WB Credit Union.\n\nAccount Portfolio: {account_number}\nInitial Vault Balance: {amount}\nClearance Tier: Swiss Sovereign Level 3\n\nYour encrypted credentials and access keys are now operational. Please log in to review your consolidated depository holdings.';
+      if (subjectInput) subjectInput.value = 'Welcome to WB Credit Finance - Swiss Wealth Vault Opened';
+      if (bodyTextarea) bodyTextarea.value = 'Dear {first_name},\n\nWe are honored to confirm the successful activation of your private banking vault with WB Credit Finance.\n\nAccount Portfolio: {account_number}\nInitial Vault Balance: {amount}\nClearance Tier: Swiss Sovereign Level 3\n\nYour encrypted credentials and access keys are now operational. Please log in to review your consolidated depository holdings.';
     } else if (templateKey === 'credit') {
       if (subjectInput) subjectInput.value = 'Direct Inward Clearance Credit: {amount} Posted to {account_number}';
       if (bodyTextarea) bodyTextarea.value = 'Dear {first_name},\n\nAn institutional credit of {amount} has cleared and been credited to your depository portfolio {account_number}.\n\nTransaction Reference: {reference}\nClearing Channel: SWIFT / Fedwire Real-Time Node\nStatus: Settled & Available for Immediate Withdrawal.';
@@ -550,10 +550,10 @@ function setupEmailComposeForm() {
       if (subjectInput) subjectInput.value = 'Security Verification Passcode: {code_value}';
       if (bodyTextarea) bodyTextarea.value = 'Dear {first_name},\n\nYour single-use security passcode to authorize your high-value treasury request is:\n\n{code_value}\n\nThis verification key expires in 10 minutes. Never share this code with anyone.';
     } else if (templateKey === 'card') {
-      if (subjectInput) subjectInput.value = 'Your WB Credit Union Payment Card Has Been Issued';
+      if (subjectInput) subjectInput.value = 'Your WB Credit Finance Payment Card Has Been Issued';
       if (bodyTextarea) bodyTextarea.value = 'Dear {first_name},\n\nYour new physical debit card has been embossed and queued for Swiss courier dispatch to your registered address.\n\nLinked Account: {account_number}\nTracking Number: {reference}\nFulfillment Hub: Zurich Central Vault.';
     } else {
-      if (subjectInput) subjectInput.value = 'Institutional Depository Notice - WB Credit Union';
+      if (subjectInput) subjectInput.value = 'Institutional Depository Notice - WB Credit Finance';
       if (bodyTextarea) bodyTextarea.value = 'Dear {first_name},\n\nPlease review this important treasury communication regarding your sovereign banking vault {account_number}.';
     }
   }
@@ -678,10 +678,10 @@ function setupEmailTemplatesGallery() {
 
 function renderTemplatePreview(templateKey) {
   let html = '';
-  let subject = 'WB Credit Union Notice';
+  let subject = 'WB Credit Finance Notice';
 
   if (templateKey === 'welcome') {
-    subject = 'Welcome to WB Credit Union - Swiss Wealth Vault Opened';
+    subject = 'Welcome to WB Credit Finance - Swiss Wealth Vault Opened';
     html = getWelcomeEmailHtml({
       firstName: 'Alexander',
       accountNumber: 'WB-9482-1049-55',

@@ -40,7 +40,7 @@ jobs:
           SERVER_DIR="${{ secrets.FTP_SERVER_DIR || './' }}"
 
           echo "==============================================="
-          echo "WB CREDIT UNION - DEPLOYMENT DIAGNOSTICS"
+          echo "WB CREDIT FINANCE - DEPLOYMENT DIAGNOSTICS"
           echo "==============================================="
 
           MISSING=0

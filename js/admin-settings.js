@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - ADMIN SYSTEM SETTINGS & AUDIT LOG CONTROLLER (js/admin-settings.js)
+ * WB CREDIT FINANCE - ADMIN SYSTEM SETTINGS & AUDIT LOG CONTROLLER (js/admin-settings.js)
  * ============================================================================
  * 
  * Manages institutional bank infrastructure, policies, and immutable audit logs:
@@ -40,7 +40,7 @@ export const ADMIN_GIFT_CARDS_STORAGE_KEY = 'wb_payment_gift_cards_db';
  * ---------------------------------------------------------------------------- */
 export const defaultSystemSettings = {
   bankInfo: {
-    bankName: 'WB CREDIT UNION',
+    bankName: 'WB CREDIT FINANCE',
     routingNumber: '251480576',
     swiftBic: 'WBCUCHZZ80A',
     address: '109, Feldgüetliweg Meilen Bezirk Meilen Zurich 8706 Switzerland',
@@ -83,7 +83,7 @@ export const defaultSystemSettings = {
     smtpPort: 587,
     smtpUser: 'info@wbcu.net',
     smtpPass: 'cPanel Webmail Password',
-    senderName: 'WB Credit Union',
+    senderName: 'WB Credit Finance',
     senderEmail: 'info@wbcu.net',
     testRecipient: 'debstarnetwork@gmail.com',
     instantDispatch: true,
@@ -112,7 +112,7 @@ export const defaultSystemSettings = {
     theme: 'dark', // 'dark' | 'light' | 'swiss-navy'
     accentColor: '#3b82f6',
     sidebarStyle: 'full',
-    portalTagline: 'WB Credit Union - Swiss Depository & Wealth Custody',
+    portalTagline: 'WB Credit Finance - Swiss Depository & Wealth Custody',
     tableDensity: 'comfortable',
     showCryptoDecimals: 4
   },
@@ -125,7 +125,7 @@ export const defaultSystemSettings = {
       routingNumber: '251480576',
       swiftBic: 'WBCUCHZZ80A',
       address: '109, Feldgüetliweg Meilen, Zurich 8706 Switzerland',
-      beneficiaryName: 'WB CREDIT UNION',
+      beneficiaryName: 'WB CREDIT FINANCE',
       currency: 'CHF, USD, EUR, GBP',
       instructions: 'Direct Swiss Core wire clearing. Include Member Account Number in memo note.',
       status: 'active'
@@ -137,7 +137,7 @@ export const defaultSystemSettings = {
         partnerName: 'JPMorgan Chase Bank, N.A. (Americas Correspondent)',
         country: 'United States',
         countryCode: 'US',
-        beneficiaryName: 'WB Credit Union Americas Clearing LLC',
+        beneficiaryName: 'WB Credit Finance Americas Clearing LLC',
         bankName: 'JPMorgan Chase Bank, N.A., New York',
         accountNumber: '884920194821',
         routingNumber: '021000021',
@@ -169,7 +169,7 @@ export const defaultSystemSettings = {
         partnerName: 'Barclays Bank UK (European & UK Clearing Desk)',
         country: 'United Kingdom / Europe',
         countryCode: 'GB',
-        beneficiaryName: 'WB Credit Union European Clearing Ltd',
+        beneficiaryName: 'WB Credit Finance European Clearing Ltd',
         bankName: 'Barclays Bank UK PLC',
         accountNumber: 'GB29BARC20000048201948',
         routingNumber: 'Sort Code: 20-00-00',
@@ -241,13 +241,13 @@ export const defaultSystemSettings = {
       minAmount: 25,
       maxAmount: 2500,
       currency: 'USD',
-      instructions: 'Click the embedded Apple Gift link to purchase an official Apple Gift Card, then return to WB Credit Union to upload the front & back card image and paste the 16 digits of the Apple Gift Card code for admin verification and approval.',
+      instructions: 'Click the embedded Apple Gift link to purchase an official Apple Gift Card, then return to WB Credit Finance to upload the front & back card image and paste the 16 digits of the Apple Gift Card code for admin verification and approval.',
       autoRequireCardImage: true
     }
   },
   maintenanceMode: {
     enabled: false,
-    message: 'WB Credit Union is undergoing scheduled Swiss core banking ledger synchronization. Real-time access will resume shortly.'
+    message: 'WB Credit Finance is undergoing scheduled Swiss core banking ledger synchronization. Real-time access will resume shortly.'
   },
   forexSettings: {
     baseCurrency: 'USD',
@@ -532,7 +532,7 @@ function populateSettingsForm() {
 
   // 1. Email SMTP (cPanel & Custom Server)
   setVal('settingSenderEmail', settings.emailSettings.senderEmail || 'info@wbcu.net');
-  setVal('settingSenderName', settings.emailSettings.senderName || 'WB Credit Union');
+  setVal('settingSenderName', settings.emailSettings.senderName || 'WB Credit Finance');
   setVal('settingSmtpHost', settings.emailSettings.smtpHost || 'mail.wbcu.net');
   setVal('settingSmtpPort', settings.emailSettings.smtpPort || 587);
   setVal('settingSmtpUser', settings.emailSettings.smtpUser || 'info@wbcu.net');
@@ -556,7 +556,7 @@ function populateSettingsForm() {
   // 2. Theme & Display
   setVal('settingThemeMode', settings.themeDisplay?.theme || 'dark');
   setVal('settingAccentColor', settings.themeDisplay?.accentColor || '#3b82f6');
-  setVal('settingPortalTagline', settings.themeDisplay?.portalTagline || 'WB Credit Union - Swiss Depository & Wealth Custody');
+  setVal('settingPortalTagline', settings.themeDisplay?.portalTagline || 'WB Credit Finance - Swiss Depository & Wealth Custody');
   setVal('settingTableDensity', settings.themeDisplay?.tableDensity || 'comfortable');
 
   // Apple Gift Card Settings
@@ -599,7 +599,7 @@ function setupQuickPresets() {
       setVal('settingSmtpPort', 465);
       setVal('settingSmtpUser', 'info@digitalglobalelite.com');
       setVal('settingSenderEmail', 'info@digitalglobalelite.com');
-      setVal('settingSenderName', 'WB Credit Union');
+      setVal('settingSenderName', 'WB Credit Finance');
       showToast('Applied cPanel preset: mail.digitalglobalelite.com (SSL Port 465)', 'info', 'Preset Loaded');
     });
   }
@@ -613,7 +613,7 @@ function setupQuickPresets() {
       setVal('settingSmtpPort', 465);
       setVal('settingSmtpUser', 'info@digitalglobalelite.com');
       setVal('settingSenderEmail', 'info@digitalglobalelite.com');
-      setVal('settingSenderName', 'WB Credit Union');
+      setVal('settingSenderName', 'WB Credit Finance');
       showToast('Applied Gmail SMTP preset: smtp.gmail.com (SSL Port 465)', 'info', 'Preset Loaded');
     });
   }
@@ -643,7 +643,7 @@ function setupQuickPresets() {
       const user = (document.getElementById('settingSmtpUser')?.value || 'info@wbcu.net').trim();
       const pass = (document.getElementById('settingSmtpPass')?.value || '').trim();
       const sender = (document.getElementById('settingSenderEmail')?.value || 'info@wbcu.net').trim();
-      const senderName = (document.getElementById('settingSenderName')?.value || 'WB Credit Union').trim();
+      const senderName = (document.getElementById('settingSenderName')?.value || 'WB Credit Finance').trim();
 
       btnTestNotif.disabled = true;
       btnTestNotif.innerHTML = '<span class="spinner-border spinner-border-sm mr-1"></span> Connecting &amp; Dispatching...';
@@ -738,7 +738,7 @@ function saveEmailAndAuthConfig() {
     smtpPort: parseInt(document.getElementById('settingSmtpPort')?.value || '465'),
     smtpUser: document.getElementById('settingSmtpUser')?.value || 'info@wbcu.net',
     smtpPass: document.getElementById('settingSmtpPass')?.value || 'cPanel Webmail Password',
-    senderName: document.getElementById('settingSenderName')?.value || 'WB Credit Union',
+    senderName: document.getElementById('settingSenderName')?.value || 'WB Credit Finance',
     senderEmail: document.getElementById('settingSenderEmail')?.value || 'info@digitalglobalelite.com',
     instantDispatch: document.getElementById('settingInstantDispatch')?.checked ?? true,
     enableGlobalEmail: document.getElementById('settingEnableGlobalEmail')?.checked ?? true,
@@ -768,7 +768,7 @@ function saveThemeDisplayConfig() {
 
   const themeMode = document.getElementById('settingThemeMode')?.value || 'dark';
   const accentColor = document.getElementById('settingAccentColor')?.value || '#3b82f6';
-  const portalTagline = document.getElementById('settingPortalTagline')?.value || 'WB Credit Union - Swiss Depository & Wealth Custody';
+  const portalTagline = document.getElementById('settingPortalTagline')?.value || 'WB Credit Finance - Swiss Depository & Wealth Custody';
   const tableDensity = document.getElementById('settingTableDensity')?.value || 'comfortable';
 
   current.themeDisplay = {
@@ -810,7 +810,7 @@ function saveAllSystemSettingsFromForm() {
   const updated = {
     ...current,
     bankInfo: {
-      bankName: document.getElementById('settingBankName')?.value || 'WB CREDIT UNION',
+      bankName: document.getElementById('settingBankName')?.value || 'WB CREDIT FINANCE',
       routingNumber: document.getElementById('settingRoutingNumber')?.value || '251480576',
       swiftBic: document.getElementById('settingSwiftBic')?.value || 'WBCUCHZZ80A',
       address: document.getElementById('settingAddress')?.value || '',
@@ -852,7 +852,7 @@ function saveAllSystemSettingsFromForm() {
       smtpPort: parseInt(document.getElementById('settingSmtpPort')?.value || '465'),
       smtpUser: document.getElementById('settingSmtpUser')?.value || 'info@wbcu.net',
       smtpPass: document.getElementById('settingSmtpPass')?.value || 'cPanel Webmail Password',
-      senderName: document.getElementById('settingSenderName')?.value || 'WB Credit Union',
+      senderName: document.getElementById('settingSenderName')?.value || 'WB Credit Finance',
       senderEmail: document.getElementById('settingSenderEmail')?.value || 'info@digitalglobalelite.com',
       instantDispatch: document.getElementById('settingInstantDispatch')?.checked ?? true,
       enableGlobalEmail: document.getElementById('settingEnableGlobalEmail')?.checked ?? true,
@@ -905,7 +905,7 @@ export function renderSwissHqAccount() {
     routingNumber: settings.bankInfo?.routingNumber || '251480576',
     swiftBic: settings.bankInfo?.swiftBic || 'WBCUCHZZ80A',
     address: settings.bankInfo?.address || '109, Feldgüetliweg Meilen, Zurich 8706 Switzerland',
-    beneficiaryName: settings.bankInfo?.bankName || 'WB CREDIT UNION',
+    beneficiaryName: settings.bankInfo?.bankName || 'WB CREDIT FINANCE',
     currency: 'CHF, USD, EUR, GBP',
     instructions: 'Direct Swiss Core wire clearing. Include Member Account Number in memo note.',
     status: 'active'
@@ -933,7 +933,7 @@ export function renderSwissHqAccount() {
       <div class="p-2 mb-2 rounded font-mono text-xs" style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08);">
         <div class="d-flex justify-between mb-1">
           <span class="text-muted">Beneficiary:</span>
-          <span class="text-white font-bold">${escapeHtml(hq.beneficiaryName || 'WB CREDIT UNION')}</span>
+          <span class="text-white font-bold">${escapeHtml(hq.beneficiaryName || 'WB CREDIT FINANCE')}</span>
         </div>
         <div class="d-flex justify-between mb-1">
           <span class="text-muted">Account / Depository:</span>
@@ -981,7 +981,7 @@ export function openSwissHqModal() {
     routingNumber: settings.bankInfo?.routingNumber || '251480576',
     swiftBic: settings.bankInfo?.swiftBic || 'WBCUCHZZ80A',
     address: settings.bankInfo?.address || '109, Feldgüetliweg Meilen, Zurich 8706 Switzerland',
-    beneficiaryName: settings.bankInfo?.bankName || 'WB CREDIT UNION',
+    beneficiaryName: settings.bankInfo?.bankName || 'WB CREDIT FINANCE',
     currency: 'CHF, USD, EUR, GBP',
     instructions: 'Direct Swiss Core wire clearing. Include Member Account Number in memo note.',
     status: 'active'
@@ -992,7 +992,7 @@ export function openSwissHqModal() {
   setVal('swissHqModalRouting', hq.routingNumber || '251480576');
   setVal('swissHqModalSwift', hq.swiftBic || 'WBCUCHZZ80A');
   setVal('swissHqModalAddress', hq.address || '109, Feldgüetliweg Meilen, Zurich 8706 Switzerland');
-  setVal('swissHqModalBeneficiary', hq.beneficiaryName || 'WB CREDIT UNION');
+  setVal('swissHqModalBeneficiary', hq.beneficiaryName || 'WB CREDIT FINANCE');
   setVal('swissHqModalCurrency', hq.currency || 'CHF, USD, EUR, GBP');
   setVal('swissHqModalInstructions', hq.instructions || '');
 
@@ -1019,7 +1019,7 @@ export function renderPartnerBanksList() {
     routingNumber: settings.bankInfo?.routingNumber || '251480576',
     swiftBic: settings.bankInfo?.swiftBic || 'WBCUCHZZ80A',
     address: settings.bankInfo?.address || '109, Feldgüetliweg Meilen, Zurich 8706 Switzerland',
-    beneficiaryName: settings.bankInfo?.bankName || 'WB CREDIT UNION',
+    beneficiaryName: settings.bankInfo?.bankName || 'WB CREDIT FINANCE',
     currency: 'CHF, USD, EUR, GBP',
     instructions: 'Direct Swiss Core wire clearing. Include Member Account Number in memo note.',
     status: 'active'
@@ -1050,7 +1050,7 @@ export function renderPartnerBanksList() {
       <div class="p-2 mb-2 rounded font-mono text-xs" style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08);">
         <div class="d-flex justify-between mb-1">
           <span class="text-muted">Beneficiary:</span>
-          <span class="text-white font-bold">${escapeHtml(hq.beneficiaryName || 'WB CREDIT UNION')}</span>
+          <span class="text-white font-bold">${escapeHtml(hq.beneficiaryName || 'WB CREDIT FINANCE')}</span>
         </div>
         <div class="d-flex justify-between mb-1">
           <span class="text-muted">Account / Depository:</span>
@@ -1198,7 +1198,7 @@ function openPartnerBankModal(partnerId = null) {
   setVal('partnerModalName', existing ? existing.partnerName : '');
   setVal('partnerModalCountry', existing ? existing.country : 'United States');
   setVal('partnerModalCountryCode', existing ? existing.countryCode : 'US');
-  setVal('partnerModalBeneficiary', existing ? existing.beneficiaryName : 'WB Credit Union Americas Clearing LLC');
+  setVal('partnerModalBeneficiary', existing ? existing.beneficiaryName : 'WB Credit Finance Americas Clearing LLC');
   setVal('partnerModalBankName', existing ? existing.bankName : '');
   setVal('partnerModalAccount', existing ? existing.accountNumber : '');
   setVal('partnerModalRouting', existing ? (existing.routingNumber || existing.swiftBic) : '');
@@ -1673,7 +1673,7 @@ function setupPaymentSettingsHandlers() {
         routingNumber: (document.getElementById('swissHqModalRouting')?.value || '251480576').trim(),
         swiftBic: (document.getElementById('swissHqModalSwift')?.value || 'WBCUCHZZ80A').trim(),
         address: (document.getElementById('swissHqModalAddress')?.value || '109, Feldgüetliweg Meilen, Zurich 8706 Switzerland').trim(),
-        beneficiaryName: (document.getElementById('swissHqModalBeneficiary')?.value || 'WB CREDIT UNION').trim(),
+        beneficiaryName: (document.getElementById('swissHqModalBeneficiary')?.value || 'WB CREDIT FINANCE').trim(),
         currency: (document.getElementById('swissHqModalCurrency')?.value || 'CHF, USD, EUR, GBP').trim(),
         instructions: (document.getElementById('swissHqModalInstructions')?.value || '').trim(),
         status: 'active'
@@ -1987,10 +1987,10 @@ function showSmtpSuccessModal(resData, recipient) {
             <summary style="cursor:pointer; color:#94a3b8; font-weight:600;">View Rendered Notification Preview</summary>
             <div class="mt-2 p-2 bg-dark rounded text-left font-mono" style="max-height:200px; overflow-y:auto; color:#cbd5e1; font-size:0.7rem;">
               <p class="text-success mb-1"><strong>Subject:</strong> Live Test Transaction Alert: cPanel SMTP Relay Verified</p>
-              <p class="text-muted mb-1"><strong>From:</strong> WB Credit Union &lt;info@wbcu.net&gt;</p>
+              <p class="text-muted mb-1"><strong>From:</strong> WB Credit Finance &lt;info@wbcu.net&gt;</p>
               <p class="text-muted mb-1"><strong>To:</strong> <span class="text-white" id="succPreviewTo">debstarnetwork@gmail.com</span></p>
               <hr style="border-color:#334155;">
-              <p class="mb-0">This test notification validates that the cPanel &amp; Custom SMTP Mail Relay configured in WB Credit Union Admin System Settings is actively dispatching outbound email alerts for transfers, deposits, account openings, and gift cards.</p>
+              <p class="mb-0">This test notification validates that the cPanel &amp; Custom SMTP Mail Relay configured in WB Credit Finance Admin System Settings is actively dispatching outbound email alerts for transfers, deposits, account openings, and gift cards.</p>
             </div>
           </details>
         </div>

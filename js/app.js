@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - MASTER APPLICATION CONTROLLER (js/app.js)
+ * WB CREDIT FINANCE - MASTER APPLICATION CONTROLLER (js/app.js)
  * ============================================================================
  * 
  * Manages all digital banking interactions:
@@ -3314,7 +3314,7 @@ function setupMultiChannelDepositPortal() {
           </div>
           <div class="d-flex justify-between text-xs mb-1">
             <span class="text-muted">Beneficiary:</span>
-            <strong>${p.beneficiaryName || 'WB Credit Union Clearing'}</strong>
+            <strong>${p.beneficiaryName || 'WB Credit Finance Clearing'}</strong>
           </div>
           <div class="d-flex justify-between items-center text-xs mb-1">
             <span class="text-muted">Account / IBAN:</span>
@@ -4100,7 +4100,7 @@ export function setupTransfersController() {
       { id: '2514809921', email: 'elena.rostova@wbcredit.org', name: 'Elena Rostova (Commercial Cleared)' },
       { id: '2514801124', email: 'marcus.vance@wbcredit.org', name: 'Marcus Vance (Premium Tier)' },
       { id: '2514808832', email: 'sarah.connor@wbcredit.org', name: 'Sarah Connor (Member Vault)' },
-      { id: '251480576', email: 'treasury@wbcredit.org', name: 'WB Credit Union Treasury Reserve' },
+      { id: '251480576', email: 'treasury@wbcredit.org', name: 'WB Credit Finance Treasury Reserve' },
     ];
 
     let foundMember = sampleMembers.find(
@@ -4148,7 +4148,7 @@ export function setupTransfersController() {
     } else {
       if (memberNameInput) memberNameInput.value = '';
       if (memberBadge) memberBadge.style.display = 'none';
-      showToast('No WB Credit Union member found matching that identifier.', 'error', 'Lookup Failed');
+      showToast('No WB Credit Finance member found matching that identifier.', 'error', 'Lookup Failed');
     }
   };
 
@@ -4232,7 +4232,7 @@ export function setupTransfersController() {
       }
 
       // Store pending payload
-      let recBank = 'WB Credit Union';
+      let recBank = 'WB Credit Finance';
       let recName = destinationName;
       let recAcct = destinationDetail;
 
@@ -4244,7 +4244,7 @@ export function setupTransfersController() {
         recBank = extBank || 'External Commercial Bank';
         recAcct = extAccount || destinationDetail;
       } else if (activeTab === 'to_member') {
-        recBank = 'WB Credit Union';
+        recBank = 'WB Credit Finance';
       }
 
       pendingTransferPayload = {
@@ -4638,7 +4638,7 @@ function setupTransferConfirmationModalHandlers() {
         type: txCategoryName,
         recipient: pendingTransferPayload.destinationName,
         recipientName: pendingTransferPayload.recipientName || pendingTransferPayload.destinationName,
-        recipientBank: pendingTransferPayload.recipientBank || 'WB Credit Union',
+        recipientBank: pendingTransferPayload.recipientBank || 'WB Credit Finance',
         recipientAccount: pendingTransferPayload.recipientAccount || pendingTransferPayload.destinationDetail,
         recipientIban: pendingTransferPayload.recipientIban || pendingTransferPayload.destinationDetail,
         category: 'debit',
@@ -4850,7 +4850,7 @@ if (typeof window !== 'undefined') {
           </head>
           <body>
             <div class="header">
-              <div class="title">WB CREDIT UNION &middot; ELECTRONIC FUNDS TRANSFER ADVICE</div>
+              <div class="title">WB CREDIT FINANCE &middot; ELECTRONIC FUNDS TRANSFER ADVICE</div>
               <div class="meta">Routing (ABA): 251480576 &middot; Member Treasury Services</div>
             </div>
             <div class="box">
@@ -4864,7 +4864,7 @@ if (typeof window !== 'undefined') {
               </div>
             </div>
             <div style="font-size: 0.75rem; color: #94a3b8; text-align: center;">
-              Dual-custody digital banking clearance document. Generated electronically by WB Credit Union.
+              Dual-custody digital banking clearance document. Generated electronically by WB Credit Finance.
             </div>
             <script>window.print();</script>
           </body>
@@ -5750,7 +5750,7 @@ async function finalizeWireTransferSettlement() {
           reference_number: activeWireSession.txRef,
           sender_name: (user.fullName && user.fullName !== 'Alexander Morgan') ? user.fullName : 'Miz Brymo',
           sender_account: sourceAcct?.accountNumber || '2514809281',
-          sender_bank: 'WB Credit Union',
+          sender_bank: 'WB Credit Finance',
           sender_routing: '251480576',
           recipient_name: payload.beneficiary,
           recipient_account: payload.iban,
@@ -7260,7 +7260,7 @@ export function setupCryptoController() {
       const addr = document.getElementById('receiveCryptoAddressFull')?.textContent?.trim();
       const sym = document.getElementById('receiveCryptoAssetSelect')?.value || 'Crypto';
       if (navigator.share) {
-        navigator.share({ title: `WB Credit Union ${sym} Address`, text: `My WB Credit Union ${sym} deposit address: ${addr}` });
+        navigator.share({ title: `WB Credit Finance ${sym} Address`, text: `My WB Credit Finance ${sym} deposit address: ${addr}` });
       } else {
         showToast(`Shareable Address: ${addr}`, 'info', 'Address Shared');
       }
@@ -9048,7 +9048,7 @@ function triggerCanvasImageDownload(canvas, filename) {
 }
 
 /**
- * Downloads single card as a high-resolution PNG image with authentic WB Credit Union logo
+ * Downloads single card as a high-resolution PNG image with authentic WB Credit Finance logo
  */
 export function downloadSingleCardPng(card) {
   if (!card) card = getUserCards().find(c => c.id === activeCardId) || getUserCards()[0];
@@ -9120,7 +9120,7 @@ export function downloadSingleCardPng(card) {
   ctx.lineWidth = 3;
   ctx.stroke();
 
-  // 1. Top-Left Bank Logo (Official WB Credit Union Brand Logo)
+  // 1. Top-Left Bank Logo (Official WB Credit Finance Brand Logo)
   drawCardOfficialLogo(ctx, 55, 48, 140, 70);
 
   // 2. Top-Center Card Grade
@@ -9257,7 +9257,7 @@ export function downloadCardProofImage(card) {
   // Title Header
   ctx.fillStyle = '#0f172a';
   ctx.font = 'bold 24px sans-serif';
-  ctx.fillText('WB CREDIT UNION — HIGH RESOLUTION CARD SPECIMEN', 50, 50);
+  ctx.fillText('WB CREDIT FINANCE — HIGH RESOLUTION CARD SPECIMEN', 50, 50);
   ctx.fillStyle = '#64748b';
   ctx.font = '14px sans-serif';
   ctx.fillText('Standard ISO/IEC 7810 ID-1 Specimen (85.60 mm x 53.98 mm) - 300 DPI Ready', 50, 75);
@@ -9326,7 +9326,7 @@ export function downloadCardProofImage(card) {
   ctx.fillStyle = grad;
   ctx.fillRect(50, 120, cardW, cardH);
 
-  // Bank Logo on Front Card (Official WB Credit Union Brand Logo)
+  // Bank Logo on Front Card (Official WB Credit Finance Brand Logo)
   drawCardOfficialLogo(ctx, 75, 140, 76, 38);
 
   // Tier Tag at top center of front card
@@ -9434,7 +9434,7 @@ export function downloadCardProofImage(card) {
   ctx.fillStyle = '#cbd5e1';
   ctx.font = '12px sans-serif';
   ctx.fillText('For customer service call: 001 (207) 613-1332', 660, 330);
-  ctx.fillText('Authorized signature required. Issued by WB Credit Union.', 660, 350);
+  ctx.fillText('Authorized signature required. Issued by WB Credit Finance.', 660, 350);
   ctx.restore();
 
   // Crop lines around cards
@@ -11311,7 +11311,7 @@ export function generateOfficialReceiptForTransaction(txId) {
   const isCredit = tx.amount >= 0;
   const senderName = isCredit ? (tx.sender || 'Institutional Treasury Depository') : effectiveMember;
   const senderAccount = '**** **** **** 9596';
-  const senderBank = isCredit ? (tx.senderBank || 'Federal Reserve Depository') : 'WB Credit Union';
+  const senderBank = isCredit ? (tx.senderBank || 'Federal Reserve Depository') : 'WB Credit Finance';
   const senderIban = '**** **** **** 8923';
 
   // Dynamically resolve recipient bank & details from user transfer inputs
@@ -11345,14 +11345,14 @@ export function generateOfficialReceiptForTransaction(txId) {
   // Fallback if no bank specified
   if (!extractedBank) {
     if (isCredit || tx.category === 'internal' || (tx.type && tx.type.toLowerCase().includes('member'))) {
-      extractedBank = 'WB Credit Union';
+      extractedBank = 'WB Credit Finance';
     } else {
       extractedBank = 'Commercial Beneficiary Bank';
     }
   }
 
   const recipientName = isCredit ? effectiveMember : (rawRecipient || 'Valued Beneficiary');
-  const recipientBank = isCredit ? 'WB Credit Union' : extractedBank;
+  const recipientBank = isCredit ? 'WB Credit Finance' : extractedBank;
 
   const rawRecipientAcct = (tx.recipientAccount || tx.recipientIban || tx.account || tx.iban || tx.accountNumber || (tx.detail && tx.detail.match(/Acct:\s*(\d+)/)?.[1]) || '3950').replace(/\D/g, '');
   const last4Recipient = rawRecipientAcct.slice(-4) || '3950';
@@ -11493,7 +11493,7 @@ export function renderReceiptCanvas(receipt) {
   ctx.fillStyle = 'rgba(5, 150, 105, 0.045)';
   ctx.font = 'bold 74px sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('WB CREDIT UNION', 0, 0);
+  ctx.fillText('WB CREDIT FINANCE', 0, 0);
   ctx.restore();
 
   // 4. Top Header Row (Left: Crest + Bank Name; Center: Amount + SUCCESSFUL; Right: Date, Time, Tx No, Session ID)
@@ -11514,7 +11514,7 @@ export function renderReceiptCanvas(receipt) {
   ctx.fillStyle = '#065f46';
   ctx.font = 'bold 22px serif';
   ctx.textAlign = 'left';
-  ctx.fillText('WB CREDIT UNION', 55, 126);
+  ctx.fillText('WB CREDIT FINANCE', 55, 126);
   ctx.fillStyle = '#64748b';
   ctx.font = '13px sans-serif';
   ctx.fillText('International Banking Excellence', 55, 146);
@@ -11943,7 +11943,7 @@ export function setupEmailPreviewModalController() {
           routingNumber: '251480576',
           email: user.email || 'mizbrymo@gmail.com',
         });
-        if (metaSubject) metaSubject.textContent = 'Welcome to WB CREDIT UNION! 🎉';
+        if (metaSubject) metaSubject.textContent = 'Welcome to WB CREDIT FINANCE! 🎉';
         break;
 
       case 'transaction':
@@ -11979,7 +11979,7 @@ export function setupEmailPreviewModalController() {
           email: user.email || 'mizbrymo@gmail.com',
           type: 'transaction authorization',
         });
-        if (metaSubject) metaSubject.textContent = 'Your OTP Code - WB CREDIT UNION';
+        if (metaSubject) metaSubject.textContent = 'Your OTP Code - WB CREDIT FINANCE';
         break;
 
       case 'card':
@@ -11989,7 +11989,7 @@ export function setupEmailPreviewModalController() {
           maskedCardNumber: '•••• •••• •••• 4921',
           expiryDate: '09/29',
         });
-        if (metaSubject) metaSubject.textContent = 'Your New Card Has Been Issued - WB CREDIT UNION';
+        if (metaSubject) metaSubject.textContent = 'Your New Card Has Been Issued - WB CREDIT FINANCE';
         break;
     }
 

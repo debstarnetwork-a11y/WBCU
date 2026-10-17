@@ -1,7 +1,7 @@
 <?php
 /**
  * ============================================================================
- * WB CREDIT UNION - CUSTOM GITHUB DEPLOYMENT WEBHOOK
+ * WB CREDIT FINANCE - CUSTOM GITHUB DEPLOYMENT WEBHOOK
  * ============================================================================
  * 
  * If your cPanel does not show a "Webhook URL", use this script as a 

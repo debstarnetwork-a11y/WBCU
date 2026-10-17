@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - COMPLETE AUTHENTICATION & LOGIN/REGISTRATION CONTROLLER
+ * WB CREDIT FINANCE - COMPLETE AUTHENTICATION & LOGIN/REGISTRATION CONTROLLER
  * ============================================================================
  * 
  * Includes:
@@ -257,7 +257,7 @@ export function openBiometricEnrollModal(targetEmail = '', onComplete = null) {
         await navigator.credentials.create({
           publicKey: {
             challenge,
-            rp: { name: 'WB Credit Union' },
+            rp: { name: 'WB Credit Finance' },
             user: {
               id: new Uint8Array(16),
               name: emailToEnroll,
@@ -269,7 +269,7 @@ export function openBiometricEnrollModal(targetEmail = '', onComplete = null) {
           },
         });
       } catch (e) {
-        console.log('[WB Credit Union] WebAuthn simulated enrollment fallback:', e);
+        console.log('[WB Credit Finance] WebAuthn simulated enrollment fallback:', e);
       }
     }
 
@@ -749,7 +749,7 @@ export function initLoginForm() {
       if (emailAlertBanner) {
         emailAlertBanner.style.display = 'flex';
         if (emailAlertTitle) emailAlertTitle.textContent = 'Email Required';
-        if (emailAlertDesc) emailAlertDesc.textContent = 'Please enter your registered WB Credit Union email address.';
+        if (emailAlertDesc) emailAlertDesc.textContent = 'Please enter your registered WB Credit Finance email address.';
         if (alertForgotLink) alertForgotLink.style.display = 'none';
       }
       showToast('Please enter your email address.', 'error', 'Missing Email');
@@ -1132,7 +1132,7 @@ export function initLoginForm() {
       }, 700);
 
     } catch (err) {
-      console.error('[WB Credit Union] Login failed:', err);
+      console.error('[WB Credit Finance] Login failed:', err);
       const fails = getFailedAttempts() + 1;
       setFailedAttempts(fails);
 
@@ -1540,7 +1540,7 @@ export function initLoginForm() {
               },
             });
           } catch (webAuthnErr) {
-            console.log('[WB Credit Union] WebAuthn simulated fallback:', webAuthnErr);
+            console.log('[WB Credit Finance] WebAuthn simulated fallback:', webAuthnErr);
           }
         }
 
@@ -2474,7 +2474,7 @@ export function initMultiStepRegistration() {
             user_id: userId,
             email_type: 'welcome',
             recipient_email: email,
-            subject: 'WB Credit Union - Application Received (Pending Signoff)',
+            subject: 'WB Credit Finance - Application Received (Pending Signoff)',
             body: `Dear ${fullName}, your account ${formattedAcctNum} has been provisioned and is pending administrator activation.`,
             status: 'sent',
           });
@@ -2650,7 +2650,7 @@ export function initMultiStepRegistration() {
       if (successEmailEl) successEmailEl.textContent = email;
 
       launchConfettiCelebration();
-      showToast(`Welcome to WB Credit Union, ${firstName}! Application received. Account is Inactive until admin approval.`, 'info', 'Application Submitted');
+      showToast(`Welcome to WB Credit Finance, ${firstName}! Application received. Account is Inactive until admin approval.`, 'info', 'Application Submitted');
 
       let remainingSeconds = 8;
       const timerEl = document.getElementById('autoRedirectTimer');
@@ -2664,7 +2664,7 @@ export function initMultiStepRegistration() {
       }, 1000);
 
     } catch (err) {
-      console.error('[WB Credit Union] Registration Error:', err);
+      console.error('[WB Credit Finance] Registration Error:', err);
       if (globalAlert) {
         globalAlert.textContent = err.message || 'Unable to establish membership at this time.';
         globalAlert.style.display = 'block';
@@ -2909,7 +2909,7 @@ export function initAdminLoginForm() {
       }, 300);
 
     } catch (err) {
-      console.error('[WB Credit Union] Admin auth error:', err);
+      console.error('[WB Credit Finance] Admin auth error:', err);
       if (alertEl) {
         alertEl.textContent = err.message || 'Authentication error. Please check your credentials.';
         alertEl.style.display = 'block';

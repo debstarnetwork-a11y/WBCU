@@ -1,7 +1,7 @@
 <?php
 /**
  * ============================================================================
- * WB CREDIT UNION - ADMIN AUTHENTICATION API (Strict Database Authentication)
+ * WB CREDIT FINANCE - ADMIN AUTHENTICATION API (Strict Database Authentication)
  * ============================================================================
  * 
  * Authenticates Administrative Officers strictly against the live cPanel MySQL

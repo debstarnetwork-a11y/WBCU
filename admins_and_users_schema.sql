@@ -1,5 +1,5 @@
 -- ============================================================================
--- WB CREDIT UNION - COMPLETE DATABASE SCHEMA WITH SEPARATE ADMINS TABLE
+-- WB CREDIT FINANCE - COMPLETE DATABASE SCHEMA WITH SEPARATE ADMINS TABLE
 -- Database: glolbka_wbcu_db
 -- ============================================================================
 

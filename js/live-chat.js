@@ -1,10 +1,10 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - UNIVERSAL 24/7 LIVE CONCIERGE CHAT ENGINE (js/live-chat.js)
+ * WB CREDIT FINANCE - UNIVERSAL 24/7 LIVE CONCIERGE CHAT ENGINE (js/live-chat.js)
  * ============================================================================
  * 
  * Injects and powers the floating 24/7 Live Support Chatbot & Digital Desk
- * on every page across WB Credit Union. Features:
+ * on every page across WB Credit Finance. Features:
  * - Floating trigger pill with active status indicator & unread message badge
  * - Institutional Bank Header with 1-click 1-800-BANKING and support@wbcu.net
  * - Dynamic multilingual chat prompts
@@ -67,7 +67,7 @@ export function getUniversalChatHistory() {
       role: 'Treasury & Member Services Desk',
       avatar: '🏛️',
       time: 'Just now',
-      text: t('chat.welcome_msg', 'Hello! Welcome to WB Credit Union 24/7 Support. How can we assist you with your accounts, transfers, or clearance codes today?'),
+      text: t('chat.welcome_msg', 'Hello! Welcome to WB Credit Finance 24/7 Support. How can we assist you with your accounts, transfers, or clearance codes today?'),
     },
   ];
   saveUniversalChatHistory(defaultMessages);
@@ -123,7 +123,7 @@ export function injectUniversalLiveChat() {
             <span class="wb-chat-online-indicator" title="Online"></span>
           </div>
           <div class="wb-chat-header-info">
-            <h4 class="wb-chat-title" data-i18n="chat.header_title">WB Credit Union Support</h4>
+            <h4 class="wb-chat-title" data-i18n="chat.header_title">WB Credit Finance Support</h4>
             <p class="wb-chat-subtitle">
               <span class="wb-chat-agent-name">Senior Desk: Marc Bieri &amp; Sarah K.</span>
               <span class="wb-chat-response-rate" data-i18n="chat.online_status">Online · Response: Instant</span>
@@ -271,7 +271,7 @@ function getSupportAnswer(query) {
   }
 
   if (q.includes('phone') || q.includes('number') || q.includes('call') || q.includes('contact') || q.includes('email') || q.includes('1-800') || q.includes('24/7')) {
-    return `<strong>WB Credit Union 24/7 Support:</strong><br>
+    return `<strong>WB Credit Finance 24/7 Support:</strong><br>
     📞 Toll-Free Phone: <strong><a href="tel:18002265464" style="color:#2563eb; font-weight:700;">1-800-BANKING</a></strong> (24/7 Support)<br>
     🌍 International Desk: <strong><a href="tel:+12076131332" style="color:#2563eb; font-weight:700;">001 (207) 613-1332</a></strong><br>
     ✉️ Official Email: <strong><a href="mailto:support@wbcu.net" style="color:#2563eb; font-weight:700;">support@wbcu.net</a></strong><br>
@@ -294,14 +294,14 @@ function getSupportAnswer(query) {
   }
 
   if (q.includes('crypto') || q.includes('btc') || q.includes('bitcoin') || q.includes('eth') || q.includes('usdt')) {
-    return `WB Credit Union supports cold-vault crypto custody for BTC, ETH, SOL, and USDT. Deposits credit automatically after required network confirmations with zero custodial lending risk.`;
+    return `WB Credit Finance supports cold-vault crypto custody for BTC, ETH, SOL, and USDT. Deposits credit automatically after required network confirmations with zero custodial lending risk.`;
   }
 
   if (q.includes('agent') || q.includes('human') || q.includes('representative') || q.includes('speak') || q.includes('operator')) {
     return `I have forwarded your request to <strong>Senior Duty Officer Marc Bieri</strong> at our Zurich Priority Desk. An officer is reviewing your session and will respond here shortly, or you can call us directly right now at <strong>1-800-BANKING</strong>.`;
   }
 
-  return `Thank you for contacting WB Credit Union. Our priority member care team is available 24/7 at <strong>1-800-BANKING</strong> and <strong>support@wbcu.net</strong>. If you need assistance with account opening, international transfers, or wire clearance codes, our team is always here to help.`;
+  return `Thank you for contacting WB Credit Finance. Our priority member care team is available 24/7 at <strong>1-800-BANKING</strong> and <strong>support@wbcu.net</strong>. If you need assistance with account opening, international transfers, or wire clearance codes, our team is always here to help.`;
 }
 
 /**

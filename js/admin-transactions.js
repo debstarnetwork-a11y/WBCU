@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - ADMIN TRANSACTION MANAGEMENT CONTROLLER (js/admin-transactions.js)
+ * WB CREDIT FINANCE - ADMIN TRANSACTION MANAGEMENT CONTROLLER (js/admin-transactions.js)
  * ============================================================================
  * 
  * Complete regulatory & treasury control for banking transactions:
@@ -143,7 +143,7 @@ const initialSeedTransactions = [
     direction: 'inward',
     status: 'completed',
     beneficiaryName: 'Miz Brymo',
-    beneficiaryBank: 'WB Credit Union (Zurich HQ)',
+    beneficiaryBank: 'WB Credit Finance (Zurich HQ)',
     swiftCode: 'WBCUCHZZ',
     description: 'Direct Inward Fedwire Clearing - UBS Switzerland',
     adminNotes: 'Cleared through Federal Reserve Bank of New York correspondent channel.',
@@ -240,7 +240,7 @@ const initialSeedTransactions = [
     direction: 'inward',
     status: 'reversed',
     beneficiaryName: 'Carlos Mendez',
-    beneficiaryBank: 'WB Credit Union',
+    beneficiaryBank: 'WB Credit Finance',
     swiftCode: 'WBCUCHZZ',
     description: 'Reversal of duplicate merchant settlement',
     adminNotes: 'Reversal executed by Officer per member dispute claim #9921.',
@@ -1161,7 +1161,7 @@ function setupManualTransactionModal() {
         direction: type === 'credit' ? 'inward' : 'outward',
         status,
         beneficiaryName: user.fullName,
-        beneficiaryBank: 'WB Credit Union (Zurich)',
+        beneficiaryBank: 'WB Credit Finance (Zurich)',
         swiftCode: 'WBCUCHZZ',
         description: desc || 'Manual Administrative Adjustment',
         adminNotes: 'Created manually by Chief Treasury Auditor',
@@ -1233,7 +1233,7 @@ function setupTxExportButtons() {
         // Header
         doc.setFontSize(16);
         doc.setTextColor(26, 58, 107);
-        doc.text('WB CREDIT UNION - TREASURY AUDIT REPORT', 14, 20);
+        doc.text('WB CREDIT FINANCE - TREASURY AUDIT REPORT', 14, 20);
         
         doc.setFontSize(9);
         doc.setTextColor(100);

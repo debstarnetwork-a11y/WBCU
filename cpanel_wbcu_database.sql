@@ -1,5 +1,5 @@
 -- ============================================================================
--- WB CREDIT UNION (www.wbcu.net) - PHPMYADMIN / CPANEL MYSQL SETUP SCRIPT
+-- WB CREDIT FINANCE (www.wbcu.net) - PHPMYADMIN / CPANEL MYSQL SETUP SCRIPT
 -- ============================================================================
 -- Compatible with cPanel phpMyAdmin, MySQL 5.7 / 8.0+, MariaDB 10.3+
 -- Target Database: glolbka_wbcu_db (or your cPanel database)
@@ -175,7 +175,7 @@ VALUES
 ON DUPLICATE KEY UPDATE `card_holder` = VALUES(`card_holder`);
 
 INSERT INTO `system_settings` (`key_name`, `value_json`) VALUES
-('institution_info', '{"bankName":"WB Credit Union","domain":"wbcu.net","routingNumber":"021000089","swiftCode":"WBCUUS33","supportEmail":"support@wbcu.net","headquarters":"109, Feldgüetliweg Meilen, Zurich 8706, Switzerland"}')
+('institution_info', '{"bankName":"WB Credit Finance","domain":"wbcu.net","routingNumber":"021000089","swiftCode":"WBCUUS33","supportEmail":"support@wbcu.net","headquarters":"109, Feldgüetliweg Meilen, Zurich 8706, Switzerland"}')
 ON DUPLICATE KEY UPDATE `value_json` = VALUES(`value_json`);
 
 SET FOREIGN_KEY_CHECKS = 1;

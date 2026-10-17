@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - ADMIN REPORTS & ANALYTICS CONTROLLER (js/admin-reports.js)
+ * WB CREDIT FINANCE - ADMIN REPORTS & ANALYTICS CONTROLLER (js/admin-reports.js)
  * ============================================================================
  * 
  * Provides institutional executive business intelligence and report compilation:
@@ -644,7 +644,7 @@ function setupReportGenerator() {
         <body onload="window.print();">
           <div class="header">
             <div>
-              <div class="title">WB CREDIT UNION &bull; TREASURY REPORT</div>
+              <div class="title">WB CREDIT FINANCE &bull; TREASURY REPORT</div>
               <div style="font-size: 12px; color: #64748b;">${currentGeneratedReportData.title}</div>
             </div>
             <div style="text-align: right; font-size: 11px; color: #64748b;">
@@ -661,7 +661,7 @@ function setupReportGenerator() {
             </tbody>
           </table>
           <div class="footer">
-            CONFIDENTIAL &bull; FOR INSTITUTIONAL AUDIT PURPOSES ONLY &bull; WB CREDIT UNION SWITZERLAND
+            CONFIDENTIAL &bull; FOR INSTITUTIONAL AUDIT PURPOSES ONLY &bull; WB CREDIT FINANCE SWITZERLAND
           </div>
         </body>
         </html>

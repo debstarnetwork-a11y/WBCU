@@ -1,4 +1,4 @@
-# WB CREDIT UNION (www.wbcu.net) - CPANEL DATABASE SETUP GUIDE
+# WB CREDIT FINANCE (www.wbcu.net) - CPANEL DATABASE SETUP GUIDE
 
 This guide walks you through importing the complete SQL schema and database for **wbcu.net** onto your cPanel hosting using your exact database credentials.
 

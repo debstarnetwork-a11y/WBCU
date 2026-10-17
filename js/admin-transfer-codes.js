@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - ADMIN WIRE TRANSFER CODE CONTROLLER (js/admin-transfer-codes.js)
+ * WB CREDIT FINANCE - ADMIN WIRE TRANSFER CODE CONTROLLER (js/admin-transfer-codes.js)
  * ============================================================================
  * 
  * Manages institutional wire transfer clearance gates:

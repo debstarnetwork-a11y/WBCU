@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - ADMIN CRYPTO MANAGEMENT CONTROLLER (js/admin-crypto.js)
+ * WB CREDIT FINANCE - ADMIN CRYPTO MANAGEMENT CONTROLLER (js/admin-crypto.js)
  * ============================================================================
  * 
  * Manages institutional cryptocurrency custody & exchange rates:

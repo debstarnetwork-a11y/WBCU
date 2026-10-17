@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ============================================================================
-WB CREDIT UNION - UNIVERSAL PRODUCTION SYNCHRONIZATION SCRIPT (Python 3.5+)
+WB CREDIT FINANCE - UNIVERSAL PRODUCTION SYNCHRONIZATION SCRIPT (Python 3.5+)
 ============================================================================
 
 Description:
@@ -79,7 +79,7 @@ def copy_dir_contents(src, dst):
 
 def main():
     print("\n" + BOLD + "======================================================" + RESET)
-    print(BOLD + GREEN + " WB CREDIT UNION - LIVE SITE PRODUCTION SYNCHRONIZATION " + RESET)
+    print(BOLD + GREEN + " WB CREDIT FINANCE - LIVE SITE PRODUCTION SYNCHRONIZATION " + RESET)
     print(BOLD + "======================================================\n" + RESET)
 
     current_dir = os.path.abspath(os.getcwd())

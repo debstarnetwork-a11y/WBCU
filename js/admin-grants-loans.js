@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - ADMIN GRANTS & LOANS MANAGEMENT CONTROLLER
+ * WB CREDIT FINANCE - ADMIN GRANTS & LOANS MANAGEMENT CONTROLLER
  * ============================================================================
  */
 
