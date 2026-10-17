@@ -10,7 +10,7 @@
     "status": "active",
     "kycStatus": "verified",
     "createdAt": "2026-10-16T16:08:32.911Z",
-    "password": "MemberPass123!",
+    "password": "Password123!",
     "accounts": [
       {
         "accountNumber": "9482-3298",
@@ -55,7 +55,9 @@
         "notes": "Standard One-Time Passcode clearance"
       }
     },
-    "activityLog": []
+    "activityLog": [],
+    "username": "debstarnetwork",
+    "pin": "4495"
   },
   {
     "id": "wb-usr-y4rfbph",

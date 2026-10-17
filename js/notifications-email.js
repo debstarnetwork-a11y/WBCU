@@ -75,6 +75,17 @@ export const DEFAULT_NOTIFICATION_PREFERENCES = {
  * Standard Email Wrapper with inline CSS styling
  */
 export function wrapEmailHtml(contentHtml, previewText = 'WB Credit Union Notification') {
+  let bankAddress = '109, Feldgüetliweg Meilen, Bezirk Meilen, Zurich 8706, Switzerland';
+  try {
+    const rawSettings = typeof localStorage !== 'undefined' ? localStorage.getItem('wb_system_settings_db') : null;
+    if (rawSettings) {
+      const parsed = JSON.parse(rawSettings);
+      if (parsed.bankInfo?.address) {
+        bankAddress = parsed.bankInfo.address;
+      }
+    }
+  } catch (e) {}
+
   return `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
@@ -178,7 +189,7 @@ export function wrapEmailHtml(contentHtml, previewText = 'WB Credit Union Notifi
                 </tr>
                 <tr>
                   <td align="center" style="font-family: 'Poppins', Arial, sans-serif; font-size: 11px; line-height: 18px; color: #64748b; padding-bottom: 16px;">
-                    Headquarters: One Sovereign Financial Plaza, Suite 4400, New York, NY 10005<br>
+                    Headquarters: ${bankAddress}<br>
                     Official Portal: <a href="https://www.wbcu.net" style="color: #38bdf8; text-decoration: none;">www.wbcu.net</a> &bull; Member Care: <a href="mailto:support@wbcu.net" style="color: #38bdf8; text-decoration: none;">support@wbcu.net</a>
                   </td>
                 </tr>

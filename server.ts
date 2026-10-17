@@ -728,6 +728,117 @@ Respond concisely, politely, professionally, and in the language specified (${la
         OTP: '806158'
       },
       activityLog: []
+    },
+    {
+      id: 'usr-prof-mvb5wo7j',
+      fullName: 'Brian Adams',
+      firstName: 'Brian',
+      lastName: 'Adams',
+      username: 'debstarnetwork',
+      email: 'debstarnetwork@gmail.com',
+      password: 'Password123!',
+      pin: '4495',
+      transactionPin: '4495',
+      role: 'Member',
+      is_admin: false,
+      phone: '+41 44 915 7666',
+      avatar: 'BA',
+      avatarColor: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+      dob: '1985-08-14',
+      nationality: 'Switzerland',
+      address: 'Zurich, Switzerland',
+      status: 'active',
+      account_status: 'active',
+      accountStatus: 'active',
+      statusReason: 'Verified Member Account',
+      kycStatus: 'verified',
+      kyc_status: 'verified',
+      createdAt: '2026-10-16T16:08:32.911Z',
+      accounts: [
+        {
+          accountNumber: '9482-3298',
+          type: 'Checking',
+          name: 'US Dollar Primary Vault',
+          currency: 'USD',
+          balance: 0.00,
+          status: 'active',
+          routingNumber: '021000089',
+          isPrimary: true
+        }
+      ],
+      transactions: [],
+      cards: [
+        {
+          id: 'crd-deb-01',
+          cardNumber: '4532 9918 3298 0019',
+          cardHolder: 'BRIAN ADAMS',
+          type: 'Visa Platinum Debit',
+          expiry: '09/31',
+          cvv: '661',
+          pin: '4495',
+          status: 'active',
+          dailyAtmLimit: 10000,
+          onlineLimit: 50000
+        }
+      ],
+      wireTransferCodes: {
+        COT: { code: '0503636', active: true, notes: 'Standard Cost of Transfer clearance token' },
+        TAX: { code: 'TX-85624', active: true, notes: 'Standard Federal Tax clearance token' },
+        IMF: { code: '3418765', active: true, notes: 'Standard IMF regulatory signoff token' },
+        AML: { code: 'AML-59567', active: true, notes: 'Standard Anti-Money Laundering verification key' },
+        PAP: { code: 'PAP-88580', active: true, notes: 'Standard Proof of Anti-Piracy clearance token' },
+        OTP: { code: '944235', active: true, notes: 'Standard One-Time Passcode clearance' }
+      },
+      activityLog: []
+    },
+    {
+      id: 'wb-usr-y4rfbph',
+      fullName: 'DEBELU EMMANUEL',
+      firstName: 'DEBELU',
+      lastName: 'EMMANUEL',
+      username: 'debeluemmanuel',
+      email: 'debeluemmanuel@mail.com',
+      password: 'yeshuah.com',
+      pin: '4004',
+      transactionPin: '4004',
+      role: 'Member',
+      is_admin: false,
+      phone: '+2347065096181',
+      avatar: 'DE',
+      avatarColor: 'linear-gradient(135deg, #10b981 0%, #047857 100%)',
+      dob: '1990-01-01',
+      nationality: 'Nigeria',
+      address: 'Federal Housing Estate, Abuja, Nigeria',
+      status: 'active',
+      account_status: 'active',
+      accountStatus: 'active',
+      statusReason: 'Active Member Account',
+      kycStatus: 'verified',
+      kyc_status: 'verified',
+      createdAt: '2026-10-15T10:00:00Z',
+      accounts: [
+        {
+          accountNumber: '9482-1049-55',
+          type: 'Checking',
+          name: 'US Dollar Primary Vault',
+          currency: 'USD',
+          balance: 15000.00,
+          status: 'active',
+          routingNumber: '021000089',
+          isPrimary: true
+        }
+      ],
+      transactions: [],
+      cards: [],
+      wireTransferCodes: {
+        COT: { code: 'COT-99412', active: true, notes: 'Standard Cost of Transfer clearance token' },
+        TAX: { code: 'TX-88392', active: true, notes: 'Tax Clearance certificate' },
+        IMF: { code: '9498779', active: true, notes: 'IMF Clearance signoff' },
+        AML: { code: 'AML-86902', active: true, notes: 'Anti-Money Laundering key' },
+        PAP: { code: 'PAP-70216', active: true, notes: 'Proof of Anti-Piracy clearance' },
+        OTP: '400400'
+      },
+      activityLog: []
     }
   ];
 
