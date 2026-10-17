@@ -45,21 +45,25 @@ foreach ($logPaths as $lp) {
 }
 @exec("git gc --prune=now 2>&1");
 
-// 3. Perform the git pull
-// Note: We use 2>&1 to capture error output
+// 3. Perform git fetch and hard reset to match GitHub exactly
 $output = [];
 $returnCode = 0;
-exec("git pull origin main 2>&1", $output, $returnCode);
+exec("git fetch origin main && git checkout -f main && git reset --hard origin/main && git clean -fd -e admin-users.json -e admin-users-persistent.json 2>&1", $output, $returnCode);
 
 if ($returnCode === 0) {
-    // 4. Trigger cPanel Deployment (if .cpanel.yml exists)
-    // This part is often automatic on some cPanel versions when git pull happens, 
-    // but if not, we can try to trigger it via the cPanel API if needed.
-    
+    // 4. Trigger cPanel Deployment task (executes .cpanel.yml tasks to copy files to public_html)
+    $deployOutput = [];
+    $deployRetval = 0;
+    @exec("/usr/local/cpanel/bin/cpcmd VersionControl update_deploy repository_root=" . escapeshellarg($repoPath) . " 2>&1", $deployOutput, $deployRetval);
+
     echo json_encode([
         'success' => true,
-        'message' => 'Successfully pulled changes from GitHub.',
-        'output' => $output
+        'message' => 'Successfully synchronized and deployed changes from GitHub.',
+        'git_sync' => $output,
+        'cpanel_deploy' => [
+            'status' => $deployRetval === 0 ? 'Success' : 'Notice',
+            'output' => $deployOutput
+        ]
     ]);
 } else {
     http_response_code(500);

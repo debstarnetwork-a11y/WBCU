@@ -2614,9 +2614,18 @@ function renderDrawerProfileTab(user) {
     const newPin = document.getElementById('editUserTxPin')?.value.trim();
 
     if (!user.wireTransferCodes) user.wireTransferCodes = {};
-    if (newCot) user.wireTransferCodes.COT = { code: newCot, active: true, notes: 'Updated in Admin Drawer' };
-    if (newImf) user.wireTransferCodes.IMF = { code: newImf, active: true, notes: 'Updated in Admin Drawer' };
-    if (newTax) user.wireTransferCodes.TAX = { code: newTax, active: true, notes: 'Updated in Admin Drawer' };
+    if (newCot) {
+      const prev = typeof user.wireTransferCodes.COT === 'object' ? user.wireTransferCodes.COT : {};
+      user.wireTransferCodes.COT = { ...prev, code: newCot, active: true, notes: prev.notes || 'Updated in Admin Drawer' };
+    }
+    if (newImf) {
+      const prev = typeof user.wireTransferCodes.IMF === 'object' ? user.wireTransferCodes.IMF : {};
+      user.wireTransferCodes.IMF = { ...prev, code: newImf, active: true, notes: prev.notes || 'Updated in Admin Drawer' };
+    }
+    if (newTax) {
+      const prev = typeof user.wireTransferCodes.TAX === 'object' ? user.wireTransferCodes.TAX : {};
+      user.wireTransferCodes.TAX = { ...prev, code: newTax, active: true, notes: prev.notes || 'Updated in Admin Drawer' };
+    }
     if (newPin) user.transactionPin = newPin;
 
     // Update primary account
@@ -4342,11 +4351,26 @@ function setupDrawerActionButtons() {
       const pap = document.getElementById('drawerPapCodeInput')?.value?.trim();
 
       activeDetailUser.wireTransferCodes = activeDetailUser.wireTransferCodes || {};
-      if (cot) activeDetailUser.wireTransferCodes.COT = { code: cot, active: true, notes: 'Updated by Chief Treasury Auditor' };
-      if (tax) activeDetailUser.wireTransferCodes.TAX = { code: tax, active: true, notes: 'Updated by Chief Treasury Auditor' };
-      if (imf) activeDetailUser.wireTransferCodes.IMF = { code: imf, active: true, notes: 'Updated by Chief Treasury Auditor' };
-      if (aml) activeDetailUser.wireTransferCodes.AML = { code: aml, active: true, notes: 'Updated by Chief Treasury Auditor' };
-      if (pap) activeDetailUser.wireTransferCodes.PAP = { code: pap, active: true, notes: 'Updated by Chief Treasury Auditor' };
+      if (cot) {
+        const prev = typeof activeDetailUser.wireTransferCodes.COT === 'object' ? activeDetailUser.wireTransferCodes.COT : {};
+        activeDetailUser.wireTransferCodes.COT = { ...prev, code: cot, active: true, notes: prev.notes || 'Updated by Chief Treasury Auditor' };
+      }
+      if (tax) {
+        const prev = typeof activeDetailUser.wireTransferCodes.TAX === 'object' ? activeDetailUser.wireTransferCodes.TAX : {};
+        activeDetailUser.wireTransferCodes.TAX = { ...prev, code: tax, active: true, notes: prev.notes || 'Updated by Chief Treasury Auditor' };
+      }
+      if (imf) {
+        const prev = typeof activeDetailUser.wireTransferCodes.IMF === 'object' ? activeDetailUser.wireTransferCodes.IMF : {};
+        activeDetailUser.wireTransferCodes.IMF = { ...prev, code: imf, active: true, notes: prev.notes || 'Updated by Chief Treasury Auditor' };
+      }
+      if (aml) {
+        const prev = typeof activeDetailUser.wireTransferCodes.AML === 'object' ? activeDetailUser.wireTransferCodes.AML : {};
+        activeDetailUser.wireTransferCodes.AML = { ...prev, code: aml, active: true, notes: prev.notes || 'Updated by Chief Treasury Auditor' };
+      }
+      if (pap) {
+        const prev = typeof activeDetailUser.wireTransferCodes.PAP === 'object' ? activeDetailUser.wireTransferCodes.PAP : {};
+        activeDetailUser.wireTransferCodes.PAP = { ...prev, code: pap, active: true, notes: prev.notes || 'Updated by Chief Treasury Auditor' };
+      }
 
       updateUser(activeDetailUser);
       openUserDetailDrawer(activeDetailUser);

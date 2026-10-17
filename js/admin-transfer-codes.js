@@ -616,7 +616,9 @@ function setupCodeModals() {
       if (!user) return;
 
       const codeType = document.getElementById('editCodeTypeHidden')?.value;
+      const codeName = document.getElementById('editCodeNameInput')?.value.trim();
       const codeVal = document.getElementById('editCodeValueInput')?.value.trim();
+      const codeInstruction = document.getElementById('editCodeInstructionInput')?.value.trim();
       const isActive = document.getElementById('editCodeActiveToggle')?.checked;
       const notes = document.getElementById('editCodeNotesInput')?.value.trim();
 
@@ -625,10 +627,17 @@ function setupCodeModals() {
         return;
       }
 
+      if (!user.wireTransferCodes) user.wireTransferCodes = {};
+      const prev = user.wireTransferCodes[codeType] || {};
+
       user.wireTransferCodes[codeType] = {
         code: codeVal,
-        active: isActive,
-        notes: notes || user.wireTransferCodes[codeType]?.notes || 'Updated by Auditor'
+        name: codeName || prev.name || `${codeType} Clearance Code`,
+        desc: codeInstruction || prev.desc || prev.instruction || '',
+        instruction: codeInstruction || prev.instruction || prev.desc || '',
+        notes: notes || prev.notes || prev.alertText || `${codeType} clearance token`,
+        alertText: notes || prev.alertText || prev.notes || `${codeType} clearance token`,
+        active: isActive
       };
 
       updateUser(user);
@@ -657,7 +666,9 @@ function openEditCodeModal(user, codeType) {
   const hiddenType = document.getElementById('editCodeTypeHidden');
   const typeDisplay = document.getElementById('editCodeTypeDisplay');
   const curValDisplay = document.getElementById('editCodeCurrentValDisplay');
+  const nameInput = document.getElementById('editCodeNameInput');
   const valInput = document.getElementById('editCodeValueInput');
+  const instructionInput = document.getElementById('editCodeInstructionInput');
   const activeToggle = document.getElementById('editCodeActiveToggle');
   const notesInput = document.getElementById('editCodeNotesInput');
 
@@ -666,9 +677,11 @@ function openEditCodeModal(user, codeType) {
   if (hiddenType) hiddenType.value = codeType;
   if (typeDisplay) typeDisplay.textContent = `${codeType} Code`;
   if (curValDisplay) curValDisplay.textContent = curObj.code || 'None';
+  if (nameInput) nameInput.value = curObj.name || `${codeType} Clearance Code`;
   if (valInput) valInput.value = curObj.code || generateRandomCode(codeType);
+  if (instructionInput) instructionInput.value = curObj.desc || curObj.instruction || '';
   if (activeToggle) activeToggle.checked = curObj.active !== false;
-  if (notesInput) notesInput.value = curObj.notes || '';
+  if (notesInput) notesInput.value = curObj.notes || curObj.alertText || '';
 
   if (modal) modal.classList.add('show');
 }

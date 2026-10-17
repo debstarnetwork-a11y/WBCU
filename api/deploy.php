@@ -37,10 +37,10 @@ try {
     }
     @exec("git -C /home/glolbka/repositories/WBCU gc --prune=now 2>&1");
 
-    // 1. Pull changes from GitHub
+    // 1. Fetch and hard reset to match GitHub main exactly
     $output = [];
     $retval = 0;
-    exec("git pull origin main 2>&1", $output, $retval);
+    exec("git -C /home/glolbka/repositories/WBCU fetch origin main && git -C /home/glolbka/repositories/WBCU reset --hard origin/main 2>&1", $output, $retval);
     
     // 2. Trigger cPanel deployment (this runs .cpanel.yml tasks)
     // Note: This requires the 'uapi' or 'cpcmd' command to be available.

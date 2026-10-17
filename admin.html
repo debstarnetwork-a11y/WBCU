@@ -4394,8 +4394,13 @@
           </div>
 
           <div class="admin-form-group">
+            <label class="admin-form-label">Clearance Code Name / Title</label>
+            <input type="text" id="editCodeNameInput" class="admin-form-control font-bold" placeholder="e.g. Cost of Transfer (COT) Code" required />
+          </div>
+
+          <div class="admin-form-group">
             <div class="d-flex justify-between items-center mb-1">
-              <label class="admin-form-label m-0">New Code Value</label>
+              <label class="admin-form-label m-0">Clearance Code Value</label>
               <button type="button" class="text-xs font-bold" id="btnAutoGenerateEdit" style="background:none; border:none; color:#38bdf8; cursor:pointer;">
                 🎲 Auto-Generate New Key
               </button>
@@ -4403,16 +4408,21 @@
             <input type="text" id="editCodeValueInput" class="admin-form-control font-mono font-bold text-md" style="letter-spacing: 0.08em; color:#38bdf8;" required />
           </div>
 
+          <div class="admin-form-group">
+            <label class="admin-form-label">Accompanying Instruction Text</label>
+            <textarea id="editCodeInstructionInput" class="admin-form-control" rows="2" placeholder="e.g. Required by Swiss SWIFT clearing system for international wires"></textarea>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">Accompanying Alert / Compliance Notice Text</label>
+            <input type="text" id="editCodeNotesInput" class="admin-form-control" placeholder="e.g. Cost of Transfer clearance token" />
+          </div>
+
           <div class="p-3 mb-3" style="background:#090d16; border-radius:8px; border:1px solid #334155;">
             <label class="d-flex items-center justify-between text-xs text-white" style="cursor:pointer;">
               <span>Active clearance status:</span>
               <input type="checkbox" id="editCodeActiveToggle" checked style="width:18px; height:18px;" />
             </label>
-          </div>
-
-          <div class="admin-form-group">
-            <label class="admin-form-label">Audit Notes</label>
-            <input type="text" id="editCodeNotesInput" class="admin-form-control" placeholder="e.g. Updated per compliance officer signoff" />
           </div>
         </div>
         <div class="admin-modal-footer">
