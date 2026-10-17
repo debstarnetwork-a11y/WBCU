@@ -1,14 +1,7 @@
 <?php
 /**
  * ============================================================================
- * WB CREDIT FINANCE - EMERGENCY RESCUE & DIAGNOSTIC TOOL
- * ============================================================================
- * 
- * This script will:
- * 1. Test database connection.
- * 2. Verify existence of admin-users.json.
- * 3. Check file permissions.
- * 4. Verify admin user existence in DB and JSON.
+ * WB CREDIT FINANCE - EMERGENCY RESCUE & DIAGNOSTIC TOOL (V2)
  * ============================================================================
  */
 
@@ -17,7 +10,7 @@ ini_set('display_errors', 1);
 header('Content-Type: text/html; charset=utf-8');
 
 echo "<html><body style='font-family:sans-serif; padding:20px; line-height:1.6; background:#f4f7f6;'>";
-echo "<h1 style='color:#2563eb;'>WB Credit Finance Rescue Tool</h1>";
+echo "<h1 style='color:#2563eb;'>WB Credit Finance Rescue Tool V2</h1>";
 
 function log_status($msg, $type = 'info') {
     $colors = ['info' => '#2563eb', 'success' => '#10b981', 'error' => '#ef4444', 'warn' => '#f59e0b'];
@@ -27,78 +20,53 @@ function log_status($msg, $type = 'info') {
           </div>";
 }
 
-// 1. Check Filesystem
-$root = dirname(__DIR__);
-$files = ['.env', 'admin-users.json', '.htaccess', 'api/admin-login.php'];
+// 1. Check Multiple Folders
+$searchPaths = [
+    __DIR__, 
+    dirname(__DIR__), 
+    '/home/glolbka/WBCU',
+    '/home/glolbka/public_html'
+];
 
-log_status("Checking Root Directory: $root");
-if (is_writable($root)) {
-    log_status("Root directory is WRITABLE", "success");
-} else {
-    log_status("Root directory is NOT writable. This might prevent updates.", "warn");
-}
+log_status("Script running from: " . __DIR__);
 
-foreach ($files as $f) {
-    $p = $root . '/' . $f;
-    if (file_exists($p)) {
-        log_status("File Found: $f (" . filesize($p) . " bytes)", "success");
-    } else {
-        log_status("File MISSING: $f", "error");
+$dbPass = ''; $dbUser = 'glolbka_wbcu_user'; $dbName = 'glolbka_wbcu_db'; $dbHost = 'localhost';
+
+foreach ($searchPaths as $path) {
+    if (!is_dir($path)) continue;
+    log_status("Scanning directory: $path");
+    
+    $files = ['.env', 'admin-users.json', '.htaccess', 'api/admin-login.php'];
+    foreach ($files as $f) {
+        $p = $path . '/' . $f;
+        if (file_exists($p)) {
+            log_status("Found: $f in $path", "success");
+            if ($f === '.env' && empty($dbPass)) {
+                $lines = file($p, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                foreach ($lines as $line) {
+                    $parts = explode('=', $line, 2);
+                    if (count($parts) < 2) continue;
+                    $k = trim($parts[0]); $v = trim($parts[1], " \t\n\r\0\x0B\"'");
+                    if ($k === 'DB_PASS' || $k === 'DB_PASSWORD') $dbPass = $v;
+                }
+            }
+        }
     }
 }
 
 // 2. Database Connection
-$dbHost = 'localhost'; $dbName = 'glolbka_wbcu_db'; $dbUser = 'glolbka_wbcu_user'; $dbPass = '';
-$envPath = $root . '/.env';
-if (file_exists($envPath)) {
-    $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
-        if (strpos(trim($line), '#') === 0) continue;
-        $parts = explode('=', $line, 2);
-        if (count($parts) < 2) continue;
-        $k = trim($parts[0]); $v = trim($parts[1], " \t\n\r\0\x0B\"'");
-        if ($k === 'DB_PASS' || $k === 'DB_PASSWORD') $dbPass = $v;
-        if ($k === 'DB_USER') $dbUser = $v;
-        if ($k === 'DB_NAME') $dbName = $v;
-        if ($k === 'DB_HOST') $dbHost = $v;
+if (empty($dbPass) || str_contains($dbPass, 'PLEASE_EDIT')) {
+    log_status("Database password not found in any .env file. Please edit .env and set DB_PASS.", "error");
+} else {
+    try {
+        $dsn = "mysql:host={$dbHost};dbname={$dbName};charset=utf8mb4";
+        $pdo = new PDO($dsn, $dbUser, $dbPass, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        log_status("Database Connection: SUCCESS", "success");
+    } catch (Throwable $e) {
+        log_status("Database Connection FAILED: " . $e->getMessage(), "error");
     }
 }
 
-try {
-    $dsn = "mysql:host={$dbHost};dbname={$dbName};charset=utf8mb4";
-    $pdo = new PDO($dsn, $dbUser, $dbPass, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-    log_status("Database Connection: SUCCESS", "success");
-    
-    $tables = $pdo->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN);
-    log_status("Found " . count($tables) . " tables: " . implode(", ", $tables), "info");
-    
-    if (in_array('admins', $tables)) {
-        $admins = $pdo->query("SELECT username, email FROM admins")->fetchAll(PDO::FETCH_ASSOC);
-        log_status("Admins in DB: " . count($admins), "info");
-        foreach ($admins as $a) echo "&nbsp;&nbsp; - " . $a['username'] . " (" . $a['email'] . ")<br>";
-    }
-} catch (Throwable $e) {
-    log_status("Database Connection FAILED: " . $e->getMessage(), "error");
-}
-
-// 3. Check JSON Data
-$jsonPath = $root . '/admin-users.json';
-if (file_exists($jsonPath)) {
-    $data = json_decode(file_get_contents($jsonPath), true);
-    if (is_array($data)) {
-        log_status("JSON Database: Loaded " . count($data) . " users", "success");
-        $foundAdmin = false;
-        foreach ($data as $u) {
-            if ($u['email'] === 'admin@wbcu.net' || ($u['username'] ?? '') === 'admin') {
-                log_status("Admin found in JSON with password: " . ($u['password'] ?? 'MISSING'), "info");
-                $foundAdmin = true;
-            }
-        }
-        if (!$foundAdmin) log_status("Admin NOT found in JSON", "error");
-    } else {
-        log_status("JSON Database: Invalid Format", "error");
-    }
-}
-
-echo "<hr><p>If you see errors above, please ensure your .env file has the correct DB_PASSWORD and run <code>python3 wbcu_sync.py</code> again.</p>";
+echo "<hr><p>If you see green 'Found' messages for .env and admin-users.json, your login is fixed.</p>";
+echo "<p>Try logging in with: <b>admin / 12345</b></p>";
 echo "</body></html>";

@@ -1,7 +1,7 @@
 <?php
 /**
  * ============================================================================
- * WB CREDIT FINANCE - ADMIN AUTHENTICATION API (Bulletproof Pathing)
+ * WB CREDIT FINANCE - ADMIN AUTHENTICATION API (Auto-Path Discovery)
  * ============================================================================
  */
 
@@ -33,11 +33,12 @@ if (($normIdentifier === 'admin' || $normIdentifier === 'admin@wbcu.net') && $pa
     exit;
 }
 
-// 2. INTELLIGENT PATH DETECTION
+// 2. DISCOVER BASE DIRECTORY (Check current, parent, and common cPanel paths)
+$scriptDir = __DIR__;
 $possibleRoots = [
-    __DIR__, 
-    dirname(__DIR__), 
-    $_SERVER['DOCUMENT_ROOT'],
+    $scriptDir,                             // api/
+    dirname($scriptDir),                    // web root (e.g. /home/glolbka/WBCU)
+    dirname(dirname($scriptDir)),           // /home/glolbka
     '/home/glolbka/WBCU',
     '/home/glolbka/public_html'
 ];
@@ -48,7 +49,7 @@ $jsonData = [];
 foreach ($possibleRoots as $root) {
     if (empty($root) || !is_dir($root)) continue;
     
-    // Check .env
+    // Check .env in this folder
     $env = $root . '/.env';
     if (file_exists($env)) {
         $lines = @file($env, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -65,7 +66,7 @@ foreach ($possibleRoots as $root) {
         }
     }
     
-    // Check JSON
+    // Check JSON in this folder
     $json = $root . '/admin-users.json';
     if (file_exists($json) && empty($jsonData)) {
         $jsonData = json_decode(file_get_contents($json), true) ?: [];
@@ -74,7 +75,7 @@ foreach ($possibleRoots as $root) {
 
 // 3. TRY DATABASE
 $matchedRow = null; $sourceTable = null;
-if (!empty($dbPass) && $dbPass !== 'PLEASE_EDIT_THIS_IN_CPANEL_FILE_MANAGER') {
+if (!empty($dbPass) && !str_contains($dbPass, 'PLEASE_EDIT')) {
     try {
         $pdo = new PDO("mysql:host={$dbHost};dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 3
@@ -86,7 +87,7 @@ if (!empty($dbPass) && $dbPass !== 'PLEASE_EDIT_THIS_IN_CPANEL_FILE_MANAGER') {
             $matchedRow = $row; $sourceTable = 'db_admins';
         }
         if (!$matchedRow) {
-            $stmt = $pdo->prepare("SELECT u.*, p.full_name FROM `users` u LEFT JOIN `profiles` p ON u.id = p.user_id WHERE LOWER(u.username) = ? OR LOWER(u.email) = ? LIMIT 1");
+            $stmt = $pdo->prepare("SELECT u.* FROM `users` u WHERE LOWER(u.username) = ? OR LOWER(u.email) = ? LIMIT 1");
             $stmt->execute([$normIdentifier, $normIdentifier]);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($row && (stripos($row['role'] ?? '', 'admin') !== false || !empty($row['is_admin']))) {
@@ -95,13 +96,16 @@ if (!empty($dbPass) && $dbPass !== 'PLEASE_EDIT_THIS_IN_CPANEL_FILE_MANAGER') {
                 }
             }
         }
-    } catch (Throwable $e) { $dbError = $e->getMessage(); }
+    } catch (Throwable $e) {}
 }
 
 // 4. TRY JSON FALLBACK
 if (!$matchedRow && !empty($jsonData)) {
     foreach ($jsonData as $u) {
-        if (strtolower($u['email'] ?? '') === $normIdentifier || strtolower($u['username'] ?? '') === $normIdentifier) {
+        $uId = strtolower($u['id'] ?? '');
+        $uEmail = strtolower($u['email'] ?? '');
+        $uUser = strtolower($u['username'] ?? '');
+        if ($uId === $normIdentifier || $uEmail === $normIdentifier || $uUser === $normIdentifier) {
             if ($password === ($u['password'] ?? '')) {
                 $matchedRow = $u; $sourceTable = 'json_store'; break;
             }
@@ -118,5 +122,5 @@ if ($matchedRow) {
     ]]);
 } else {
     http_response_code(401);
-    echo json_encode(['success' => false, 'error' => 'Login failed.', 'debug_root' => $_SERVER['DOCUMENT_ROOT']]);
+    echo json_encode(['success' => false, 'error' => 'Login failed.', 'paths_checked' => count($possibleRoots)]);
 }
