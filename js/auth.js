@@ -879,14 +879,18 @@ export function initLoginForm() {
         }
 
         const queryLower = (email || '').trim().toLowerCase();
+        const queryPrefix = queryLower.includes('@') ? queryLower.split('@')[0] : queryLower;
         const queryDigits = (email || '').replace(/\D/g, '');
 
         if (Array.isArray(allUsers)) {
           dbUser = allUsers.find((u) => 
             (u.email && u.email.toLowerCase() === queryLower) ||
+            (u.secondaryEmail && u.secondaryEmail.toLowerCase() === queryLower) ||
             (u.username && u.username.toLowerCase() === queryLower) ||
             (u.id && u.id.toLowerCase() === queryLower) ||
             (u.email && u.email.split('@')[0].toLowerCase() === queryLower) ||
+            (queryPrefix && u.username && u.username.toLowerCase() === queryPrefix) ||
+            (queryPrefix && u.email && u.email.split('@')[0].toLowerCase() === queryPrefix) ||
             (u.fullName && u.fullName.toLowerCase() === queryLower) ||
             (u.firstName && u.firstName.toLowerCase() === queryLower) ||
             (queryDigits.length >= 7 && u.phone && u.phone.replace(/\D/g, '').includes(queryDigits)) ||
@@ -941,9 +945,12 @@ export function initLoginForm() {
               if (srvData && Array.isArray(srvData.users)) {
                 dbUser = srvData.users.find((u) => 
                   (u.email && u.email.toLowerCase() === queryLower) ||
+                  (u.secondaryEmail && u.secondaryEmail.toLowerCase() === queryLower) ||
                   (u.username && u.username.toLowerCase() === queryLower) ||
                   (u.id && u.id.toLowerCase() === queryLower) ||
                   (u.email && u.email.split('@')[0].toLowerCase() === queryLower) ||
+                  (queryPrefix && u.username && u.username.toLowerCase() === queryPrefix) ||
+                  (queryPrefix && u.email && u.email.split('@')[0].toLowerCase() === queryPrefix) ||
                   (u.fullName && u.fullName.toLowerCase() === queryLower) ||
                   (u.firstName && u.firstName.toLowerCase() === queryLower) ||
                   (queryDigits.length >= 7 && u.phone && u.phone.replace(/\D/g, '').includes(queryDigits)) ||

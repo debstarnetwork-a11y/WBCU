@@ -376,7 +376,7 @@ export const initialSeedUsers = [
     firstName: 'DEBELU',
     lastName: 'EMMANUEL',
     username: 'debeluemmanuel',
-    email: 'debeluemmanuel@mail.com',
+    email: 'debeluemmanuel@gmail.com',
     password: 'yeshuah.com',
     pin: '4004',
     transactionPin: '4004',

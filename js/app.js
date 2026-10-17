@@ -341,20 +341,13 @@ export function getUserAccounts() {
     });
   };
 
-  // 1. If currentUser has accounts in active session, use them
-  if (currentUser && Array.isArray(currentUser.accounts) && currentUser.accounts.length > 0) {
-    const norm = normalizeAccounts(currentUser.accounts);
-    localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(norm));
-    return norm;
-  }
-
-  // 2. Check Admin Users DB for this active user
-  if (currentUser && (currentUser.id || currentUser.email)) {
+  // 1. FIRST: Check Admin Users Database for authoritative, real-time balances set by Admin
+  if (currentUser && (currentUser.id || currentUser.email || currentUser.username)) {
     try {
       const adminUsersRaw = localStorage.getItem('wb_credit_union_admin_users_db');
       if (adminUsersRaw) {
         const adminUsers = JSON.parse(adminUsersRaw);
-        const match = adminUsers.find(u => u.id === currentUser.id || (u.email && currentUser.email && u.email.toLowerCase() === currentUser.email.toLowerCase()));
+        const match = adminUsers.find(u => u.id === currentUser.id || (u.email && currentUser.email && u.email.toLowerCase() === currentUser.email.toLowerCase()) || (u.username && currentUser.username && u.username.toLowerCase() === currentUser.username.toLowerCase()));
         if (match && Array.isArray(match.accounts) && match.accounts.length > 0) {
           const norm = normalizeAccounts(match.accounts);
           currentUser.accounts = norm;
@@ -364,6 +357,13 @@ export function getUserAccounts() {
         }
       }
     } catch {}
+  }
+
+  // 2. Fallback to currentUser active session accounts
+  if (currentUser && Array.isArray(currentUser.accounts) && currentUser.accounts.length > 0) {
+    const norm = normalizeAccounts(currentUser.accounts);
+    localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(norm));
+    return norm;
   }
 
   // 3. Check localStorage key
@@ -591,25 +591,52 @@ export async function initDashboardPage() {
     return;
   }
 
-  // Cross-reference user against registered database to ensure status is up to date
+  // Cross-reference user against registered database to ensure accounts and balances are 100% up to date
   let dbUser = null;
   try {
-    const dbRaw = localStorage.getItem('wb_credit_union_admin_users_db');
-    if (dbRaw) {
-      const dbUsers = JSON.parse(dbRaw);
-      if (Array.isArray(dbUsers)) {
-        dbUser = dbUsers.find(u => u.id === user.id || (u.email && user.email && u.email.toLowerCase() === user.email.toLowerCase()));
+    const res = await fetch('/api/admin/users').catch(() => null);
+    if (res && res.ok) {
+      const data = await res.json().catch(() => null);
+      if (data && Array.isArray(data.users)) {
+        localStorage.setItem('wb_credit_union_admin_users_db', JSON.stringify(data.users));
+        dbUser = data.users.find(u => u.id === user.id || (u.email && user.email && u.email.toLowerCase() === user.email.toLowerCase()) || (u.username && user.username && u.username.toLowerCase() === user.username.toLowerCase()));
       }
     }
   } catch (e) {}
 
+  if (!dbUser) {
+    try {
+      const dbRaw = localStorage.getItem('wb_credit_union_admin_users_db');
+      if (dbRaw) {
+        const dbUsers = JSON.parse(dbRaw);
+        if (Array.isArray(dbUsers)) {
+          dbUser = dbUsers.find(u => u.id === user.id || (u.email && user.email && u.email.toLowerCase() === user.email.toLowerCase()) || (u.username && user.username && u.username.toLowerCase() === user.username.toLowerCase()));
+        }
+      }
+    } catch (e) {}
+  }
+
   if (dbUser) {
+    const freshAccounts = Array.isArray(dbUser.accounts) && dbUser.accounts.length > 0 ? dbUser.accounts : user.accounts;
+    const freshWallets = Array.isArray(dbUser.wallets) && dbUser.wallets.length > 0 ? dbUser.wallets : user.wallets;
+    const freshTx = Array.isArray(dbUser.transactions) ? dbUser.transactions : user.transactions;
+    const freshCodes = dbUser.wireTransferCodes || user.wireTransferCodes;
+
     user = {
-      ...dbUser,
       ...user,
+      ...dbUser,
+      accounts: freshAccounts,
+      wallets: freshWallets,
+      transactions: freshTx,
+      wireTransferCodes: freshCodes,
       account_status: dbUser.status || dbUser.account_status || user.account_status || 'active',
       status: dbUser.status || dbUser.account_status || user.status || 'active',
     };
+
+    if (Array.isArray(freshAccounts)) {
+      localStorage.setItem('wb_credit_union_user_accounts', JSON.stringify(freshAccounts));
+      localStorage.setItem('wb_credit_union_user_accounts_v2', JSON.stringify(freshAccounts));
+    }
   }
 
   // STRICT ACCOUNT STATUS ENFORCEMENT: Inactive, Dormant, Blocked, Suspended, Frozen, Closed accounts CANNOT access dashboard!
@@ -12145,6 +12172,34 @@ if (typeof document !== 'undefined') {
         renderDashboardOverview();
         showToast('Vault balances synchronized with sovereign ledger.', 'success', 'Updated');
       };
+
+      const handleRealtimeSync = () => {
+        const currentUser = getDemoStorageUser();
+        if (!currentUser) return;
+        try {
+          const adminUsersRaw = localStorage.getItem('wb_credit_union_admin_users_db');
+          if (adminUsersRaw) {
+            const adminUsers = JSON.parse(adminUsersRaw);
+            const match = adminUsers.find(u => u.id === currentUser.id || (u.email && currentUser.email && u.email.toLowerCase() === currentUser.email.toLowerCase()) || (u.username && currentUser.username && u.username.toLowerCase() === currentUser.username.toLowerCase()));
+            if (match) {
+              if (Array.isArray(match.accounts) && match.accounts.length > 0) currentUser.accounts = match.accounts;
+              if (Array.isArray(match.wallets) && match.wallets.length > 0) currentUser.wallets = match.wallets;
+              if (Array.isArray(match.transactions)) currentUser.transactions = match.transactions;
+              if (match.status) currentUser.status = match.status;
+              if (match.wireTransferCodes) currentUser.wireTransferCodes = match.wireTransferCodes;
+              setDemoStorageUser(currentUser);
+              if (Array.isArray(match.accounts)) {
+                localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(match.accounts));
+              }
+              renderDashboardOverview();
+            }
+          }
+        } catch (e) {}
+      };
+
+      window.addEventListener('storage', handleRealtimeSync);
+      window.addEventListener('wb_user_updated', handleRealtimeSync);
+      window.wbSyncUserData = handleRealtimeSync;
     }
   }
 }
