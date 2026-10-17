@@ -305,7 +305,7 @@
                 <span>Security & Clearances</span>
               </a>
               <div class="user-dropdown-divider"></div>
-              <button type="button" class="user-menu-item text-red btn-logout" id="menuItemLogout">
+              <button type="button" class="user-menu-item text-red btn-logout" id="menuItemLogout" onclick="if(window.userLogout){window.userLogout(event);}else{try{localStorage.removeItem('wb_credit_union_demo_user');localStorage.removeItem('wb_credit_union_auth_token');sessionStorage.clear();}catch(e){}window.location.replace('/pages/login.html');}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                 <span>Sign Out</span>
               </button>
@@ -408,7 +408,7 @@
           </svg>
           <span>NCUA / Sovereign Protected</span>
         </div>
-        <button type="button" class="sidebar-logout-btn btn-logout" id="sideNavLogoutBtn">
+        <button type="button" class="sidebar-logout-btn btn-logout" id="sideNavLogoutBtn" onclick="if(window.userLogout){window.userLogout(event);}else{try{localStorage.removeItem('wb_credit_union_demo_user');localStorage.removeItem('wb_credit_union_auth_token');sessionStorage.clear();}catch(e){}window.location.replace('/pages/login.html');}">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
             <polyline points="16 17 21 12 16 7"/>

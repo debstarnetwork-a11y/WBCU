@@ -339,17 +339,38 @@ export async function requireAdmin(redirectUrl = '/pages/admin-login.html') {
 export async function signOutUser(redirectUrl = '/pages/login.html') {
   try {
     if (isConfigured && supabase?.auth) {
-      await supabase.auth.signOut();
+      await supabase.auth.signOut().catch(() => {});
     }
   } catch (err) {
     console.warn('[WB Credit Union] Supabase signOut error:', err);
   } finally {
-    setDemoStorageUser(null);
-    localStorage.removeItem('wb_credit_union_auth_token');
-    if (redirectUrl) {
-      window.location.href = redirectUrl;
-    }
+    try {
+      setDemoStorageUser(null);
+      localStorage.removeItem('wb_credit_union_auth_token');
+      localStorage.removeItem('wb_credit_union_demo_user');
+      localStorage.removeItem('wb_credit_union_current_user');
+      localStorage.removeItem('wb_credit_union_user_session');
+      localStorage.removeItem('wb_credit_union_active_session');
+      sessionStorage.clear();
+    } catch (e) {}
+
+    const targetUrl = redirectUrl || '/pages/login.html';
+    window.location.href = targetUrl;
+    setTimeout(() => {
+      window.location.replace(targetUrl);
+    }, 100);
   }
+}
+
+if (typeof window !== 'undefined') {
+  window.signOutUser = signOutUser;
+  window.userLogout = async function(e) {
+    if (e && typeof e.preventDefault === 'function') {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    await signOutUser('/pages/login.html');
+  };
 }
 
 /**

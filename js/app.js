@@ -1240,12 +1240,14 @@ function setupNavigationInteractions() {
     }
   });
 
-  // Logout Buttons
-  document.querySelectorAll('.btn-logout').forEach((btn) => {
-    btn.addEventListener('click', async (e) => {
+  // Logout Buttons - Global Event Delegation & Static Bindings
+  document.addEventListener('click', async (e) => {
+    const logoutTarget = e.target.closest('.btn-logout, #sideNavLogoutBtn, #menuItemLogout, [data-action="logout"]');
+    if (logoutTarget) {
       e.preventDefault();
+      e.stopPropagation();
       await signOutUser('/pages/login.html');
-    });
+    }
   });
 
   // Slider buttons for accounts on overview
