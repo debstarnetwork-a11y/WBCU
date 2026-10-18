@@ -823,6 +823,36 @@ export function initLoginForm() {
     try {
       let userProfile = null;
 
+      // 1. First, attempt backend MySQL authentication via /api/login.php
+      try {
+        const apiRes = await fetch('/api/login.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ identifier: email, password })
+        });
+        if (apiRes.ok) {
+          const apiData = await apiRes.json();
+          if (apiData && apiData.success) {
+            const loggedObj = apiData.user || apiData.admin || {
+              id: 'usr-live-01',
+              email,
+              fullName: email.split('@')[0],
+              role: apiData.admin ? 'Super Admin' : 'active_member',
+              status: 'active'
+            };
+            setDemoStorageUser(loggedObj);
+            setFailedAttempts(0);
+            showToast('Authentication successful. Redirecting to banking vault...', 'success', 'Login Verified');
+            setTimeout(() => {
+              window.location.href = apiData.admin ? '/pages/admin.html' : '/pages/dashboard.html';
+            }, 600);
+            return;
+          }
+        }
+      } catch (apiErr) {
+        console.warn('Backend login API fallback:', apiErr);
+      }
+
       if (isConfigured && supabase?.auth) {
         const { data: authData, error: authErr } = await supabase.auth.signInWithPassword({
           email,
