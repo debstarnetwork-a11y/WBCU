@@ -224,6 +224,16 @@ def main():
                     if os.path.exists(dst_file):
                         # SPECIAL CASE: Never overwrite .env or database files if they already exist on live
                         if ef == ".env":
+                            # But ensure DB_HOST is 127.0.0.1
+                            try:
+                                with open(dst_file, "r") as f:
+                                    env_data = f.read()
+                                if "DB_HOST=localhost" in env_data:
+                                    env_data = env_data.replace("DB_HOST=localhost", "DB_HOST=127.0.0.1")
+                                    with open(dst_file, "w") as f:
+                                        f.write(env_data)
+                            except Exception:
+                                pass
                             continue 
                             
                         try:

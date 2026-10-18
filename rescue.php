@@ -18,13 +18,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['db_pass'])) {
     $envPath = $basePath . '/.env';
     
     $content = "# WB Credit Finance - Environment Config\n";
-    $content .= "DB_HOST=localhost\n";
+    $content .= "DB_HOST=127.0.0.1\n";
     $content .= "DB_NAME=glolbka_wbcu_db\n";
     $content .= "DB_USER=glolbka_wbcu_user\n";
     $content .= "DB_PASS=" . $newPass . "\n";
     
     if (file_put_contents($envPath, $content)) {
-        $updateMsg = '<div style="color: green; font-weight: bold; padding: 10px; border: 1px solid green; margin-bottom: 20px;">SUCCESS: .env file updated with new password!</div>';
+        $updateMsg = '<div style="color: green; font-weight: bold; padding: 10px; border: 1px solid green; margin-bottom: 20px;">SUCCESS: .env file updated with new password and 127.0.0.1 host!</div>';
     } else {
         $updateMsg = '<div style="color: red; font-weight: bold; padding: 10px; border: 1px solid red; margin-bottom: 20px;">ERROR: Could not write to .env file. Check permissions.</div>';
     }
@@ -39,7 +39,9 @@ $dbStatus = 'Not Attempted';
 $dbDetails = '';
 if ($envFound) {
     $lines = file($basePath . '/.env');
-    $p = ''; $u = 'glolbka_wbcu_user'; $n = 'glolbka_wbcu_db'; $h = 'localhost';
+    $p = ''; $u = 'glolbka_wbcu_user'; $n = 'glolbka_wbcu_db'; $h = '127.0.0.1';
+    $envNeedsRewrite = false;
+    $newEnvLines = [];
     foreach ($lines as $l) {
         $parts = explode('=', $l, 2);
         if (count($parts) == 2) {
@@ -47,8 +49,19 @@ if ($envFound) {
             if ($k === 'DB_PASS' || $k === 'DB_PASSWORD') $p = $v;
             if ($k === 'DB_USER') $u = $v;
             if ($k === 'DB_NAME') $n = $v;
-            if ($k === 'DB_HOST') { $h = trim($v); if ($h === 'localhost' || empty($h)) $h = '127.0.0.1'; }
+            if ($k === 'DB_HOST') { 
+                $h = trim($v); 
+                if ($h === 'localhost' || empty($h)) {
+                    $h = '127.0.0.1';
+                    $l = "DB_HOST=127.0.0.1\n";
+                    $envNeedsRewrite = true;
+                }
+            }
         }
+        $newEnvLines[] = $l;
+    }
+    if ($envNeedsRewrite) {
+        @file_put_contents($basePath . '/.env', implode('', $newEnvLines));
     }
     if ($h === 'localhost' || empty($h)) $h = '127.0.0.1';
     
