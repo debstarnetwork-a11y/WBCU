@@ -14,8 +14,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit; }
 
 $rawInput = file_get_contents('php://input');
 $inputData = json_decode($rawInput, true) ?: [];
-$identifier = trim($inputData['identifier'] ?? $inputData['email'] ?? $inputData['username'] ?? $_POST['email'] ?? $_POST['username'] ?? '');
-$password = trim($inputData['password'] ?? $_POST['password'] ?? '');
+if (empty($inputData) && !empty($_POST)) $inputData = $_POST;
+if (empty($inputData) && !empty($_GET)) $inputData = $_GET;
+
+$identifier = trim($inputData['identifier'] ?? $inputData['email'] ?? $inputData['username'] ?? $_POST['email'] ?? $_POST['username'] ?? $_GET['email'] ?? $_GET['username'] ?? '');
+$password = trim($inputData['password'] ?? $_POST['password'] ?? $_GET['password'] ?? '');
 $normId = strtolower($identifier);
 
 if (empty($identifier) || empty($password)) {
