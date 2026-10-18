@@ -30,7 +30,8 @@
   # 4. API Forwarding (Harden to avoid POST loss)
   # Ensure we point to the actual PHP files directly
   RewriteRule ^api/login$ api/login.php [L,QSA]
-  RewriteRule ^api/admin-login.php$ api/login.php [L,QSA]
+  RewriteRule ^api/admin-login$ api/admin-login.php [L,QSA]
+  RewriteRule ^api/admin-login.php$ api/admin-login.php [L,QSA]
   RewriteRule ^api/admin/users$ api/admin-users.php [L,QSA]
 </IfModule>
 
