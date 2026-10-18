@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - SECURITY, SESSION & MOBILE EXPERIENCE SUITE
+ * WB CREDIT FINANCE - SECURITY, SESSION & MOBILE EXPERIENCE SUITE
  * ============================================================================
  * 1. Session Inactivity Monitor & 30-Second Warning Modal
  * 2. Rate Limiting & Brute Force Lockout System
@@ -215,7 +215,7 @@ export class SessionManager {
           <div class="modal-body p-4 pt-2">
             <h3 class="modal-title font-bold text-lg mb-2" style="color:var(--text-primary);">Session Expiring Soon</h3>
             <p class="text-xs text-muted mb-4">
-              For your financial security, your WB Credit Union session will terminate automatically due to inactivity in:
+              For your financial security, your WB Credit Finance session will terminate automatically due to inactivity in:
             </p>
             <div class="countdown-badge mb-4" style="display:inline-block; font-size:2rem; font-weight:800; color:#d97706; background:var(--bg-secondary); padding:0.5rem 1.5rem; border-radius:var(--radius-lg); border:1px solid var(--border-color);">
               <span id="sessionCountdownSeconds">30</span>s

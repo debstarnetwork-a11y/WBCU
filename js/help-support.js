@@ -73,7 +73,7 @@ export const FAQ_DATA = [
     category: 'account',
     categoryName: 'Account',
     question: 'Is my depository balance insured and protected?',
-    answer: 'Yes. Member deposits are fully insured up to <strong>$25,000,000 USD</strong> under sovereign financial institution multi-custody excess reserve coverage, backed by NCUA regulatory standards and Swiss banking depository vaults.',
+    answer: 'Yes. Member deposits are fully insured up to <strong>$25,000,000 USD</strong> under sovereign Credit Union multi-custody excess reserve coverage, backed by NCUA regulatory standards and Swiss banking depository vaults.',
     tags: ['insurance', 'ncua', 'fdic', 'protection', 'safety']
   },
 

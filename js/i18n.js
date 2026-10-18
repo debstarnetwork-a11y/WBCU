@@ -266,7 +266,7 @@ export const PHRASE_DICTIONARY = {
   "Our Story": {
     es: "Nuestra Historia", fr: "Notre Histoire", de: "Unsere Geschichte", sv: "Vår historia", zh: "品牌故事", ar: "قصتنا", pt: "Nossa História", ja: "私たちのストーリー", it: "La Nostra Storia"
   },
-  "From humble beginnings to a trusted financial institution": {
+  "From humble beginnings to a trusted Credit Union": {
     es: "De orígenes humildes a una institución financiera de confianza",
     fr: "Des débuts modestes à une institution financière de référence",
     de: "Von bescheidenen Anfängen zu einem renommierten Finanzinstitut",

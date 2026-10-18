@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - SUPABASE CONFIGURATION & AUTHENTICATION HELPER
+ * WB CREDIT FINANCE - SUPABASE CONFIGURATION & AUTHENTICATION HELPER
  * ============================================================================
  * 
  * Description: Initializes the Supabase client instance and exports authentication
@@ -80,7 +80,7 @@ try {
     },
   });
 } catch (error) {
-  console.warn('[WB Credit Union] Supabase client init warning (using demo sandbox):', error);
+  console.warn('[WB Credit Finance] Supabase client init warning (using demo sandbox):', error);
   // Fallback stub client if network initialization fails in preview
   supabaseClientInstance = {
     auth: {
@@ -253,7 +253,7 @@ export async function getCurrentUser() {
       }
     }
   } catch (err) {
-    console.debug('[WB Credit Union] Supabase live user check bypassed:', err);
+    console.debug('[WB Credit Finance] Supabase live user check bypassed:', err);
   }
 
   // Fallback to local demo session store
@@ -317,10 +317,10 @@ export async function requireAuth(redirectUrl = '/pages/login.html') {
  * Session verification and route guard for administrative dashboard pages.
  * Redirects non-admin visitors to admin-login.html.
  * 
- * @param {string} [redirectUrl='/pages/admin-login.html'] Destination if not an admin
+ * @param {string} [redirectUrl='/pages/pages/admin-login.html'] Destination if not an admin
  * @returns {Promise<Object>} The authenticated administrator user object
  */
-export async function requireAdmin(redirectUrl = '/pages/admin-login.html') {
+export async function requireAdmin(redirectUrl = '/pages/pages/admin-login.html') {
   const adminAuthorized = await isAdmin();
   if (!adminAuthorized) {
     const currentPath = window.location.pathname + window.location.search;
@@ -342,7 +342,7 @@ export async function signOutUser(redirectUrl = '/pages/login.html') {
       await supabase.auth.signOut().catch(() => {});
     }
   } catch (err) {
-    console.warn('[WB Credit Union] Supabase signOut error:', err);
+    console.warn('[WB Credit Finance] Supabase signOut error:', err);
   } finally {
     try {
       setDemoStorageUser(null);

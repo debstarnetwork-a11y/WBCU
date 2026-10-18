@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - SERVICE WORKER (PWA & OFFLINE RESILIENCE)
+ * WB CREDIT FINANCE - SERVICE WORKER (PWA & OFFLINE RESILIENCE)
  * ============================================================================
  */
 
@@ -124,12 +124,12 @@ self.addEventListener('fetch', (event) => {
           return new Response(
             `<!DOCTYPE html>
             <html lang="en">
-            <head><meta charset="UTF-8"><title>Offline | WB Credit Union</title>
+            <head><meta charset="UTF-8"><title>Offline | WB Credit Finance</title>
             <style>body{font-family:sans-serif;text-align:center;padding:50px;background:#0f172a;color:#f8fafc;}h1{color:#3b82f6;}button{padding:10px 20px;background:#2563eb;color:#fff;border:none;border-radius:6px;cursor:pointer;}</style>
             </head>
             <body>
               <h1>You are currently offline</h1>
-              <p>WB Credit Union requires an active internet connection for live transactions.</p>
+              <p>WB Credit Finance requires an active internet connection for live transactions.</p>
               <button onclick="window.location.reload()">Retry Connection</button>
             </body></html>`,
             { headers: { 'Content-Type': 'text/html' } }

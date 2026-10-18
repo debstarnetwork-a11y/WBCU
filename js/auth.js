@@ -1247,7 +1247,7 @@ export function initLoginForm() {
           .single();
 
         if (error || !profile) {
-          throw new Error('Account number not recognized in financial institution ledger.');
+          throw new Error('Account number not recognized in Credit Union ledger.');
         }
 
         userProfile = profile;
@@ -2777,7 +2777,7 @@ export function initAdminLoginForm() {
       showToast('Biometric 2FA verified. Access granted to Admin Console.', 'success', '2FA Clearance Confirmed');
 
       setTimeout(() => {
-        const dest = new URLSearchParams(window.location.search).get('redirect') || '/pages/admin-dashboard.html';
+        const dest = new URLSearchParams(window.location.search).get('redirect') || '/pages/admin.html';
         window.location.href = dest;
       }, 500);
     }, 1200);
@@ -2904,7 +2904,7 @@ export function initAdminLoginForm() {
       showToast('Clearance Granted. Redirecting to Treasury Console...', 'success', 'Admin Authenticated');
 
       setTimeout(() => {
-        const dest = new URLSearchParams(window.location.search).get('redirect') || '/pages/admin-dashboard.html';
+        const dest = new URLSearchParams(window.location.search).get('redirect') || '/pages/admin.html';
         window.location.replace(dest);
       }, 300);
 

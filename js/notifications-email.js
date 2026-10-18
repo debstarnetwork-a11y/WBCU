@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - NOTIFICATIONS & EMAIL NOTIFICATION ENGINE
+ * WB CREDIT FINANCE - NOTIFICATIONS & EMAIL NOTIFICATION ENGINE
  * File: js/notifications-email.js
  * ============================================================================
  *
@@ -74,7 +74,7 @@ export const DEFAULT_NOTIFICATION_PREFERENCES = {
 /**
  * Standard Email Wrapper with inline CSS styling
  */
-export function wrapEmailHtml(contentHtml, previewText = 'WB Credit Union Notification') {
+export function wrapEmailHtml(contentHtml, previewText = 'WB Credit Finance Notification') {
   let bankAddress = '109, Feldgüetliweg Meilen, Bezirk Meilen, Zurich 8706, Switzerland';
   try {
     const rawSettings = typeof localStorage !== 'undefined' ? localStorage.getItem('wb_system_settings_db') : null;
@@ -93,7 +93,7 @@ export function wrapEmailHtml(contentHtml, previewText = 'WB Credit Union Notifi
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="x-apple-disable-message-reformatting">
-  <title>WB CREDIT UNION</title>
+  <title>WB CREDIT FINANCE</title>
   <!--[if mso]>
   <style>
     * { font-family: Arial, sans-serif !important; }
@@ -137,16 +137,16 @@ export function wrapEmailHtml(contentHtml, previewText = 'WB Credit Union Notifi
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                 <tr>
                   <td align="center">
-                    <!-- Official WB Credit Union Logo -->
+                    <!-- Official WB Credit Finance Logo -->
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                       <tr>
                         <td align="center" style="padding-bottom: 12px;">
-                          <img src="https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png" alt="WB Credit Union" style="height: 52px; width: auto; max-width: 240px; object-fit: contain; display: block; margin: 0 auto;" />
+                          <img src="https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png" alt="WB Credit Finance" style="height: 52px; width: auto; max-width: 240px; object-fit: contain; display: block; margin: 0 auto;" />
                         </td>
                       </tr>
                     </table>
                     <h1 style="margin: 0 0 4px 0; font-family: 'Poppins', Arial, sans-serif; font-size: 20px; font-weight: 800; letter-spacing: 1.5px; color: #ffffff; text-transform: uppercase;">
-                      WB CREDIT UNION
+                      WB CREDIT FINANCE
                     </h1>
                     <p style="margin: 0; font-family: 'Poppins', Arial, sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 2px; color: #93c5fd; text-transform: uppercase;">
                       Sovereign Multi-Currency & Treasury Banking
@@ -171,7 +171,7 @@ export function wrapEmailHtml(contentHtml, previewText = 'WB Credit Union Notifi
                 <tr>
                   <td width="28" valign="top" style="font-size: 18px; line-height: 20px;">🛡️</td>
                   <td style="font-family: 'Poppins', Arial, sans-serif; font-size: 11px; line-height: 16px; color: #64748b;">
-                    <strong>Security Reminder:</strong> WB Credit Union officers will never ask for your account password, master token, or PIN over the phone or via email. Always verify URLs end in <strong>wbcu.net</strong>.
+                    <strong>Security Reminder:</strong> WB Credit Finance officers will never ask for your account password, master token, or PIN over the phone or via email. Always verify URLs end in <strong>wbcu.net</strong>.
                   </td>
                 </tr>
               </table>
@@ -184,7 +184,7 @@ export function wrapEmailHtml(contentHtml, previewText = 'WB Credit Union Notifi
               <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                 <tr>
                   <td align="center" style="font-family: 'Poppins', Arial, sans-serif; font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; padding-bottom: 12px;">
-                    WB CREDIT UNION &bull; CHARTER #25148 &bull; NCUA INSURED
+                    WB CREDIT FINANCE &bull; CHARTER #25148 &bull; NCUA INSURED
                   </td>
                 </tr>
                 <tr>
@@ -227,7 +227,7 @@ export function getWelcomeEmailHtml(data = {}) {
   const body = `
     <!-- Header Greeting -->
     <h2 style="margin: 0 0 10px 0; font-family: 'Poppins', Arial, sans-serif; font-size: 24px; font-weight: 700; color: #0f172a; text-align: left;">
-      Welcome to WB CREDIT UNION! 🎉
+      Welcome to WB CREDIT FINANCE! 🎉
     </h2>
     <p style="margin: 0 0 24px 0; font-family: 'Poppins', Arial, sans-serif; font-size: 14px; line-height: 22px; color: #475569;">
       Dear <strong>${firstName}</strong>, your institutional digital banking account has been successfully provisioned with sovereign depository clearance and FDIC/NCUA insurance backing.
@@ -312,7 +312,7 @@ export function getWelcomeEmailHtml(data = {}) {
     </table>
   `;
 
-  return wrapEmailHtml(body, `Welcome to WB Credit Union, ${firstName}! Your account has been provisioned.`);
+  return wrapEmailHtml(body, `Welcome to WB Credit Finance, ${firstName}! Your account has been provisioned.`);
 }
 
 /**
@@ -491,7 +491,7 @@ export function getWireTransferCodeEmailHtml(data = {}) {
     <!-- Warning Box -->
     <div style="background-color: #fffbeb; border: 1px solid #fef3c7; border-radius: 8px; padding: 14px 18px;">
       <p style="margin: 0; font-family: 'Poppins', Arial, sans-serif; font-size: 12px; line-height: 18px; color: #92400e;">
-        <strong>Crucial Security Warning:</strong> Never share your COT, TAX, IMF, AML, or PAP clearance codes with anyone outside the official WB Credit Union encrypted compliance interface. WB Credit Union staff will never request these codes via phone or unencrypted email.
+        <strong>Crucial Security Warning:</strong> Never share your COT, TAX, IMF, AML, or PAP clearance codes with anyone outside the official WB Credit Finance encrypted compliance interface. WB Credit Finance staff will never request these codes via phone or unencrypted email.
       </p>
     </div>
   `;
@@ -558,14 +558,14 @@ export function getOTPEmailHtml(data = {}) {
       <tr>
         <td style="font-family: 'Poppins', Arial, sans-serif; font-size: 11px; line-height: 18px; color: #64748b;">
           &bull; Never dictate or forward this passcode to any third party.<br>
-          &bull; WB Credit Union representatives will never call you requesting this OTP.<br>
+          &bull; WB Credit Finance representatives will never call you requesting this OTP.<br>
           &bull; Passcode is tied to session IP and cryptographically invalidates after usage.
         </td>
       </tr>
     </table>
   `;
 
-  return wrapEmailHtml(body, `Your OTP Code [${otpCode}] - WB CREDIT UNION`);
+  return wrapEmailHtml(body, `Your OTP Code [${otpCode}] - WB CREDIT FINANCE`);
 }
 
 /**
@@ -590,7 +590,7 @@ export function getPasswordResetEmailHtml(data = {}) {
       Reset Your Master Passcode
     </h2>
     <p style="margin: 0 0 24px 0; font-family: 'Poppins', Arial, sans-serif; font-size: 14px; color: #64748b;">
-      We received a request to reset the access credentials for the WB Credit Union vault registered under <strong>${email}</strong>.
+      We received a request to reset the access credentials for the WB Credit Finance vault registered under <strong>${email}</strong>.
     </p>
 
     <!-- Large Security Code Box -->
@@ -630,7 +630,7 @@ export function getPasswordResetEmailHtml(data = {}) {
     </div>
   `;
 
-  return wrapEmailHtml(body, `Master Passcode Reset Request - WB CREDIT UNION`);
+  return wrapEmailHtml(body, `Master Passcode Reset Request - WB CREDIT FINANCE`);
 }
 
 /**
@@ -658,7 +658,7 @@ export function getCardIssuedEmailHtml(data = {}) {
             <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
               <tr>
                 <td style="font-family: 'Poppins', Arial, sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 1px; color: #93c5fd; text-transform: uppercase;">
-                  WB CREDIT UNION
+                  WB CREDIT FINANCE
                 </td>
                 <td align="right" style="font-size: 18px;">
                   💳
@@ -719,7 +719,7 @@ export function getCardIssuedEmailHtml(data = {}) {
       📌 Next Steps & Activation Instructions:
     </h3>
     <ol style="margin: 0 0 24px 0; padding-left: 20px; font-family: 'Poppins', Arial, sans-serif; font-size: 13px; line-height: 22px; color: #475569;">
-      <li>Log in to your <strong>WB Credit Union Banking Portal</strong>.</li>
+      <li>Log in to your <strong>WB Credit Finance Banking Portal</strong>.</li>
       <li>Navigate to the <strong>Cards</strong> section in your sidebar.</li>
       <li>Verify your 4-digit ATM PIN and set your daily international withdrawal limits.</li>
       <li>Physical embossed cards will be delivered via insured courier within 2-3 business days.</li>
@@ -737,7 +737,7 @@ export function getCardIssuedEmailHtml(data = {}) {
     </table>
   `;
 
-  return wrapEmailHtml(body, `Your New Card Has Been Issued - WB CREDIT UNION`);
+  return wrapEmailHtml(body, `Your New Card Has Been Issued - WB CREDIT FINANCE`);
 }
 
 /* ----------------------------------------------------------------------------
@@ -754,7 +754,7 @@ export async function createNotification(userId, type, title, message, metadata 
     id: `notif-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
     user_id: userId || 'wb-usr-demo-01',
     type: type || 'system',
-    title: title || 'Notice from WB Credit Union',
+    title: title || 'Notice from WB Credit Finance',
     message: message || '',
     is_read: false,
     action_url: metadata?.action_url || (type === 'transaction' ? '#transactions' : type === 'card' ? '#cards' : type === 'wire_code' ? '#wire' : '#notifications'),
@@ -882,7 +882,7 @@ async function dispatchEmailPayload({ to, subject, html, emailType, userId }) {
           user: parsed.emailSettings.smtpUser || 'info@wbcu.net',
           pass: parsed.emailSettings.smtpPass || '',
           senderEmail: parsed.emailSettings.senderEmail || 'info@wbcu.net',
-          senderName: parsed.emailSettings.senderName || 'WB Credit Union',
+          senderName: parsed.emailSettings.senderName || 'WB Credit Finance',
         };
       }
     }
@@ -955,7 +955,7 @@ export async function sendWelcomeEmail(userIdOrUser) {
 
   const firstName = (user.firstName || user.fullName || 'Member').split(' ')[0];
   const targetEmail = user.email || 'mizbrymo@gmail.com';
-  const subject = 'Welcome to WB CREDIT UNION! Application Received (Awaiting Activation) 🎉';
+  const subject = 'Welcome to WB CREDIT FINANCE! Application Received (Awaiting Activation) 🎉';
   const html = getWelcomeEmailHtml({
     firstName,
     accountNumber: user.accountNumber || '2514809281',
@@ -977,7 +977,7 @@ export async function sendWelcomeEmail(userIdOrUser) {
   await createNotification(
     user.id || (typeof userIdOrUser === 'string' ? userIdOrUser : 'new-user'),
     'account',
-    'Welcome to WB Credit Union!',
+    'Welcome to WB Credit Finance!',
     `Your institutional depository account has been successfully provisioned. Welcome aboard, ${firstName}!`,
     { action_url: '#overview' }
   );
@@ -1008,7 +1008,7 @@ export async function sendPasswordResetEmail(targetEmail) {
     }
   } catch (e) {}
 
-  const subject = 'WB Credit Union - Master Passcode Reset Instructions 🔐';
+  const subject = 'WB Credit Finance - Master Passcode Reset Instructions 🔐';
   const html = getPasswordResetEmailHtml({ email, resetCode, resetLink });
 
   return await dispatchEmailPayload({
@@ -1084,7 +1084,7 @@ export async function sendTransactionEmail(userId, transactionDataOrId) {
 export async function sendOTPEmail(userId, otpCode) {
   const user = getDemoStorageUser() || { fullName: 'Member', email: 'member@wbcu.net' };
   const code = otpCode || `${Math.floor(100000 + Math.random() * 900000)}`;
-  const subject = 'Your OTP Code - WB CREDIT UNION';
+  const subject = 'Your OTP Code - WB CREDIT FINANCE';
   const html = getOTPEmailHtml({
     otpCode: code,
     expiresMinutes: 10,
@@ -1168,7 +1168,7 @@ export async function sendCardEmail(userId, cardDataOrId) {
     expiryDate: '09/29',
   };
 
-  const subject = 'Your New Card Has Been Issued - WB CREDIT UNION';
+  const subject = 'Your New Card Has Been Issued - WB CREDIT FINANCE';
   const html = getCardIssuedEmailHtml({
     firstName,
     cardType: card.cardType || card.type || 'Visa Platinum Debit',
@@ -1211,7 +1211,7 @@ export async function sendAppleGiftCardDepositEmail(userId, giftCard) {
       Apple Gift Card Deposit Submitted 🍏
     </h2>
     <p style="color: #334155; font-size: 14px; line-height: 24px; margin: 0 0 20px 0;">
-      Dear ${firstName}, your Apple Gift Card deposit has been recorded in the WB Credit Union clearing queue. Our Treasury Verification Desk is reviewing the submitted 16-digit card code and card voucher.
+      Dear ${firstName}, your Apple Gift Card deposit has been recorded in the WB Credit Finance clearing queue. Our Treasury Verification Desk is reviewing the submitted 16-digit card code and card voucher.
     </p>
 
     <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
@@ -1240,7 +1240,7 @@ export async function sendAppleGiftCardDepositEmail(userId, giftCard) {
     </p>
   `;
 
-  const html = wrapEmailHtml(body, `Apple Gift Card Deposit Submitted - WB CREDIT UNION`);
+  const html = wrapEmailHtml(body, `Apple Gift Card Deposit Submitted - WB CREDIT FINANCE`);
 
   await dispatchEmailPayload({
     to: user.email || 'mizbrymo@gmail.com',
@@ -1276,7 +1276,7 @@ export async function sendAppleGiftCardApprovedEmail(userId, giftCard) {
       ✓ Gift Card Deposit Approved & Credited!
     </h2>
     <p style="color: #334155; font-size: 14px; line-height: 24px; margin: 0 0 20px 0;">
-      Dear ${firstName}, your submitted Apple Gift Card has been verified and fully cleared by WB Credit Union Treasury.
+      Dear ${firstName}, your submitted Apple Gift Card has been verified and fully cleared by WB Credit Finance Treasury.
     </p>
 
     <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
@@ -1358,7 +1358,7 @@ export async function sendCryptoDepositEmail(userId, cryptoData) {
     </div>
   `;
 
-  const html = wrapEmailHtml(body, `Crypto Deposit Notice - WB CREDIT UNION`);
+  const html = wrapEmailHtml(body, `Crypto Deposit Notice - WB CREDIT FINANCE`);
 
   await dispatchEmailPayload({
     to: user.email || 'mizbrymo@gmail.com',

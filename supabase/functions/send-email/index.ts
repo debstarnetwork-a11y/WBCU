@@ -1,5 +1,5 @@
 // ============================================================================
-// WB CREDIT UNION - SUPABASE EDGE FUNCTION: SEND EMAIL
+// WB CREDIT FINANCE - SUPABASE EDGE FUNCTION: SEND EMAIL
 // File: supabase/functions/send-email/index.ts
 // Platform: Deno / Supabase Edge Functions
 // Supported Providers: Resend API (default) or SendGrid API
@@ -9,7 +9,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const SENDGRID_API_KEY = Deno.env.get("SENDGRID_API_KEY");
-const FROM_EMAIL = Deno.env.get("FROM_EMAIL") || "WB CREDIT UNION <noreply@wbcu.net>";
+const FROM_EMAIL = Deno.env.get("FROM_EMAIL") || "WB CREDIT FINANCE <noreply@wbcu.net>";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -100,7 +100,7 @@ serve(async (req: Request) => {
         },
         body: JSON.stringify({
           personalizations: [{ to: [{ email: to }] }],
-          from: { email: "noreply@wbcu.net", name: "WB CREDIT UNION" },
+          from: { email: "noreply@wbcu.net", name: "WB CREDIT FINANCE" },
           subject: subject,
           content: [
             { type: "text/plain", value: text || html.replace(/<[^>]+>/g, " ").trim() },

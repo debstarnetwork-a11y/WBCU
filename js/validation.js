@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - COMPREHENSIVE INPUT VALIDATION & SANITIZATION ENGINE
+ * WB CREDIT FINANCE - COMPREHENSIVE INPUT VALIDATION & SANITIZATION ENGINE
  * ============================================================================
  * High-reliability security validation, XSS prevention, formatting, and live form feedback.
  */

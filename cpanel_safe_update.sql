@@ -6,6 +6,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- 1. UPSERT USERS
 INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `role`, `transaction_pin`, `status`, `kyc_status`)
 VALUES
+('usr-prof-mvcaj68v', 'debeluemmanuel', 'debeluemmanuel@mail.com', 'MemberPass123!', 'user', '1526', 'active', 'verified'),
 ('wb-usr-y4rfbph', 'debeluemmanuel', 'debeluemmanuel@gmail.com', 'yeshuah.com', 'user', '4004', 'active', 'verified'),
 ('usr-prof-mvb5wo7j', 'debstarnetwork', 'debstarnetwork@gmail.com', 'Password123!', 'user', '4495', 'active', 'verified'),
 ('usr-admin-01', 'admin', 'admin@wbcu.net', '12345', 'super_admin', '8869', 'active', 'verified'),
@@ -36,6 +37,7 @@ ON DUPLICATE KEY UPDATE
 -- 3. UPSERT PROFILES
 INSERT INTO `profiles` (`id`, `user_id`, `first_name`, `last_name`, `full_name`, `phone_number`)
 VALUES
+('prof-usr-prof-mvcaj68v', 'usr-prof-mvcaj68v', 'DEBELU', 'EMMANUEL', 'DEBELU EMMANUEL', '+2347065096181'),
 ('prof-wb-usr-y4rfbph', 'wb-usr-y4rfbph', 'DEBELU', 'EMMANUEL', 'DEBELU EMMANUEL', '+2347065096181'),
 ('prof-usr-prof-mvb5wo7j', 'usr-prof-mvb5wo7j', 'Brian', 'Adams', 'Brian Adams', '+41 44 915 7666'),
 ('prof-usr-admin-01', 'usr-admin-01', 'Chief', 'Auditor', 'Chief Treasury Auditor', '+41 44 915 8900'),
@@ -52,6 +54,7 @@ ON DUPLICATE KEY UPDATE
 -- 4. UPSERT ACCOUNTS
 INSERT INTO `accounts` (`id`, `user_id`, `account_number`, `account_type`, `account_name`, `currency`, `balance`, `available_balance`, `routing_number`, `swift_bic`, `is_primary`, `status`)
 VALUES
+('acct-usr-prof-mvcaj68v-USD', 'usr-prof-mvcaj68v', '9482-5635', 'Checking', 'US Dollar Primary Vault', 'USD', 0.00, 0.00, '251480576', 'WBCUUS33', 0, 'active'),
 ('acct-usd-wb-usr-y4rfbph', 'wb-usr-y4rfbph', '9482-1049-55', 'Checking', 'US Dollar Primary Vault', 'USD', 100000.00, 100000.00, '251480576', 'WBCUUS33', 1, 'active'),
 ('acct-eur-wb-usr-y4rfbph', 'wb-usr-y4rfbph', 'WB-EUR-8841', 'Offshore', 'Euro Global Holding Vault', 'EUR', 0.00, 0.00, '251480576', 'WBCUUS33', 0, 'active'),
 ('acct-usr-prof-mvb5wo7j-USD', 'usr-prof-mvb5wo7j', '09372996993', 'Checking', 'Primary Checking Vault', 'USD', 100000.00, 100000.00, '251480576', 'WBCUUS33', 1, 'active'),

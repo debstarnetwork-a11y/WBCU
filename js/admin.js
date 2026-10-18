@@ -141,7 +141,7 @@ export async function initAdminDashboard() {
   if (!isAuthorized) {
     sessionStorage.removeItem('wb_credit_union_admin_session');
     localStorage.removeItem('wb_credit_union_admin_session');
-    window.location.replace('/pages/admin-login.html');
+    window.location.replace('/pages/pages/admin-login.html');
     return;
   }
 
@@ -175,7 +175,7 @@ export async function initAdminDashboard() {
       showToast('Treasury officer logged out. Redirecting...', 'info', 'Logged Out');
     } catch (err) {}
     setTimeout(() => {
-      window.location.replace('/pages/admin-login.html');
+      window.location.replace('/pages/pages/admin-login.html');
     }, 150);
   };
 

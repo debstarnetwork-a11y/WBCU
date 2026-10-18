@@ -216,7 +216,7 @@ Respond concisely, politely, professionally, and in the language specified (${la
     const user = (smtp?.user || 'info@wbcu.net').trim();
     const pass = (smtp?.pass || '').trim();
     const senderEmail = (smtp?.senderEmail || user || 'info@wbcu.net').trim();
-    const senderName = (smtp?.senderName || 'WB Credit Union').trim();
+    const senderName = (smtp?.senderName || 'WB Credit Finance').trim();
 
     const testSubject = subject || 'Live Test Transaction Alert: cPanel SMTP Relay Verified';
     const htmlBody = `
@@ -230,7 +230,7 @@ Respond concisely, politely, professionally, and in the language specified (${la
         <div style="max-width:600px; margin:0 auto; background:#1e293b; border-radius:12px; border:1px solid #334155; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.5);">
           <div style="background:linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%); padding:24px; text-align:center;">
             <div style="text-align:center; padding-bottom:12px;">
-              <img src="https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png" alt="WB Credit Union" style="height:48px; width:auto; max-width:220px; object-fit:contain; display:block; margin:0 auto;" />
+              <img src="https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png" alt="WB Credit Finance" style="height:48px; width:auto; max-width:220px; object-fit:contain; display:block; margin:0 auto;" />
             </div>
             <h1 style="margin:0; color:#ffffff; font-size:22px; font-weight:700; letter-spacing:0.5px;">WB CREDIT FINANCE</h1>
             <p style="margin:6px 0 0 0; color:#93c5fd; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Swiss Depository & Institutional Wealth Management</p>
@@ -243,7 +243,7 @@ Respond concisely, politely, professionally, and in the language specified (${la
 
             <h2 style="color:#ffffff; font-size:18px; margin:0 0 12px 0;">Standard Notification Relay Operational</h2>
             <p style="color:#cbd5e1; font-size:14px; line-height:1.6; margin:0 0 20px 0;">
-              This test notification confirms that the <strong>cPanel & Custom SMTP Mail Relay</strong> configured in your WB Credit Union Admin System Settings is actively dispatching outbound email alerts.
+              This test notification confirms that the <strong>cPanel & Custom SMTP Mail Relay</strong> configured in your WB Credit Finance Admin System Settings is actively dispatching outbound email alerts.
             </p>
 
             <div style="background:#0f172a; border-radius:8px; border:1px solid #334155; padding:16px; margin-bottom:20px;">
@@ -277,7 +277,7 @@ Respond concisely, politely, professionally, and in the language specified (${la
           </div>
 
           <div style="background:#0f172a; padding:16px 24px; text-align:center; border-top:1px solid #334155; font-size:11px; color:#64748b;">
-            WB Credit Union &bull; 109, Feldgüetliweg Meilen Bezirk Meilen Zurich 8706 Switzerland<br>
+            WB Credit Finance &bull; 109, Feldgüetliweg Meilen Bezirk Meilen Zurich 8706 Switzerland<br>
             Official Communications Clearing Desk &bull; Confidential &bull; ISO 27001 Certified
           </div>
         </div>
@@ -302,7 +302,7 @@ Respond concisely, politely, professionally, and in the language specified (${la
             from: `"${senderName}" <${senderEmail}>`,
             to: recipient,
             subject: testSubject,
-            text: `WB Credit Union Standard Alert: Real-time SMTP dispatch via ${host}:${port} verified for ${recipient} at ${new Date().toISOString()}`,
+            text: `WB Credit Finance Standard Alert: Real-time SMTP dispatch via ${host}:${port} verified for ${recipient} at ${new Date().toISOString()}`,
             html: htmlBody,
           });
           console.log(`[SMTP] Direct delivery confirmed! MessageId: ${dispatchedInfo.messageId}`);
@@ -333,7 +333,7 @@ Respond concisely, politely, professionally, and in the language specified (${la
           from: `"${senderName}" <${senderEmail}>`,
           to: recipient,
           subject: testSubject,
-          text: `WB Credit Union Standard Alert: Real-time SMTP dispatch via ${host}:${port} verified for ${recipient} at ${new Date().toISOString()}`,
+          text: `WB Credit Finance Standard Alert: Real-time SMTP dispatch via ${host}:${port} verified for ${recipient} at ${new Date().toISOString()}`,
           html: htmlBody,
         });
 
@@ -397,7 +397,7 @@ Respond concisely, politely, professionally, and in the language specified (${la
     const user = (smtp?.user || '').trim();
     const pass = (smtp?.pass || '').trim();
     const senderEmail = (smtp?.senderEmail || user || 'info@wbcu.net').trim();
-    const senderName = (smtp?.senderName || 'WB Credit Union').trim();
+    const senderName = (smtp?.senderName || 'WB Credit Finance').trim();
 
     try {
       let dispatchedInfo: any = null;
@@ -1442,19 +1442,11 @@ Respond concisely, politely, professionally, and in the language specified (${la
       '/pages/admin-dashboard.html',
     ],
     (_req, res) => {
-      const pageAdminPath = path.resolve(__dirname, 'pages/admin-dashboard.html');
+      const pageAdminPath = path.resolve(__dirname, 'pages/admin.html');
       if (fs.existsSync(pageAdminPath)) {
         return res.sendFile(pageAdminPath);
       }
-      const adminPath = path.resolve(__dirname, 'admin/index.html');
-      if (fs.existsSync(adminPath)) {
-        return res.sendFile(adminPath);
-      }
-      const distAdminPath = path.resolve(__dirname, 'dist/pages/admin-dashboard.html');
-      if (fs.existsSync(distAdminPath)) {
-        return res.sendFile(distAdminPath);
-      }
-      return res.sendFile(path.resolve(__dirname, 'admin.html'));
+      return res.status(404).send('Admin Portal File Not Found');
     }
   );
 

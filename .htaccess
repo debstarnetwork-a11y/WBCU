@@ -1,29 +1,37 @@
 # ==============================================================================
-# WB CREDIT FINANCE - PRODUCTION APACHE CONFIGURATION (V3 - PATH FIXED)
+# WB CREDIT FINANCE - RESTORED PRODUCTION CONFIGURATION
 # ==============================================================================
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
-  # 1. Enforce HTTPS & Standardize Domain (Non-WWW)
-  RewriteCond %{HTTPS} off [OR]
-  RewriteCond %{HTTP_HOST} ^www\.wbcu\.net$ [NC]
-  RewriteRule ^(.*)$ https://wbcu.net/$1 [L,R=301]
+  # 1. Enforce HTTPS
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-  # 2. Redirect folders to files (Fixes relative asset path issue)
-  RewriteRule ^admin/?$ admin.html [L,QSA]
-  RewriteRule ^admin-login/?$ admin-login.html [L,QSA]
-  RewriteRule ^login-admin/?$ admin-login.html [L,QSA]
-  RewriteRule ^pages/admin-login/?$ admin-login.html [L,QSA]
-  RewriteRule ^pages/admin-dashboard/?$ admin.html [L,QSA]
-  RewriteRule ^pages/admin/?$ admin.html [L,QSA]
+  # 2. Map root requests to correct files in pages/ if they exist
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^login$ pages/login.html [L,QSA]
+  
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^register$ pages/register.html [L,QSA]
 
-  # 3. Unified Authentication Engine (Prevents POST loss)
-  RewriteRule ^api/admin/login$ api/login.php [L,QSA]
-  RewriteRule ^api/admin/users$ api/admin-users.php [L,QSA]
-  RewriteRule ^api/users$ api/login.php [L,QSA]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^dashboard$ pages/dashboard.html [L,QSA]
+
+  # 3. Admin Routing
+  RewriteRule ^admin-login$ pages/admin-login.html [L,QSA]
+  RewriteRule ^admin$ pages/admin-dashboard.html [L,QSA]
+
+  # 4. API Forwarding (Harden to avoid POST loss)
+  # Ensure we point to the actual PHP files directly
   RewriteRule ^api/login$ api/login.php [L,QSA]
+  RewriteRule ^api/admin-login.php$ api/login.php [L,QSA]
+  RewriteRule ^api/admin/users$ api/admin-users.php [L,QSA]
 </IfModule>
 
 # Security Headers

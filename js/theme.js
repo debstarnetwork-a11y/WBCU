@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - THEME MANAGER & CLIENT UTILITIES (js/theme.js)
+ * WB CREDIT FINANCE - THEME MANAGER & CLIENT UTILITIES (js/theme.js)
  * ============================================================================
  * 
  * Handles:

@@ -11325,7 +11325,7 @@ export function generateOfficialReceiptForTransaction(txId) {
       extractedBank = parenMatch[1].trim();
     } else if (rawRecipient.includes(' - ')) {
       const parts = rawRecipient.split(' - ');
-      if (parts.length > 1 && /bank|financial institution|depository|chase|citi|hsbc|barclays|bnp|santander|wells/i.test(parts[1])) {
+      if (parts.length > 1 && /bank|Credit Union|depository|chase|citi|hsbc|barclays|bnp|santander|wells/i.test(parts[1])) {
         extractedBank = parts[1].trim();
       }
     }

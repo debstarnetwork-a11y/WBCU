@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * WB CREDIT UNION - SETTINGS & SECURITY MASTER CONTROLLER (js/settings-security.js)
+ * WB CREDIT FINANCE - SETTINGS & SECURITY MASTER CONTROLLER (js/settings-security.js)
  * ============================================================================
  * 
  * Provides complete enterprise-grade features for:
@@ -111,7 +111,7 @@ const DEFAULT_ACTIVE_SESSIONS = [
   {
     id: 'sess-02',
     device: 'iPhone 15 Pro (iOS 18.1)',
-    browser: 'WB Credit Union Mobile App',
+    browser: 'WB Credit Finance Mobile App',
     ip: '198.51.100.89',
     location: 'Zurich, Switzerland',
     lastActive: '2 hours ago',
@@ -720,7 +720,7 @@ export function generateAndDownloadStatementPdf(stmt) {
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(18);
-  doc.text('WB CREDIT UNION', 16, 18);
+  doc.text('WB CREDIT FINANCE', 16, 18);
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
@@ -820,14 +820,14 @@ export function generateAndDownloadStatementPdf(stmt) {
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7.5);
   doc.setTextColor(71, 85, 105);
-  doc.text('This certified document is an authentic transcript of WB Credit Union sovereign banking ledgers.', 22, currentY + 25);
+  doc.text('This certified document is an authentic transcript of WB Credit Finance sovereign banking ledgers.', 22, currentY + 25);
   doc.text('All funds are insured under Sovereign Vault & Interbank Clearing protocols.', 22, currentY + 29);
   doc.text('Cryptographic Verification Hash: 0x-9f82d4a8e2bc1049a8820f124bc', 22, currentY + 33);
 
   // 5. Footer
   doc.setFontSize(7);
   doc.setTextColor(148, 163, 184);
-  doc.text('WB CREDIT UNION &bull; Sovereign Treasury Services &bull; 1-800-555-WBCU &bull; support@wbcu.net', 105, 285, { align: 'center' });
+  doc.text('WB CREDIT FINANCE &bull; Sovereign Treasury Services &bull; 1-800-555-WBCU &bull; support@wbcu.net', 105, 285, { align: 'center' });
 
   // Save PDF
   doc.save(`WB_Credit_Union_Statement_${stmt.month.replace(/\s+/g, '_')}.pdf`);
@@ -1831,7 +1831,7 @@ function downloadBackupCodesFile() {
   const user = getDemoStorageUser() || {};
   const acctName = (user.fullName && user.fullName !== 'Alexander Morgan') ? user.fullName : 'Miz Brymo';
   const acctNum = user.accountNumber ? `(****${user.accountNumber.slice(-4)})` : '(****1049)';
-  const content = `WB CREDIT UNION - 2FA EMERGENCY BACKUP CODES
+  const content = `WB CREDIT FINANCE - 2FA EMERGENCY BACKUP CODES
 Generated: ${new Date().toLocaleString()}
 Account: ${acctName} ${acctNum}
 
@@ -1840,7 +1840,7 @@ Each code can be used once if you lose access to your authenticator device:
 
 ${codes.map((c, i) => `${String(i + 1).padStart(2, '0')}. ${c}`).join('\n')}
 
-Security Notice: Never share backup codes with anyone. WB Credit Union staff will never ask for your codes.`;
+Security Notice: Never share backup codes with anyone. WB Credit Finance staff will never ask for your codes.`;
 
   const blob = new Blob([content], { type: 'text/plain;charset=utf-8;' });
   const url = URL.createObjectURL(blob);

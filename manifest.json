@@ -1,7 +1,7 @@
 {
-  "name": "WB CREDIT UNION",
+  "name": "WB CREDIT FINANCE",
   "short_name": "WBCU",
-  "description": "WB CREDIT UNION Digital Banking & Sovereign Treasury",
+  "description": "WB CREDIT FINANCE Digital Banking & Sovereign Treasury",
   "start_url": "/pages/dashboard.html",
   "scope": "/",
   "display": "standalone",

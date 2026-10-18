@@ -235,11 +235,6 @@ def main():
                         os.chmod(dst_file, 0o644)
                     except Exception:
                         pass
-
-                    if ef == "admin.html":
-                        shutil.copy2(src_file, os.path.join(target_path, "admin", "index.html"))
-                        shutil.copy2(src_file, os.path.join(target_path, "pages", "admin-dashboard.html"))
-                        shutil.copy2(src_file, os.path.join(target_path, "pages", "admin.html"))
                 except Exception as e:
                     log("Copy notice for %s: %s" % (ef, str(e)), "WARN")
 

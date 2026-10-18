@@ -48,7 +48,7 @@ foreach ($logPaths as $lp) {
 // 3. Perform git fetch and hard reset to match GitHub exactly
 $output = [];
 $returnCode = 0;
-exec("git fetch origin main && git checkout -f main && git reset --hard origin/main && git clean -fd -e admin-users.json -e admin-users-persistent.json 2>&1", $output, $returnCode);
+exec("git fetch origin main && git checkout -f main && git reset --hard origin/main && git clean -fd -e admin-users.json -e admin-users-persistent.json -e .env 2>&1", $output, $returnCode);
 
 if ($returnCode === 0) {
     // 4. Trigger cPanel Deployment task (executes .cpanel.yml tasks to copy files to public_html)
