@@ -27,7 +27,9 @@ foreach ($paths as $path) {
             $parts = explode('=', $l, 2);
             if (count($parts) == 2) {
                 $k = trim($parts[0]); $v = trim($parts[1], " \"'");
-                if (($k === 'DB_PASS' || $k === 'DB_PASSWORD') && !empty($v)) $tempPass = $v;
+                if (($k === 'DB_PASS' || $k === 'DB_PASSWORD') && !empty($v)) $tempPass = trim($v);
+                if ($k === 'DB_USER' && !empty($v)) $dbUser = trim($v);
+                if ($k === 'DB_NAME' && !empty($v)) $dbName = trim($v);
                 if ($k === 'DB_HOST' && !empty($v)) $dbHost = trim($v);
             }
         }

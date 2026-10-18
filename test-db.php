@@ -34,9 +34,9 @@ if ($envFound) {
         if (count($parts) < 2) continue;
         $name = trim($parts[0]);
         $value = trim($parts[1], " \t\n\r\0\x0B\"'");
-        if ($name === 'DB_PASS' || $name === 'DB_PASSWORD') $dbPass = $value;
-        if ($name === 'DB_USER') $dbUser = $value;
-        if ($name === 'DB_NAME') $dbName = $value;
+        if ($name === 'DB_PASS' || $name === 'DB_PASSWORD') $dbPass = trim($value);
+        if ($name === 'DB_USER') $dbUser = trim($value);
+        if ($name === 'DB_NAME') $dbName = trim($value);
         if ($name === 'DB_HOST') $dbHost = trim($value);
     }
 }

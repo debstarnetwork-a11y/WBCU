@@ -54,9 +54,9 @@ foreach ([$root, '/home/glolbka/WBCU', '/home/glolbka/public_html'] as $path) {
             $p = explode('=', $l, 2);
             if (count($p) == 2) {
                 $k = trim($p[0]); $v = trim($p[1], " \"'");
-                if ($k === 'DB_PASS' || $k === 'DB_PASSWORD') $dbPass = $v;
-                if ($k === 'DB_USER') $dbUser = $v;
-                if ($k === 'DB_NAME') $dbName = $v;
+                if ($k === 'DB_PASS' || $k === 'DB_PASSWORD') $dbPass = trim($v);
+                if ($k === 'DB_USER') $dbUser = trim($v);
+                if ($k === 'DB_NAME') $dbName = trim($v);
                 if ($k === 'DB_HOST') $dbHost = trim($v);
             }
         }

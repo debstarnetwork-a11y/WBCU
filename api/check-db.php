@@ -28,9 +28,9 @@ foreach ($envPaths as $envPath) {
                 if (count($parts) < 2) continue;
                 $key = trim($parts[0]);
                 $val = trim($parts[1], " \t\n\r\0\x0B\"'");
-                if (($key === 'DB_PASS' || $key === 'DB_PASSWORD') && !empty($val)) $dbPass = $val;
-                if ($key === 'DB_USER' && !empty($val)) $dbUser = $val;
-                if ($key === 'DB_NAME' && !empty($val)) $dbName = $val;
+                if (($key === 'DB_PASS' || $key === 'DB_PASSWORD') && !empty($val)) $dbPass = trim($val);
+                if ($key === 'DB_USER' && !empty($val)) $dbUser = trim($val);
+                if ($key === 'DB_NAME' && !empty($val)) $dbName = trim($val);
                 if ($key === 'DB_HOST' && !empty($val)) $dbHost = trim($val);
             }
         }

@@ -58,9 +58,9 @@ foreach ($possibleRoots as $root) {
                 $parts = explode('=', $l, 2);
                 if (count($parts) < 2) continue;
                 $k = trim($parts[0]); $v = trim($parts[1], " \t\n\r\0\x0B\"'");
-                if ($k === 'DB_PASS' || $k === 'DB_PASSWORD') $dbPass = $v;
-                if ($k === 'DB_USER') $dbUser = $v;
-                if ($k === 'DB_NAME') $dbName = $v;
+                if ($k === 'DB_PASS' || $k === 'DB_PASSWORD') $dbPass = trim($v);
+                if ($k === 'DB_USER') $dbUser = trim($v);
+                if ($k === 'DB_NAME') $dbName = trim($v);
                 if ($k === 'DB_HOST') $dbHost = trim($v);
             }
         }

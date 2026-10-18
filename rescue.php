@@ -45,10 +45,10 @@ if ($envFound) {
     foreach ($lines as $l) {
         $parts = explode('=', $l, 2);
         if (count($parts) == 2) {
-            $k = trim($parts[0]); $v = trim($parts[1], " \"'");
-            if ($k === 'DB_PASS' || $k === 'DB_PASSWORD') $p = $v;
-            if ($k === 'DB_USER') $u = $v;
-            if ($k === 'DB_NAME') $n = $v;
+            $k = trim($parts[0]); $v = trim($parts[1], " \t\n\r\0\x0B\"'");
+            if ($k === 'DB_PASS' || $k === 'DB_PASSWORD') $p = trim($v);
+            if ($k === 'DB_USER') $u = trim($v);
+            if ($k === 'DB_NAME') $n = trim($v);
             if ($k === 'DB_HOST') { 
                 $h = trim($v); 
                 if ($h === 'localhost' || empty($h)) {
