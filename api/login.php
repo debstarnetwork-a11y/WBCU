@@ -68,7 +68,11 @@ foreach ([$root, '/home/glolbka/WBCU', '/home/glolbka/public_html'] as $path) {
 // 3. DATABASE AUTH
 if (!empty($dbPass) && !str_contains($dbPass, 'PLEASE_EDIT')) {
     try {
-        $pdo = new PDO("mysql:host={$dbHost};dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass, [PDO::ATTR_TIMEOUT => 3]);
+        try {
+            $pdo = new PDO("mysql:host={$dbHost};dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass, [PDO::ATTR_TIMEOUT => 3]);
+        } catch (Throwable $e1) {
+            $pdo = new PDO("mysql:host=127.0.0.1;dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass, [PDO::ATTR_TIMEOUT => 3]);
+        }
         // Check Admin table first
         $stmt = $pdo->prepare("SELECT * FROM `admins` WHERE LOWER(email) = ? OR LOWER(username) = ? LIMIT 1");
         $stmt->execute([$normId, $normId]);

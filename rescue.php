@@ -55,8 +55,13 @@ if ($envFound) {
         $pdo = new PDO("mysql:host=$h;dbname=$n;charset=utf8mb4", $u, $p, [PDO::ATTR_TIMEOUT => 2]);
         $dbStatus = '<span style="color: green;">CONNECTED SUCCESS</span>';
     } catch (Exception $e) {
-        $dbStatus = '<span style="color: red;">CONNECTION FAILED</span>';
-        $dbDetails = $e->getMessage();
+        try {
+            $pdo = new PDO("mysql:host=127.0.0.1;dbname=$n;charset=utf8mb4", $u, $p, [PDO::ATTR_TIMEOUT => 2]);
+            $dbStatus = '<span style="color: green;">CONNECTED SUCCESS (127.0.0.1)</span>';
+        } catch (Exception $e2) {
+            $dbStatus = '<span style="color: red;">CONNECTION FAILED</span>';
+            $dbDetails = $e->getMessage();
+        }
     }
 }
 

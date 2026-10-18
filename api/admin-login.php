@@ -77,9 +77,15 @@ foreach ($possibleRoots as $root) {
 $matchedRow = null; $sourceTable = null;
 if (!empty($dbPass) && !str_contains($dbPass, 'PLEASE_EDIT')) {
     try {
-        $pdo = new PDO("mysql:host={$dbHost};dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 3
-        ]);
+        try {
+            $pdo = new PDO("mysql:host={$dbHost};dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 3
+            ]);
+        } catch (Throwable $e1) {
+            $pdo = new PDO("mysql:host=127.0.0.1;dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 3
+            ]);
+        }
         $stmt = $pdo->prepare("SELECT * FROM `admins` WHERE LOWER(username) = ? OR LOWER(email) = ? LIMIT 1");
         $stmt->execute([$normIdentifier, $normIdentifier]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
