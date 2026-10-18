@@ -1,5 +1,5 @@
 # ==============================================================================
-# WB CREDIT FINANCE - PRODUCTION APACHE CONFIGURATION
+# WB CREDIT FINANCE - PRODUCTION APACHE CONFIGURATION (V3 - PATH FIXED)
 # ==============================================================================
 
 <IfModule mod_rewrite.c>
@@ -11,40 +11,28 @@
   RewriteCond %{HTTP_HOST} ^www\.wbcu\.net$ [NC]
   RewriteRule ^(.*)$ https://wbcu.net/$1 [L,R=301]
 
-  # 2. Admin Portal URL Rewrites
-  RewriteRule ^pages/admin/?$ pages/admin/index.html [L,QSA]
-  RewriteRule ^admin/?$ admin/index.html [L,QSA]
-  RewriteRule ^pages/admin-dashboard/?$ pages/admin-dashboard.html [L,QSA]
-  RewriteRule ^pages/admin-login/?$ pages/admin-login.html [L,QSA]
-  RewriteRule ^admin-login/?$ pages/admin-login.html [L,QSA]
-  RewriteRule ^login-admin/?$ pages/admin-login.html [L,QSA]
+  # 2. Redirect folders to files (Fixes relative asset path issue)
+  RewriteRule ^admin/?$ admin.html [L,QSA]
+  RewriteRule ^admin-login/?$ admin-login.html [L,QSA]
+  RewriteRule ^login-admin/?$ admin-login.html [L,QSA]
+  RewriteRule ^pages/admin-login/?$ admin-login.html [L,QSA]
+  RewriteRule ^pages/admin-dashboard/?$ admin.html [L,QSA]
+  RewriteRule ^pages/admin/?$ admin.html [L,QSA]
 
   # 3. Unified Authentication Engine (Prevents POST loss)
   RewriteRule ^api/admin/login$ api/login.php [L,QSA]
-  RewriteRule ^api/admin-login.php$ api/login.php [L,QSA]
-  RewriteRule ^api/users/login$ api/login.php [L,QSA]
+  RewriteRule ^api/admin/users$ api/admin-users.php [L,QSA]
   RewriteRule ^api/users$ api/login.php [L,QSA]
   RewriteRule ^api/login$ api/login.php [L,QSA]
-
-  # 4. SPA Fallback (Optional, but useful)
-  # RewriteCond %{REQUEST_FILENAME} !-f
-  # RewriteCond %{REQUEST_FILENAME} !-d
-  # RewriteRule . index.html [L]
 </IfModule>
 
-# Security Headers & Anti-Caching for Instant Live Site Updates
+# Security Headers
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set X-Frame-Options "SAMEORIGIN"
-  Header set X-XSS-Protection "1; mode=block"
-
   <FilesMatch "\.(html|htm|js|css|json)$">
-    Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
-    Header set Pragma "no-cache"
-    Header set Expires "0"
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
   </FilesMatch>
 </IfModule>
 
-# Disable Directory Browsing
 Options -Indexes
-
