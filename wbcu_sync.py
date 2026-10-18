@@ -202,17 +202,17 @@ def main():
         for d in ["api", "js", "pages", "admin", "css"]:
             os.makedirs(os.path.join(target_path, d), exist_ok=True)
 
-        # Copy Dist
-        dist_dir = os.path.join(repo_dir, "dist")
-        if os.path.isdir(dist_dir):
-            copy_dir_contents(dist_dir, target_path)
-
-        # Copy source folders
+        # Copy source folders first
         for folder in ["api", "js", "pages", "admin"]:
             src_f = os.path.join(repo_dir, folder)
             dst_f = os.path.join(target_path, folder)
             if os.path.isdir(src_f):
                 copy_dir_contents(src_f, dst_f)
+
+        # Copy Dist last so compiled production bundle takes precedence
+        dist_dir = os.path.join(repo_dir, "dist")
+        if os.path.isdir(dist_dir):
+            copy_dir_contents(dist_dir, target_path)
 
         # Copy single entry files
         entry_files = ["admin.html", "admin-login.html", "login-admin.html", "index.html", ".htaccess", "deploy.php", "server.js", ".env", "rescue.php"]
