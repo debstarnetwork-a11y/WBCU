@@ -222,6 +222,10 @@ def main():
                 dst_file = os.path.join(target_path, ef)
                 try:
                     if os.path.exists(dst_file):
+                        # SPECIAL CASE: Never overwrite .env or database files if they already exist on live
+                        if ef == ".env":
+                            continue 
+                            
                         try:
                             os.remove(dst_file)
                         except Exception:
