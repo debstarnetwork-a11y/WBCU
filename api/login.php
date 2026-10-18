@@ -57,12 +57,16 @@ foreach ([$root, '/home/glolbka/WBCU', '/home/glolbka/public_html'] as $path) {
                 if ($k === 'DB_PASS' || $k === 'DB_PASSWORD') $dbPass = $v;
                 if ($k === 'DB_USER') $dbUser = $v;
                 if ($k === 'DB_NAME') $dbName = $v;
+                if ($k === 'DB_HOST') $dbHost = trim($v);
             }
         }
     }
     if (file_exists($path . '/admin-users.json') && empty($jsonData)) {
         $jsonData = json_decode(file_get_contents($path . '/admin-users.json'), true) ?: [];
     }
+}
+if ($dbHost === 'localhost' || empty($dbHost)) {
+    $dbHost = '127.0.0.1';
 }
 
 // 3. DATABASE AUTH

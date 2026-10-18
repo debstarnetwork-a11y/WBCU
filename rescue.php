@@ -47,21 +47,17 @@ if ($envFound) {
             if ($k === 'DB_PASS' || $k === 'DB_PASSWORD') $p = $v;
             if ($k === 'DB_USER') $u = $v;
             if ($k === 'DB_NAME') $n = $v;
-            if ($k === 'DB_HOST') $h = $v;
+            if ($k === 'DB_HOST') { $h = trim($v); if ($h === 'localhost' || empty($h)) $h = '127.0.0.1'; }
         }
     }
+    if ($h === 'localhost' || empty($h)) $h = '127.0.0.1';
     
     try {
         $pdo = new PDO("mysql:host=$h;dbname=$n;charset=utf8mb4", $u, $p, [PDO::ATTR_TIMEOUT => 2]);
         $dbStatus = '<span style="color: green;">CONNECTED SUCCESS</span>';
     } catch (Exception $e) {
-        try {
-            $pdo = new PDO("mysql:host=127.0.0.1;dbname=$n;charset=utf8mb4", $u, $p, [PDO::ATTR_TIMEOUT => 2]);
-            $dbStatus = '<span style="color: green;">CONNECTED SUCCESS (127.0.0.1)</span>';
-        } catch (Exception $e2) {
-            $dbStatus = '<span style="color: red;">CONNECTION FAILED</span>';
-            $dbDetails = $e->getMessage();
-        }
+        $dbStatus = '<span style="color: red;">CONNECTION FAILED</span>';
+        $dbDetails = $e->getMessage();
     }
 }
 

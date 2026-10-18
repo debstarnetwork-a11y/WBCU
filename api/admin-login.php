@@ -61,7 +61,7 @@ foreach ($possibleRoots as $root) {
                 if ($k === 'DB_PASS' || $k === 'DB_PASSWORD') $dbPass = $v;
                 if ($k === 'DB_USER') $dbUser = $v;
                 if ($k === 'DB_NAME') $dbName = $v;
-                if ($k === 'DB_HOST') $dbHost = $v;
+                if ($k === 'DB_HOST') $dbHost = trim($v);
             }
         }
     }
@@ -71,6 +71,9 @@ foreach ($possibleRoots as $root) {
     if (file_exists($json) && empty($jsonData)) {
         $jsonData = json_decode(file_get_contents($json), true) ?: [];
     }
+}
+if ($dbHost === 'localhost' || empty($dbHost)) {
+    $dbHost = '127.0.0.1';
 }
 
 // 3. TRY DATABASE

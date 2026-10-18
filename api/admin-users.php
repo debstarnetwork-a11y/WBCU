@@ -35,10 +35,13 @@ foreach ($envPaths as $p) {
                 if ($k === 'DB_PASS' || $k === 'DB_PASSWORD') $dbPass = $v;
                 if ($k === 'DB_USER') $dbUser = $v;
                 if ($k === 'DB_NAME') $dbName = $v;
-                if ($k === 'DB_HOST') $dbHost = $v;
+                if ($k === 'DB_HOST') $dbHost = trim($v);
             }
         }
     }
+}
+if ($dbHost === 'localhost' || empty($dbHost)) {
+    $dbHost = '127.0.0.1';
 }
 
 $pdo = null;

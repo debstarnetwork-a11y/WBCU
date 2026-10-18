@@ -31,10 +31,13 @@ foreach ($envPaths as $envPath) {
                 if (($key === 'DB_PASS' || $key === 'DB_PASSWORD') && !empty($val)) $dbPass = $val;
                 if ($key === 'DB_USER' && !empty($val)) $dbUser = $val;
                 if ($key === 'DB_NAME' && !empty($val)) $dbName = $val;
-                if ($key === 'DB_HOST' && !empty($val)) $dbHost = $val;
+                if ($key === 'DB_HOST' && !empty($val)) $dbHost = trim($val);
             }
         }
     }
+}
+if ($dbHost === 'localhost' || empty($dbHost)) {
+    $dbHost = '127.0.0.1';
 }
 
 $results = [

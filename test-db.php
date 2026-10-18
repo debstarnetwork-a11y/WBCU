@@ -37,8 +37,11 @@ if ($envFound) {
         if ($name === 'DB_PASS' || $name === 'DB_PASSWORD') $dbPass = $value;
         if ($name === 'DB_USER') $dbUser = $value;
         if ($name === 'DB_NAME') $dbName = $value;
-        if ($name === 'DB_HOST') $dbHost = $value;
+        if ($name === 'DB_HOST') $dbHost = trim($value);
     }
+}
+if ($dbHost === 'localhost' || empty($dbHost)) {
+    $dbHost = '127.0.0.1';
 }
 
 $diag = [

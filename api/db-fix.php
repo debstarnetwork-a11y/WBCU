@@ -28,6 +28,7 @@ foreach ($paths as $path) {
             if (count($parts) == 2) {
                 $k = trim($parts[0]); $v = trim($parts[1], " \"'");
                 if (($k === 'DB_PASS' || $k === 'DB_PASSWORD') && !empty($v)) $tempPass = $v;
+                if ($k === 'DB_HOST' && !empty($v)) $dbHost = trim($v);
             }
         }
         // If this file has a REAL password, use it and STOP searching
@@ -37,6 +38,10 @@ foreach ($paths as $path) {
             break; 
         }
     }
+}
+
+if ($dbHost === 'localhost' || empty($dbHost)) {
+    $dbHost = '127.0.0.1';
 }
 
 if (empty($dbPass)) {
