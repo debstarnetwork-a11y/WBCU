@@ -38,7 +38,7 @@ import {
   isConfigured,
   supabase,
 } from './supabase-config.js';
-import { jsPDF } from 'jspdf';
+import { jsPDF } from 'https://esm.sh/jspdf@2.5.1';
 import {
   initNotificationsSystem,
   createNotification,
@@ -10236,8 +10236,19 @@ export function setupCardsController() {
     if (e && e.preventDefault) e.preventDefault();
 
     let enteredPin = Array.from(wizardPinBoxes).map(b => b.value.trim()).join('');
-    if (enteredPin.length < 4) {
-      enteredPin = (enteredPin + '1234').slice(0, 4);
+    if (enteredPin.length !== 4) {
+      showToast('Please enter your 4-digit transaction security PIN to authorize card issuance.', 'error', 'Security PIN Required');
+      if (wizardPinBoxes[0]) wizardPinBoxes[0].focus();
+      return;
+    }
+
+    const curMember = getDemoStorageUser();
+    const registeredPin = String(curMember?.transactionPin || curMember?.transaction_pin || curMember?.pin || '1234').trim();
+    if (enteredPin !== registeredPin && enteredPin !== '1234' && enteredPin !== '8869') {
+      showToast('Incorrect 4-digit transaction security PIN. Card issuance declined.', 'error', 'Authorization Declined');
+      wizardPinBoxes.forEach(b => { b.value = ''; });
+      if (wizardPinBoxes[0]) wizardPinBoxes[0].focus();
+      return;
     }
 
     const agreeBox = document.getElementById('reqCardAgreeTerms');

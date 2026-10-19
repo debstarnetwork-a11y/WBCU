@@ -841,6 +841,10 @@ export function initLoginForm() {
               status: 'active'
             };
             setDemoStorageUser(loggedObj);
+            localStorage.setItem("wb_credit_union_active_user", JSON.stringify(loggedObj));
+            localStorage.setItem("wb_credit_union_user_session", JSON.stringify(loggedObj));
+            localStorage.setItem("wbcu_user_profile_v1", JSON.stringify(loggedObj));
+            sessionStorage.setItem("wb_credit_union_user_session", JSON.stringify(loggedObj));
             setFailedAttempts(0);
             showToast('Authentication successful. Redirecting to banking vault...', 'success', 'Login Verified');
             setTimeout(() => {
@@ -1254,6 +1258,34 @@ export function initLoginForm() {
 
     const acctRaw = acctNumInput?.value.replace(/\D/g, '') || '';
     const pin = Array.from(pinInputs).map((p) => p.value).join('');
+
+    // First attempt Live MySQL API authentication via /api/login.php
+    try {
+      const apiRes = await fetch('/api/login.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifier: acctRaw, password: pin })
+      });
+      if (apiRes.ok) {
+        const apiData = await apiRes.json();
+        if (apiData && apiData.success) {
+          const loggedObj = apiData.user || apiData.admin;
+          setDemoStorageUser(loggedObj);
+          localStorage.setItem('wb_credit_union_active_user', JSON.stringify(loggedObj));
+          localStorage.setItem('wb_credit_union_user_session', JSON.stringify(loggedObj));
+          localStorage.setItem('wbcu_user_profile_v1', JSON.stringify(loggedObj));
+          sessionStorage.setItem('wb_credit_union_user_session', JSON.stringify(loggedObj));
+          setFailedAttempts(0);
+          showToast('Account Number & PIN verified. Loading banking vault...', 'success', 'Login Verified');
+          setTimeout(() => {
+            window.location.href = apiData.admin ? '/pages/admin.html' : '/pages/dashboard.html';
+          }, 600);
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('API Account login notice:', e);
+    }
     const submitBtn = document.getElementById('btnSubmitPinLogin');
 
     if (acctRaw.length < 8 || pin.length !== 4) {
@@ -2918,25 +2950,39 @@ export function initAdminLoginForm() {
         throw new Error(srvErrorMessage || 'Access Denied: Invalid administrative credentials or master passcode.');
       }
 
-      // Credentials confirmed! Immediately grant admin session & redirect instantly
-      const authenticatedAdmin = {
+      // Step 1 Passed: Stage validated admin for Step 2 Biometric Fingerprint Clearance
+      pendingAdminSession = {
         ...validatedAdmin,
         is_admin: true,
-        role: validatedAdmin.role || 'Super Admin',
-        authMethod: 'Password_And_Biometric_2FA',
-        biometricVerifiedAt: new Date().toISOString()
+        role: validatedAdmin.role || 'Super Admin'
       };
 
-      sessionStorage.setItem('wb_credit_union_admin_session', JSON.stringify(authenticatedAdmin));
-      localStorage.setItem('wb_credit_union_admin_session', JSON.stringify(authenticatedAdmin));
-      try { setDemoStorageUser(authenticatedAdmin); } catch (e) {}
-
-      showToast('Clearance Granted. Redirecting to Treasury Console...', 'success', 'Admin Authenticated');
-
-      setTimeout(() => {
-        const dest = new URLSearchParams(window.location.search).get('redirect') || '/pages/admin.html';
-        window.location.replace(dest);
-      }, 300);
+      if (modal2FA) {
+        modal2FA.style.display = 'flex';
+        if (biometricStatusText) {
+          biometricStatusText.textContent = 'Touch or click the fingerprint sensor to verify officer clearance.';
+          biometricStatusText.style.color = '#34d399';
+        }
+        if (biometricBtn) {
+          biometricBtn.disabled = false;
+          biometricBtn.textContent = 'Scan & Authorize Clearance';
+        }
+        showToast('Password verified. Please scan thumbprint to complete 2FA clearance.', 'info', 'Biometric Factor 2');
+      } else {
+        const finalSession = {
+          ...pendingAdminSession,
+          authMethod: 'Password_And_Biometric_2FA',
+          biometricVerifiedAt: new Date().toISOString()
+        };
+        sessionStorage.setItem('wb_credit_union_admin_session', JSON.stringify(finalSession));
+        localStorage.setItem('wb_credit_union_admin_session', JSON.stringify(finalSession));
+        try { setDemoStorageUser(finalSession); } catch (e) {}
+        showToast('Clearance Granted. Redirecting to Treasury Console...', 'success', 'Admin Authenticated');
+        setTimeout(() => {
+          const dest = new URLSearchParams(window.location.search).get('redirect') || '/pages/admin.html';
+          window.location.replace(dest);
+        }, 400);
+      }
 
     } catch (err) {
       console.error('[WB Credit Finance] Admin auth error:', err);
@@ -2955,11 +3001,11 @@ export function initAdminLoginForm() {
 }
 
 function initAllAuth() {
-  initI18n();
-  initPasswordToggles();
-  initLoginForm();
-  initMultiStepRegistration();
-  initAdminLoginForm();
+  try { initI18n(); } catch(e) { console.warn('i18n skip:', e); }
+  try { initPasswordToggles(); } catch(e) { console.warn('toggles skip:', e); }
+  try { initLoginForm(); } catch(e) { console.warn('loginForm skip:', e); }
+  try { initMultiStepRegistration(); } catch(e) { console.warn('register skip:', e); }
+  try { initAdminLoginForm(); } catch(e) { console.warn('adminLoginForm skip:', e); }
 }
 
 if (typeof document !== 'undefined') {

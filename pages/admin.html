@@ -31,24 +31,25 @@
       } catch (e) {}
     })();
 
-    // Strict Treasury Admin Authentication Guard
+        // Strict Treasury Admin Authentication Guard
     (function() {
       try {
-        var sess = sessionStorage.getItem('wb_credit_union_admin_session') || localStorage.getItem('wb_credit_union_admin_session');
+        var sess = sessionStorage.getItem('wb_credit_union_admin_session');
         var auth = null;
         if (sess) {
           try { auth = JSON.parse(sess); } catch (e) {}
         }
         var r = String(auth && auth.role || '').toLowerCase();
-        var isAuthorized = auth && (auth.is_admin === true || auth.is_admin === 1 || auth.is_admin === '1' || r.includes('admin') || r.includes('super') || r.includes('auditor') || r.includes('officer'));
+        var isAuthorized = auth && (auth.is_admin === true || auth.is_admin === 1 || auth.is_admin === '1' || r.includes('admin') || r.includes('super') || r.includes('officer'));
         if (!isAuthorized) {
-          // Deny direct access and redirect immediately to Admin Login
           sessionStorage.removeItem('wb_credit_union_admin_session');
           localStorage.removeItem('wb_credit_union_admin_session');
           window.location.replace('/pages/admin-login.html');
+          return;
         }
       } catch (e) {
         window.location.replace('/pages/admin-login.html');
+        return;
       }
     })();
 
@@ -209,6 +210,84 @@
       } catch(e) {}
     };
   </script>
+
+  <!-- Mobile Responsive Admin Overrides -->
+  <style>
+    @media (max-width: 900px) {
+      .admin-topbar {
+        padding: 0.5rem 0.75rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        background: #0f172a !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 1000 !important;
+        border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+      }
+      .admin-mobile-actions {
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+      }
+      .admin-mobile-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+        padding: 6px 10px !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        border-radius: 6px !important;
+        border: 1px solid rgba(255,255,255,0.15) !important;
+        background: #1e293b !important;
+        color: #f8fafc !important;
+        cursor: pointer !important;
+        text-decoration: none !important;
+        white-space: nowrap !important;
+      }
+      .admin-mobile-btn-logout {
+        background: #dc2626 !important;
+        border-color: #b91c1c !important;
+        color: #ffffff !important;
+      }
+      .admin-sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        bottom: 0 !important;
+        width: 280px !important;
+        z-index: 10000 !important;
+        transform: translateX(-100%) !important;
+        transition: transform 0.25s ease-in-out !important;
+        box-shadow: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+      }
+      .admin-sidebar.open {
+        transform: translateX(0) !important;
+        box-shadow: 0 0 40px rgba(0,0,0,0.8) !important;
+      }
+      .admin-sidebar-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.65);
+        z-index: 9999;
+      }
+      .admin-sidebar-backdrop.active {
+        display: block !important;
+      }
+    }
+    @media (min-width: 901px) {
+      .admin-mobile-actions {
+        display: none !important;
+      }
+      .admin-sidebar-backdrop {
+        display: none !important;
+      }
+    }
+  </style>
+        
 </head>
 <body id="adminRoot">
   <div class="admin-layout">
@@ -376,6 +455,17 @@
       
       <!-- Top Bar -->
       <header class="admin-topbar">
+
+        <!-- Mobile Quick Controls (Visible on mobile screens) -->
+        <div class="admin-mobile-actions">
+          <button type="button" class="admin-mobile-btn" id="mobileAdminSettingsBtn" onclick="if(window.switchAdminView){window.switchAdminView('settings');} else {window.location.hash='#settings';}" title="System Settings">
+            ⚙️ Settings
+          </button>
+          <button type="button" class="admin-mobile-btn admin-mobile-btn-logout" id="mobileAdminLogoutBtn" onclick="window.adminLogout(event);" title="Officer Logout">
+            🚪 Logout
+          </button>
+        </div>
+        
         <div class="admin-topbar-left">
           <button type="button" class="admin-menu-toggle-btn" id="toggleSidebarBtn" aria-label="Toggle navigation menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -4838,5 +4928,47 @@
   <!-- Scripts -->
   <script type="module" src="/js/theme.js"></script>
   <script type="module" src="/js/admin.js"></script>
+<div class="admin-sidebar-backdrop" id="adminSidebarBackdrop"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var toggleBtn = document.getElementById('toggleSidebarBtn');
+      var sidebar = document.getElementById('adminSidebar');
+      var backdrop = document.getElementById('adminSidebarBackdrop');
+
+      function openSidebar() {
+        if (sidebar) sidebar.classList.add('open');
+        if (backdrop) backdrop.classList.add('active');
+      }
+      function closeSidebar() {
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
+      }
+
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (sidebar && sidebar.classList.contains('open')) {
+            closeSidebar();
+          } else {
+            openSidebar();
+          }
+        });
+      }
+
+      if (backdrop) {
+        backdrop.addEventListener('click', closeSidebar);
+      }
+
+      // Close sidebar when a navigation link is clicked on mobile
+      var navLinks = document.querySelectorAll('.admin-nav-item, .admin-sidebar a');
+      navLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+          if (window.innerWidth <= 900) closeSidebar();
+        });
+      });
+    });
+  </script>
+            
 </body>
 </html>

@@ -42,7 +42,8 @@
  * ============================================================================
  */
 
-import { createClient } from '@supabase/supabase-js';
+// Supabase disabled in favor of cPanel MySQL database
+const createClient = () => { throw new Error('Using cPanel MySQL database.'); };
 
 /* ----------------------------------------------------------------------------
  * 1. SUPABASE CREDENTIALS & INITIALIZATION
@@ -317,10 +318,10 @@ export async function requireAuth(redirectUrl = '/pages/login.html') {
  * Session verification and route guard for administrative dashboard pages.
  * Redirects non-admin visitors to admin-login.html.
  * 
- * @param {string} [redirectUrl='/pages/pages/admin-login.html'] Destination if not an admin
+ * @param {string} [redirectUrl='/pages/admin-login.html'] Destination if not an admin
  * @returns {Promise<Object>} The authenticated administrator user object
  */
-export async function requireAdmin(redirectUrl = '/pages/pages/admin-login.html') {
+export async function requireAdmin(redirectUrl = '/pages/admin-login.html') {
   const adminAuthorized = await isAdmin();
   if (!adminAuthorized) {
     const currentPath = window.location.pathname + window.location.search;

@@ -1095,7 +1095,7 @@ export async function syncAdminUsersWithServer() {
 
     if (!data || !data.users) {
       try {
-        const resNode = await fetch('/api/admin/users');
+        const resNode = await fetch('/api/admin-users.php');
         if (resNode && resNode.ok) {
           data = await resNode.json();
         }
@@ -1203,7 +1203,7 @@ export async function syncAdminUsersWithServer() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ users: localOnlyUsers, is_chunk: true }),
         }).catch(() => {});
-        fetch('/api/admin/users', {
+        fetch('/api/admin-users.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ users: localOnlyUsers, is_chunk: true }),
@@ -1248,11 +1248,14 @@ export async function initAdminUserManagement() {
   console.log('[ADMIN USERS] Initializing User Management...');
   try {
     try {
-      const res = await fetch('/api/admin/users');
+      let res = await fetch('/api/admin-users.php');
       if (res.ok) {
         const data = await res.json();
         if (data && Array.isArray(data.users) && data.users.length > 0) {
           localStorage.setItem(ADMIN_USERS_STORAGE_KEY, JSON.stringify(data.users));
+          currentUsers = data.users;
+          filteredUsers = [...data.users];
+          try { renderUsersTable(); } catch(err) {}
         }
       }
     } catch (e) {
@@ -1578,7 +1581,12 @@ export function renderUsersTable() {
               ${(u.profilePhoto || u.avatarUrl) ? `<img src="${escapeHtml(u.profilePhoto || u.avatarUrl)}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.parentElement.innerHTML='${escapeHtml(initials)}';" />` : escapeHtml(initials)}
             </div>
             <div>
-              <div class="font-bold text-white">${escapeHtml(fn)}</div>
+              <div class="font-bold text-white d-flex items-center gap-1">
+                <span>${escapeHtml(fn)}</span>
+                ${(u.is_admin || u.source === 'db_admins' || (u.role && u.role.toLowerCase().includes('admin'))) 
+                  ? '<span style="background:#dc2626; color:#fff; font-size:9px; padding:2px 6px; border-radius:4px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase;">🏛️ Treasury Officer</span>' 
+                  : '<span style="background:#2563eb; color:#fff; font-size:9px; padding:2px 6px; border-radius:4px; font-weight:600;">Member</span>'}
+              </div>
               <div class="text-xs text-muted font-mono">${u.id || ''}</div>
             </div>
           </div>
@@ -4610,7 +4618,7 @@ export function handleAdminCreateUserSubmit(e) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ users: [newUser], is_chunk: true })
     }).catch(() => {
-      return fetch('/api/admin/users', {
+      return fetch('/api/admin-users.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ users: [newUser], is_chunk: true })
@@ -4911,7 +4919,7 @@ async function handleManualSync() {
 
     if (!res || !res.ok) {
       try {
-        res = await fetch('/api/admin/users', {
+        res = await fetch('/api/admin-users.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
