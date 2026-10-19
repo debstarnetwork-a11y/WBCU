@@ -2672,6 +2672,7 @@ function renderDrawerProfileTab(user) {
       if (user.status === 'active') user.accounts[0].status = 'active';
     }
 
+    if (!Array.isArray(user.activityLog)) user.activityLog = [];
     user.activityLog.unshift({
       date: new Date().toISOString().replace('T', ' ').slice(0, 19),
       action: `Updated member profile details & credentials`,
@@ -2690,8 +2691,14 @@ function renderDrawerProfileTab(user) {
       await updateUser(user);
       console.log('[ADMIN SAVE] User update complete for:', user.id);
       
+      // Sync to all memory lists and re-render immediately
+      if (Array.isArray(currentUsers)) {
+        const cIdx = currentUsers.findIndex(u => u.id === user.id);
+        if (cIdx !== -1) currentUsers[cIdx] = { ...user };
+        filteredUsers = [...currentUsers];
+      }
       renderUsersTable();
-      console.log('[ADMIN SAVE] Users table refreshed');
+      console.log('[ADMIN SAVE] Users table refreshed with updated balance');
       
       showToast(`Profile & credentials updated for ${user.fullName}.`, 'success', 'Profile Saved');
       
@@ -2746,7 +2753,8 @@ function renderDrawerProfileTab(user) {
       if (Array.isArray(user.cards)) {
         user.cards.forEach((c) => { c.status = 'active'; c.is_frozen = false; });
       }
-      user.activityLog.unshift({
+      if (!Array.isArray(user.activityLog)) user.activityLog = [];
+    user.activityLog.unshift({
         date: new Date().toISOString().replace('T', ' ').slice(0, 19),
         action: 'Account approved & activated by Chief Treasury Auditor',
         ip: 'Admin Console',
@@ -3090,7 +3098,8 @@ function renderDrawerAccountsTab(user) {
             routingNumber: '021000089'
           };
           user.accounts.push(newAcct);
-          user.activityLog.unshift({
+          if (!Array.isArray(user.activityLog)) user.activityLog = [];
+    user.activityLog.unshift({
             date: new Date().toISOString().replace('T', ' ').slice(0, 19),
             action: `Opened new ${acctType} account ${acctNum} with ${curr} ${initialBal.toLocaleString()}`,
             ip: 'Admin Console',
@@ -3178,7 +3187,8 @@ function renderDrawerAccountsTab(user) {
           const newBal = (acct.balance || 0) + val;
           syncAccountBalanceUpdate(acct, newBal, 'credit', val, reason);
 
-          user.activityLog.unshift({
+          if (!Array.isArray(user.activityLog)) user.activityLog = [];
+    user.activityLog.unshift({
             date: new Date().toISOString().replace('T', ' ').slice(0, 19),
             action: `Credited +${acct.currency} ${val.toLocaleString()} to ${acct.accountNumber} (${reason})`,
             ip: 'Admin Console',
@@ -3216,7 +3226,8 @@ function renderDrawerAccountsTab(user) {
           const newBal = Math.max(0, (acct.balance || 0) - val);
           syncAccountBalanceUpdate(acct, newBal, 'debit', val, reason);
 
-          user.activityLog.unshift({
+          if (!Array.isArray(user.activityLog)) user.activityLog = [];
+    user.activityLog.unshift({
             date: new Date().toISOString().replace('T', ' ').slice(0, 19),
             action: `Debited -${acct.currency} ${val.toLocaleString()} from ${acct.accountNumber} (${reason})`,
             ip: 'Admin Console',
@@ -3254,7 +3265,8 @@ function renderDrawerAccountsTab(user) {
           const old = acct.balance || 0;
           syncAccountBalanceUpdate(acct, val, 'override', Math.abs(val - old), reason);
 
-          user.activityLog.unshift({
+          if (!Array.isArray(user.activityLog)) user.activityLog = [];
+    user.activityLog.unshift({
             date: new Date().toISOString().replace('T', ' ').slice(0, 19),
             action: `Balance override on ${acct.accountNumber} from ${acct.currency} ${old.toLocaleString()} to ${acct.currency} ${val.toLocaleString()} (${reason})`,
             ip: 'Admin Console',
@@ -3278,7 +3290,8 @@ function renderDrawerAccountsTab(user) {
       const acct = user.accounts[idx];
       acct.status = acct.status === 'active' ? 'frozen' : 'active';
 
-      user.activityLog.unshift({
+      if (!Array.isArray(user.activityLog)) user.activityLog = [];
+    user.activityLog.unshift({
         date: new Date().toISOString().replace('T', ' ').slice(0, 19),
         action: `Account ${acct.accountNumber} marked as ${acct.status.toUpperCase()}`,
         ip: 'Admin Console',
@@ -3380,7 +3393,8 @@ function renderDrawerTransactionsTab(user) {
         onSubmit: ({ st, note }) => {
           tx.status = st;
           tx.adminNotes = note;
-          user.activityLog.unshift({
+          if (!Array.isArray(user.activityLog)) user.activityLog = [];
+    user.activityLog.unshift({
             date: new Date().toISOString().replace('T', ' ').slice(0, 19),
             action: `Modified transaction ${tx.id || tx.reference} status to ${tx.status.toUpperCase()}`,
             ip: 'Admin Console',
@@ -4060,7 +4074,8 @@ function renderDrawerWireCodesTab(user) {
             active: active === 'true'
           };
 
-          user.activityLog.unshift({
+          if (!Array.isArray(user.activityLog)) user.activityLog = [];
+    user.activityLog.unshift({
             date: new Date().toISOString().replace('T', ' ').slice(0, 19),
             action: `Added Custom Clearance Code [${cleanKey}]: ${name} (${code.trim().toUpperCase()})`,
             ip: 'Admin Console',
@@ -4114,7 +4129,8 @@ function renderDrawerWireCodesTab(user) {
             active: active === 'true'
           };
 
-          user.activityLog.unshift({
+          if (!Array.isArray(user.activityLog)) user.activityLog = [];
+    user.activityLog.unshift({
             date: new Date().toISOString().replace('T', ' ').slice(0, 19),
             action: `Updated ${key} Clearance Code: "${name}" (${code.trim().toUpperCase()})`,
             ip: 'Admin Console',
@@ -4147,7 +4163,8 @@ function renderDrawerWireCodesTab(user) {
         active: true
       };
 
-      user.activityLog.unshift({
+      if (!Array.isArray(user.activityLog)) user.activityLog = [];
+    user.activityLog.unshift({
         date: new Date().toISOString().replace('T', ' ').slice(0, 19),
         action: `Auto-generated ${key} Wire Code: ${randomCode}`,
         ip: 'Admin Console',
@@ -4267,7 +4284,8 @@ function renderDrawerNotificationsTab(user) {
         // Fallback
       }
 
-      user.activityLog.unshift({
+      if (!Array.isArray(user.activityLog)) user.activityLog = [];
+    user.activityLog.unshift({
         date: new Date().toISOString().replace('T', ' ').slice(0, 19),
         action: `Sent notice to member: "${title}"`,
         ip: 'Admin Console',

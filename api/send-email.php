@@ -11,6 +11,19 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 
+
+function readSmtpResponse($socket) {
+    $res = '';
+    while ($line = fgets($socket, 515)) {
+        $res .= $line;
+        // In SMTP, a multi-line reply has '-' as the 4th character (e.g. '250-')
+        // The final reply line has a space ' ' (e.g. '250 ')
+        if (isset($line[3]) && $line[3] === ' ') break;
+        if (strlen(trim($line)) === 3) break;
+    }
+    return $res;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
@@ -34,6 +47,41 @@ if (empty($to)) {
 if (empty($html)) {
     $html = "<p>A transaction has occurred on your WB Credit Finance account. Please check your banking dashboard for details.</p>";
 }
+
+
+// Wrap message in official branded template with high-res logo
+$logoUrl = 'https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png';
+$brandedTemplate = "
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0b1329; margin: 0; padding: 25px; color: #f8fafc; }
+    .card { max-width: 580px; margin: 0 auto; background: #0f172a; border: 1px solid rgba(16,185,129,0.35); border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .header { background: #0a0f1d; padding: 25px; text-align: center; border-bottom: 2px solid #2563eb; }
+    .body { padding: 30px; font-size: 0.95rem; line-height: 1.6; color: #e2e8f0; }
+    .footer { background: #060a14; padding: 20px; text-align: center; font-size: 0.75rem; color: #64748b; border-top: 1px solid rgba(255,255,255,0.06); }
+  </style>
+</head>
+<body>
+  <div class='card'>
+    <div class='header'>
+      <img src='{$logoUrl}' alt='{$fromName}' style='height:44px; width:auto; max-width:180px; object-fit:contain; margin-bottom:8px; display:inline-block;' /><br/>
+      <span style='color:#94a3b8; font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;'>{$fromName} &bull; Institutional Banking Notice</span>
+    </div>
+    <div class='body'>
+      {$html}
+    </div>
+    <div class='footer'>
+      &copy; " . date('Y') . " {$fromName}. All transactional notices are cryptographically logged.
+    </div>
+  </div>
+</body>
+</html>
+";
+
+$html = $brandedTemplate;
 
 // 1. Determine Sender
 $fromEmail = !empty($smtp['fromEmail']) ? $smtp['fromEmail'] : (!empty($smtp['user']) ? $smtp['user'] : 'info@wbcu.net');
@@ -59,41 +107,41 @@ if (!empty($smtpHost) && !empty($smtpPass)) {
         $socket = @stream_socket_client($prefix . $smtpHost . ':' . $smtpPort, $errno, $errstr, $timeout, STREAM_CLIENT_CONNECT, $context);
 
         if ($socket) {
-            $read = fgets($socket, 515);
+            $read = readSmtpResponse($socket);
             fputs($socket, "EHLO " . ($_SERVER['SERVER_NAME'] ?? 'wbcu.net') . "
 ");
-            $read = fgets($socket, 515);
+            $read = readSmtpResponse($socket);
 
             if ($smtpPort === 587) {
                 fputs($socket, "STARTTLS
 ");
-                $read = fgets($socket, 515);
+                $read = readSmtpResponse($socket);
                 stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
                 fputs($socket, "EHLO " . ($_SERVER['SERVER_NAME'] ?? 'wbcu.net') . "
 ");
-                $read = fgets($socket, 515);
+                $read = readSmtpResponse($socket);
             }
 
             fputs($socket, "AUTH LOGIN
 ");
-            $read = fgets($socket, 515);
+            $read = readSmtpResponse($socket);
             fputs($socket, base64_encode($smtpUser) . "
 ");
-            $read = fgets($socket, 515);
+            $read = readSmtpResponse($socket);
             fputs($socket, base64_encode($smtpPass) . "
 ");
-            $authRes = fgets($socket, 515);
+            $authRes = readSmtpResponse($socket);
 
             if (strpos($authRes, '235') !== false) {
                 fputs($socket, "MAIL FROM: <{$fromEmail}>
 ");
-                $read = fgets($socket, 515);
+                $read = readSmtpResponse($socket);
                 fputs($socket, "RCPT TO: <{$to}>
 ");
-                $read = fgets($socket, 515);
+                $read = readSmtpResponse($socket);
                 fputs($socket, "DATA
 ");
-                $read = fgets($socket, 515);
+                $read = readSmtpResponse($socket);
 
                 $msg = "MIME-Version: 1.0
 ";
@@ -113,7 +161,7 @@ if (!empty($smtpHost) && !empty($smtpPass)) {
 ";
 
                 fputs($socket, $msg);
-                $dataRes = fgets($socket, 515);
+                $dataRes = readSmtpResponse($socket);
                 fputs($socket, "QUIT
 ");
                 fclose($socket);

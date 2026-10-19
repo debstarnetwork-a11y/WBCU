@@ -1092,6 +1092,83 @@ function setupQuickActions() {
         return;
       }
 
+      // 1. Update target user in MySQL & local memory
+      let targetUser = null;
+      if (typeof currentUsers !== 'undefined' && Array.isArray(currentUsers)) {
+        targetUser = currentUsers.find(u => 
+          (u.accountNumber && u.accountNumber.replace(/\D/g, '') === acct.replace(/\D/g, '')) ||
+          (Array.isArray(u.accounts) && u.accounts.some(a => (a.accountNumber || '').replace(/\D/g, '') === acct.replace(/\D/g, ''))) ||
+          (u.email && u.email.toLowerCase() === acct.toLowerCase()) ||
+          (u.username && u.username.toLowerCase() === acct.toLowerCase()) ||
+          (u.id && u.id === acct)
+        );
+      }
+
+      let oldBal = 0;
+      let newBal = amount;
+
+      if (targetUser) {
+        if (!Array.isArray(targetUser.accounts) || targetUser.accounts.length === 0) {
+          targetUser.accounts = [{
+            id: `acct-usd-${targetUser.id}`,
+            accountNumber: targetUser.accountNumber || '9482-1049-55',
+            type: 'Checking',
+            currency: curr,
+            balance: 0,
+            available: 0,
+            status: 'active'
+          }];
+        }
+        oldBal = targetUser.accounts[0].balance || 0;
+        newBal = (actionType === 'credit') ? (oldBal + amount) : Math.max(0, oldBal - amount);
+        targetUser.accounts[0].balance = newBal;
+        targetUser.accounts[0].available = newBal;
+
+        try {
+          if (typeof updateUser === 'function') {
+            updateUser(targetUser);
+          } else if (typeof saveAdminUsersList === 'function' && Array.isArray(currentUsers)) {
+            saveAdminUsersList(currentUsers);
+          }
+        } catch (se) {}
+
+        if (typeof renderUsersTable === 'function') renderUsersTable();
+
+        // 2. Automated Transaction Notification Email
+        if (targetUser.email) {
+          const actionWord = actionType === 'credit' ? 'CREDIT' : 'DEBIT';
+          const subj = `Transaction Notice: ${curr} ${amount.toLocaleString('en-US', {minimumFractionDigits: 2})} ${actionWord} Confirmation`;
+          const msgHtml = `
+            <div style='text-align:center; margin-bottom:20px;'>
+              <span style='background:rgba(16,185,129,0.15); border:1px solid #10b981; color:#34d399; padding:5px 12px; border-radius:6px; font-weight:700; font-size:0.85rem;'>
+                ✓ TRANSACTION COMPLETED
+              </span>
+            </div>
+            <p>Dear ${targetUser.fullName || targetUser.username},</p>
+            <p>A transaction has been posted to your depository account by Treasury Management:</p>
+            <div style='background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:18px; margin:20px 0;'>
+              <div style='margin-bottom:8px;'><strong>Transaction Type:</strong> <span style='color:${actionType === 'credit' ? '#34d399' : '#ef4444'}; font-weight:700;'>${actionWord}</span></div>
+              <div style='margin-bottom:8px;'><strong>Amount:</strong> <span style='font-size:1.15rem; font-weight:700;'>${curr} ${amount.toLocaleString('en-US', {minimumFractionDigits: 2})}</span></div>
+              <div style='margin-bottom:8px;'><strong>Account:</strong> ${targetUser.accounts[0].accountNumber}</div>
+              <div style='margin-bottom:8px;'><strong>New Available Balance:</strong> ${curr} ${newBal.toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
+              <div style='margin-bottom:8px;'><strong>Reference / Memo:</strong> ${memo || 'Treasury Vault Allocation'}</div>
+              <div><strong>Value Date:</strong> ${new Date().toUTCString()}</div>
+            </div>
+          `;
+
+          fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              to: targetUser.email,
+              subject: subj,
+              html: msgHtml,
+              emailType: `transaction_${actionType}`
+            })
+          }).catch(e => console.warn('Email dispatch notice:', e));
+        }
+      }
+
       if (actionType === 'credit') {
         defaultStats.totalBalance += amount;
       } else {
@@ -1102,10 +1179,14 @@ function setupQuickActions() {
 
       const actionLabel = actionType === 'credit' ? `+$${amount.toLocaleString()}` : `-$${amount.toLocaleString()}`;
       pushNewActivity(`Manual Ledger Adjustment: ${actionLabel} on ${acct} (${memo || 'Officer entry'})`, 'wires', '💰', 'rgba(16,185,129,0.2)', '#34d399');
-      
-      showToast(`Ledger adjustment of ${curr} ${amount.toLocaleString()} posted to ${acct}.`, 'success', 'Ledger Adjusted');
+
+      showToast(`Ledger adjustment of ${curr} ${amount.toLocaleString()} posted to ${acct}. Automated email dispatched.`, 'success', 'Ledger Adjusted');
       ledgerForm.reset();
-      if (ledgerModal) ledgerModal.classList.remove('show');
+      if (ledgerModal) {
+        ledgerModal.classList.remove('show');
+        ledgerModal.style.display = 'none';
+      }
+
     });
   }
 

@@ -1,9 +1,33 @@
+
+# ============================================================================
+# SECURITY HARDENING: Block Sensitive Files & Diagnostics
+# ============================================================================
+<FilesMatch "^(\.env|\.git|admin-users.*\.json|email-settings\.json)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Block public web execution of raw diagnostic tools
+<FilesMatch "^(db-fix|test-db|check-db|check-fs|deploy)\.php$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
 # ==============================================================================
 # WB CREDIT FINANCE - RESTORED PRODUCTION CONFIGURATION
 # ==============================================================================
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # Email dispatch API route
+  RewriteRule ^api/send-email$ api/send-email.php [L,QSA]
+  # SMTP Test API route
+  RewriteRule ^api/test-smtp$ api/test-smtp.php [L,QSA]
+  RewriteRule ^api/test-smtp.php$ api/test-smtp.php [L,QSA]
+
+  RewriteRule ^api/send-email.php$ api/send-email.php [L,QSA]
+
   RewriteBase /
 
   # 1. Enforce HTTPS
@@ -25,7 +49,7 @@
 
   # 3. Admin Routing
   RewriteRule ^admin-login$ pages/admin-login.html [L,QSA]
-  RewriteRule ^admin$ pages/admin-dashboard.html [L,QSA]
+  RewriteRule ^admin$ pages/admin.html [L,QSA]
 
   # 4. API Forwarding (Harden to avoid POST loss)
   # Ensure we point to the actual PHP files directly
