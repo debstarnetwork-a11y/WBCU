@@ -1262,12 +1262,17 @@ export async function initAdminUserManagement() {
       console.warn('Server users fetch notice:', e);
     }
 
-    const list = getAdminUsersList();
-    currentUsers = Array.isArray(list) ? list : [];
-    console.log('[ADMIN USERS] Loaded users:', currentUsers.length);
+    // Only fall back to local list if server fetch returned nothing
+    if (!currentUsers || currentUsers.length === 0) {
+      const list = getAdminUsersList();
+      currentUsers = Array.isArray(list) ? list : [];
+      console.log('[ADMIN USERS] Fallback to cached users:', currentUsers.length);
+    } else {
+      console.log('[ADMIN USERS] Active MySQL live users:', currentUsers.length);
+    }
   } catch (e) {
     console.error('[ADMIN USERS] Failed to load users:', e);
-    currentUsers = [];
+    if (!currentUsers || currentUsers.length === 0) currentUsers = [];
   }
   filteredUsers = [...currentUsers];
 
@@ -2653,16 +2658,14 @@ function renderDrawerProfileTab(user) {
     const newAcctType = document.getElementById('editUserAcctType')?.value;
     const newAcctBal = parseFloat(document.getElementById('editUserAcctBalance')?.value || '0');
 
+
+    // Determine old balance vs new balance for automatic transaction receipt email
+    const oldPrimaryBal = (Array.isArray(user.accounts) && user.accounts[0]) ? (parseFloat(user.accounts[0].balance) || 0) : 0;
+    const isBalanceChanged = (newAcctBal !== oldPrimaryBal);
+
     if (!Array.isArray(user.accounts) || user.accounts.length === 0) {
       user.accounts = [
-        { id: `acct-usd-${user.id || 'usr'}`, accountNumber: newAcctNum || '9482-1049-55', type: newAcctType || 'Checking', name: 'US Dollar Primary Vault', currency: 'USD', balance: newAcctBal, available: newAcctBal, status: user.status || 'active', routingNumber: '021000089', isPrimary: true },
-        { id: `acct-eur-${user.id || 'usr'}`, accountNumber: `WB-EUR-${Math.floor(1000 + Math.random() * 9000)}`, type: 'Offshore', name: 'Euro Global Holding Vault', currency: 'EUR', balance: 0.00, available: 0.00, status: user.status || 'active', routingNumber: '021000089' },
-        { id: `acct-gbp-${user.id || 'usr'}`, accountNumber: `WB-GBP-${Math.floor(1000 + Math.random() * 9000)}`, type: 'Offshore', name: 'British Pound Sterling Vault', currency: 'GBP', balance: 0.00, available: 0.00, status: user.status || 'active', routingNumber: '021000089' },
-        { id: `acct-chf-${user.id || 'usr'}`, accountNumber: `WB-CHF-${Math.floor(1000 + Math.random() * 9000)}`, type: 'Offshore', name: 'Swiss Franc Reserve Vault', currency: 'CHF', balance: 0.00, available: 0.00, status: user.status || 'active', routingNumber: '021000089' },
-        { id: `acct-cad-${user.id || 'usr'}`, accountNumber: `WB-CAD-${Math.floor(1000 + Math.random() * 9000)}`, type: 'Business', name: 'Canadian Dollar Commercial Vault', currency: 'CAD', balance: 0.00, available: 0.00, status: user.status || 'active', routingNumber: '021000089' },
-        { id: `acct-aud-${user.id || 'usr'}`, accountNumber: `WB-AUD-${Math.floor(1000 + Math.random() * 9000)}`, type: 'Business', name: 'Australian Dollar Treasury Vault', currency: 'AUD', balance: 0.00, available: 0.00, status: user.status || 'active', routingNumber: '021000089' },
-        { id: `acct-jpy-${user.id || 'usr'}`, accountNumber: `WB-JPY-${Math.floor(1000 + Math.random() * 9000)}`, type: 'Business', name: 'Japanese Yen Multi-Asset Vault', currency: 'JPY', balance: 0.00, available: 0.00, status: user.status || 'active', routingNumber: '021000089' },
-        { id: `acct-ngn-${user.id || 'usr'}`, accountNumber: `WB-NGN-${Math.floor(1000 + Math.random() * 9000)}`, type: 'Savings', name: 'Nigerian Naira International Vault', currency: 'NGN', balance: 0.00, available: 0.00, status: user.status || 'active', routingNumber: '021000089' },
+        { id: `acct-usd-${user.id || 'usr'}`, accountNumber: newAcctNum || '9482-1049-55', type: newAcctType || 'Checking', name: 'US Dollar Primary Vault', currency: 'USD', balance: newAcctBal, available: newAcctBal, status: user.status || 'active', routingNumber:'021000089', isPrimary: true }
       ];
     } else {
       if (newAcctNum) user.accounts[0].accountNumber = newAcctNum;
@@ -2670,12 +2673,17 @@ function renderDrawerProfileTab(user) {
       user.accounts[0].balance = newAcctBal;
       user.accounts[0].available = newAcctBal;
       if (user.status === 'active') user.accounts[0].status = 'active';
+
+      // If user had secondary accounts that caused the balance mismatch, ensure primary matches
+      if (user.accounts.length > 1 && newAcctBal === 0) {
+        user.accounts.forEach(a => { a.balance = 0; a.available = 0; });
+      }
     }
 
     if (!Array.isArray(user.activityLog)) user.activityLog = [];
     user.activityLog.unshift({
       date: new Date().toISOString().replace('T', ' ').slice(0, 19),
-      action: `Updated member profile details & credentials`,
+      action: `Updated member profile details & balance to ${newAcctBal}`,
       ip: 'Admin Console',
       officer: 'Chief Treasury Auditor'
     });
@@ -2683,15 +2691,15 @@ function renderDrawerProfileTab(user) {
     const originalText = saveBtn ? saveBtn.innerHTML : '';
     if (saveBtn) {
       saveBtn.disabled = true;
-      saveBtn.innerHTML = '<span>⚡ PROCESSING...</span>';
+      saveBtn.innerHTML = '<span>⚡ EXECUTING &amp; SAVING...</span>';
     }
 
     try {
       console.log('[ADMIN SAVE] Starting profile save for:', user.id);
       await updateUser(user);
       console.log('[ADMIN SAVE] User update complete for:', user.id);
-      
-      // Sync to all memory lists and re-render immediately
+
+      // Refresh memory & table immediately
       if (Array.isArray(currentUsers)) {
         const cIdx = currentUsers.findIndex(u => u.id === user.id);
         if (cIdx !== -1) currentUsers[cIdx] = { ...user };
@@ -2699,17 +2707,52 @@ function renderDrawerProfileTab(user) {
       }
       renderUsersTable();
       console.log('[ADMIN SAVE] Users table refreshed with updated balance');
-      
-      showToast(`Profile & credentials updated for ${user.fullName}.`, 'success', 'Profile Saved');
-      
-      // Small delay to ensure storage sync before re-opening
+
+      // Dispatch automated credit/debit email if balance was updated
+      if (isBalanceChanged && user.email) {
+        const diff = Math.abs(newAcctBal - oldPrimaryBal);
+        const actionWord = newAcctBal > oldPrimaryBal ? 'CREDIT' : 'DEBIT';
+        const subj = `Transaction Notice: $${diff.toLocaleString('en-US', {minimumFractionDigits: 2})} ${actionWord} Confirmation`;
+        const emailMsg = `
+          <div style='text-align:center; margin-bottom:20px;'>
+            <span style='background:rgba(16,185,129,0.15); border:1px solid #10b981; color:#34d399; padding:5px 12px; border-radius:6px; font-weight:700; font-size:0.85rem;'>
+              ✓ TRANSACTION COMPLETED
+            </span>
+          </div>
+          <p>Dear ${user.fullName || user.username},</p>
+          <p>Your depository vault balance has been updated by Treasury Management:</p>
+          <div style='background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:18px; margin:20px 0;'>
+            <div style='margin-bottom:8px;'><strong>Transaction:</strong> <span style='color:${newAcctBal > oldPrimaryBal ? '#34d399' : '#ef4444'}; font-weight:700;'>${actionWord}</span></div>
+            <div style='margin-bottom:8px;'><strong>Adjustment Amount:</strong> <span style='font-size:1.15rem; font-weight:700;'>$${diff.toLocaleString('en-US', {minimumFractionDigits: 2})}</span></div>
+            <div style='margin-bottom:8px;'><strong>Account:</strong> ${user.accounts[0].accountNumber}</div>
+            <div style='margin-bottom:8px;'><strong>New Available Balance:</strong> $${newAcctBal.toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
+            <div><strong>Value Date:</strong> ${new Date().toUTCString()}</div>
+          </div>
+          <p style='font-size:0.85rem; color:#94a3b8;'>Your online banking dashboard has been synchronized with the latest ledger entry.</p>
+        `;
+
+        fetch('/api/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to: user.email,
+            subject: subj,
+            html: emailMsg,
+            emailType: `transaction_${actionWord.toLowerCase()}`
+          })
+        }).catch(e => console.warn('Email dispatch notice:', e));
+      }
+
+      showToast(`Profile & balance updated for ${user.fullName}. Notification sent.`, 'success', 'Profile Saved');
+
       setTimeout(() => {
         if (saveBtn) {
           saveBtn.disabled = false;
           saveBtn.innerHTML = originalText;
         }
         openUserDetailDrawer(user.id);
-      }, 300);
+      }, 400);
+
     } catch (err) {
       console.error('[SAVE PROFILE ERROR]', err);
       showToast('An error occurred while saving the profile.', 'error', 'Save Failed');

@@ -195,7 +195,7 @@ if (file_exists($jsonFile)) {
 if ($pdo) {
     try {
         // A. Load Accounts Map
-        $dbAccts = $pdo->query("SELECT * FROM `accounts`")->fetchAll();
+        $dbAccts = $pdo->query("SELECT * FROM `accounts` ORDER BY is_primary DESC, balance DESC, id ASC")->fetchAll();
         $acctMap = [];
         foreach ($dbAccts as $a) {
             $acctMap[$a['user_id']][] = [
