@@ -2141,8 +2141,10 @@
   padding: 1rem;
 }
 
-.modal-overlay.is-active {
-  display: flex;
+.modal-overlay.is-active,
+.modal-overlay.show {
+  display: flex !important;
+  z-index: 99999 !important;
   animation: fadeIn 0.25s ease-out;
 }
 
