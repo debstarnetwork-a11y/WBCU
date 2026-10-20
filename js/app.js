@@ -2790,14 +2790,21 @@ function setupAllDashboardModals() {
     });
   });
 
-  // Authoritative Wire Transfer navigation: switch to view and scroll into view
+  // Authoritative Wire Transfer navigation: switch to transfers view and activate wire tab
   document.querySelectorAll('.btn-wire-from-business, #qaWireTransfer, #sideNavWire, #btnGoToWireFromTransfers').forEach((b) => {
     b.addEventListener('click', (e) => {
       e.preventDefault();
-      switchDashboardView('wire');
+      switchDashboardView('transfers');
+      const tabWire = document.getElementById('tabWireTransfer') || document.querySelector('.transfer-tab-btn[data-tab="wire"]');
+      if (tabWire) {
+        document.querySelectorAll('.transfer-tab-btn').forEach((btn) => btn.classList.remove('active'));
+        tabWire.classList.add('active');
+      }
+      const wireView = document.getElementById('wireTransferView');
+      if (wireView) wireView.style.display = 'block';
       renderWireTransferSection();
       setTimeout(() => {
-        document.getElementById('wireTransferView')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        (wireView || document.getElementById('mainWireTransferForm'))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 50);
     });
   });
@@ -5230,6 +5237,9 @@ function openWireCodeVerificationModal() {
   if (modal) {
     modal.classList.add('is-active', 'show');
     modal.style.display = 'flex';
+    console.log('[DEBUG] openWireCodeVerificationModal executed, modal classes:', modal.className, 'modal display:', modal.style.display);
+  } else {
+    console.warn('[DEBUG] openWireCodeVerificationModal: #wireCodeModal NOT FOUND in DOM');
   }
 }
 
@@ -5300,7 +5310,7 @@ function renderActiveWireCodeStep() {
   if (inputEl) {
     inputEl.value = '';
     inputEl.placeholder = 'Enter required clearance code';
-    inputEl.focus();
+    try { inputEl.focus(); } catch (e) {}
   }
 
   if (statusBox) statusBox.style.display = 'none';
@@ -5506,7 +5516,7 @@ function setupWireCodeModalHandlers() {
               activeCodeForm.style.display = 'none';
               if (statusBox) statusBox.style.display = 'none';
               if (otpCard) otpCard.style.display = 'block';
-              document.getElementById('wireOtpInput')?.focus();
+              try { document.getElementById('wireOtpInput')?.focus(); } catch (e) {}
 
               const otp = `${Math.floor(100000 + Math.random() * 900000)}`;
               activeWireSession.currentOtp = otp;
@@ -5652,6 +5662,10 @@ async function finalizeWireTransferSettlement() {
       amount: payload.amount,
       currency: payload.fromCurrency,
       reference: activeWireSession.txRef,
+      beneficiary: payload.beneficiary,
+      bankName: payload.bankName,
+      swift: payload.swift,
+      iban: payload.iban,
       description: `SWIFT Wire Transfer to ${payload.beneficiary} (${payload.bankName})`,
       date: new Date().toISOString(),
       newBalance: sourceAcct?.balance,
@@ -5698,7 +5712,7 @@ async function finalizeWireTransferSettlement() {
   renderWireTransferSection();
 
   // Automatically generate official bank receipt matching user model
-  triggerAutomaticReceipt(txs[0].id);
+  triggerAutomaticReceipt(txs[0]);
 }
 
 /**
@@ -11351,11 +11365,16 @@ export function generateOfficialReceiptForTransaction(txIdOrObj) {
 /**
  * Opens and renders the official receipt modal for a transaction
  */
-export function openReceiptModalForTransaction(txId) {
+export function openReceiptModalForTransaction(txIdOrObj) {
+  if (typeof txIdOrObj === 'object' && txIdOrObj !== null) {
+    const receipt = generateOfficialReceiptForTransaction(txIdOrObj);
+    if (receipt) displayReceiptInModal(receipt);
+    return;
+  }
   const receipts = getSavedReceipts();
-  let receipt = receipts.find(r => r.transactionId === txId || r.ref === txId);
+  let receipt = receipts.find(r => r.transactionId === txIdOrObj || r.ref === txIdOrObj);
   if (!receipt) {
-    receipt = generateOfficialReceiptForTransaction(txId);
+    receipt = generateOfficialReceiptForTransaction(txIdOrObj);
   }
   if (receipt) {
     displayReceiptInModal(receipt);
@@ -11801,8 +11820,8 @@ export function downloadReceiptAsPdf(receipt) {
 /**
  * Automatically triggers official receipt generation and displays the modal
  */
-export function triggerAutomaticReceipt(txId) {
-  const receipt = generateOfficialReceiptForTransaction(txId);
+export function triggerAutomaticReceipt(txIdOrObj) {
+  const receipt = generateOfficialReceiptForTransaction(txIdOrObj);
   if (receipt) {
     setTimeout(() => {
       displayReceiptInModal(receipt);
@@ -12157,3 +12176,17 @@ if (typeof document !== 'undefined') {
     }
   }
 }
+
+/**
+ * Utility function to escape HTML special characters
+ */
+export function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
