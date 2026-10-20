@@ -712,27 +712,7 @@ export async function initDashboardPage() {
   // 9. Setup Search & Quick Filters
   setupDashboardSearch();
 
-  // 10. Global Event Delegation for Fail-Safe Transfer & Wire Submit Buttons
-  document.addEventListener('click', (e) => {
-    const target = e.target.closest('#btnInitiateWireTransfer, #btnInitiateWire, #btnSubmitRegularTransfer');
-    if (target) {
-      if (e.defaultPrevented) return;
-      e.preventDefault();
-      if (target.id === 'btnInitiateWireTransfer' || target.id === 'btnInitiateWire') {
-        setupWireTransferController();
-        const wireForm = document.getElementById('mainWireTransferForm');
-        if (wireForm && typeof wireForm.onsubmit === 'function') {
-          wireForm.onsubmit(e);
-        }
-      } else if (target.id === 'btnSubmitRegularTransfer') {
-        setupTransfersController();
-        const regForm = document.getElementById('mainTransferForm');
-        if (regForm && typeof regForm.onsubmit === 'function') {
-          regForm.onsubmit(e);
-        }
-      }
-    }
-  });
+
 
   // Check URL Hash for initial view (e.g. #accounts, #deposit, #transfers, #wire, #crypto, #grants, #loans, #cards, #transactions, #receipts, #notifications, #settings, #security)
   if (window.location.hash === '#accounts') {
@@ -4047,118 +4027,130 @@ export function setupTransfersController() {
   if (btnLookup) btnLookup.onclick = performMemberLookup;
 
   // Main Transfer Form Submit Handler -> Validates available balance, then opens PIN confirmation modal
-  const handleRegularTransferSubmit = (e) => {
+  const handleRegularTransferSubmit = async (e) => {
     if (e) e.preventDefault();
 
-    const accounts = getUserAccounts();
-    const fromId = fromSelect?.value;
-    const sourceAcct = accounts.find((a) => a.id === fromId || a.accountNumber === fromId) || accounts[0];
+    const btnSubmit = document.getElementById('btnSubmitRegularTransfer');
+    const btnText = btnSubmit?.querySelector('.btn-text');
+    const btnSpinner = btnSubmit?.querySelector('.btn-spinner');
 
-    if (!sourceAcct) {
-      showToast('Please select a valid source vault account.', 'error');
-      return;
+    // Toggle loading state
+    if (btnText && btnSpinner) {
+      btnText.style.display = 'none';
+      btnSpinner.style.display = 'inline-block';
+      btnSubmit.setAttribute('disabled', 'true');
     }
 
-    const rawAmt = String(document.getElementById('regTransferAmount')?.value || '').replace(/[^0-9.]/g, '');
-    const amount = parseFloat(rawAmt) || 1000;
-    const note = document.getElementById('regTransferNote')?.value?.trim() || 'Personal Transfer';
-    const activeTabBtn = document.querySelector('.transfer-tab-btn.active');
-    const activeTab = activeTabBtn?.getAttribute('data-tab') || 'between_accounts';
+    try {
+      const accounts = getUserAccounts();
+      const fromId = fromSelect?.value;
+      const sourceAcct = accounts.find((a) => a.id === fromId || a.accountNumber === fromId) || accounts[0];
 
-    if (amount <= 0) {
-      showToast('Please enter an amount greater than zero.', 'error');
-      return;
-    }
-
-    const availVal = sourceAcct.available !== undefined ? sourceAcct.available : (sourceAcct.balance || 0);
-    if (amount > availVal) {
-      showToast(
-        `Insufficient available balance in ${sourceAcct.name} (${CURRENCY_SYMBOLS[sourceAcct.currency] || '$'}${availVal.toFixed(2)} available).`,
-        'error',
-        'Declined'
-      );
-      return;
-    }
-
-    let destinationName = '';
-    let destinationDetail = '';
-    let destAcctId = null;
-
-    if (activeTab === 'between_accounts') {
-      const toOwnSelect = document.getElementById('regTransferToOwnAccount');
-      destAcctId = toOwnSelect?.value;
-      let destAcct = accounts.find((a) => a.id === destAcctId);
-      if (!destAcct || destAcct.id === sourceAcct.id) {
-        destAcct = accounts.find((a) => a.id !== sourceAcct.id) || accounts[0];
+      if (!sourceAcct) {
+        showToast('Please select a valid source vault account.', 'error');
+        return;
       }
-      destinationName = `${destAcct.name} (${destAcct.currency})`;
-      destinationDetail = destAcct.accountNumber;
-    } else if (activeTab === 'to_member') {
-      let memberIdent = memberIdentInput?.value?.trim();
-      let memberName = memberNameInput?.value?.trim();
-      if (!memberIdent) memberIdent = '2514809921';
-      if (!memberName) memberName = 'Elena Rostova (Verified Member)';
-      destinationName = memberName;
-      destinationDetail = `Member ID: ${memberIdent}`;
-    } else if (activeTab === 'external_transfer') {
-      let extName = document.getElementById('regTransferExtRecipientName')?.value?.trim() || 'John Doe';
-      let extBank = document.getElementById('regTransferExtBankName')?.value?.trim() || 'Chase Bank';
-      let extRouting = document.getElementById('regTransferExtRouting')?.value?.trim() || '021000021';
-      let extAccount = document.getElementById('regTransferExtAccount')?.value?.trim() || '9045703453';
 
-      destinationName = `${extName} (${extBank})`;
-      destinationDetail = `ABA: ${extRouting} &middot; Acct: ${extAccount}`;
-    } else if (activeTab === 'wire') {
-      const btnWireSubmit = document.getElementById('btnInitiateWireTransfer') || document.getElementById('btnInitiateWire');
-      if (btnWireSubmit) {
-        btnWireSubmit.click();
+      const rawAmt = String(document.getElementById('regTransferAmount')?.value || '').replace(/[^0-9.]/g, '');
+      const amount = parseFloat(rawAmt) || 1000;
+      const note = document.getElementById('regTransferNote')?.value?.trim() || 'Personal Transfer';
+      const activeTabBtn = document.querySelector('.transfer-tab-btn.active');
+      const activeTab = activeTabBtn?.getAttribute('data-tab') || 'between_accounts';
+
+      if (amount <= 0) {
+        showToast('Please enter an amount greater than zero.', 'error');
+        return;
       }
-      return;
+
+      const availVal = sourceAcct.available !== undefined ? sourceAcct.available : (sourceAcct.balance || 0);
+      if (amount > availVal) {
+        showToast(
+          `Insufficient available balance in ${sourceAcct.name} (${CURRENCY_SYMBOLS[sourceAcct.currency] || '$'}${availVal.toFixed(2)} available).`,
+          'error',
+          'Declined'
+        );
+        return;
+      }
+
+      let destinationName = '';
+      let destinationDetail = '';
+      let destAcctId = null;
+
+      if (activeTab === 'between_accounts') {
+        const toOwnSelect = document.getElementById('regTransferToOwnAccount');
+        destAcctId = toOwnSelect?.value;
+        let destAcct = accounts.find((a) => a.id === destAcctId);
+        if (!destAcct || destAcct.id === sourceAcct.id) {
+          destAcct = accounts.find((a) => a.id !== sourceAcct.id) || accounts[0];
+        }
+        destinationName = `${destAcct.name} (${destAcct.currency})`;
+        destinationDetail = destAcct.accountNumber;
+      } else if (activeTab === 'to_member') {
+        let memberIdent = memberIdentInput?.value?.trim();
+        let memberName = memberNameInput?.value?.trim();
+        if (!memberIdent) memberIdent = '2514809921';
+        if (!memberName) memberName = 'Elena Rostova (Verified Member)';
+        destinationName = memberName;
+        destinationDetail = `Member ID: ${memberIdent}`;
+      } else if (activeTab === 'external_transfer') {
+        let extName = document.getElementById('regTransferExtRecipientName')?.value?.trim() || 'John Doe';
+        let extBank = document.getElementById('regTransferExtBankName')?.value?.trim() || 'Chase Bank';
+        let extRouting = document.getElementById('regTransferExtRouting')?.value?.trim() || '021000021';
+        let extAccount = document.getElementById('regTransferExtAccount')?.value?.trim() || '9045703453';
+
+        destinationName = `${extName} (${extBank})`;
+        destinationDetail = `ABA: ${extRouting} &middot; Acct: ${extAccount}`;
+      } else if (activeTab === 'wire') {
+        const btnWireSubmit = document.getElementById('btnInitiateWireTransfer') || document.getElementById('btnInitiateWire');
+        if (btnWireSubmit) {
+          btnWireSubmit.click();
+        }
+        return;
+      }
+
+      let recBank = 'WB Credit Finance';
+      let recName = destinationName;
+      let recAcct = destinationDetail;
+
+      if (activeTab === 'external_transfer') {
+        let extName = document.getElementById('regTransferExtRecipientName')?.value?.trim() || 'John Doe';
+        let extBank = document.getElementById('regTransferExtBankName')?.value?.trim() || 'Chase Bank';
+        let extAccount = document.getElementById('regTransferExtAccount')?.value?.trim() || '9045703453';
+        recName = extName;
+        recBank = extBank;
+        recAcct = extAccount;
+      }
+
+      pendingTransferPayload = {
+        fromId: sourceAcct.id,
+        fromName: sourceAcct.name,
+        fromCurrency: sourceAcct.currency,
+        toId: destAcctId,
+        destinationName,
+        destinationDetail,
+        amount,
+        note,
+        transferType: activeTab,
+        recipientName: recName,
+        recipientBank: recBank,
+        recipientAccount: recAcct,
+        recipientIban: recAcct,
+        requiresOtp: amount >= DOMESTIC_OTP_THRESHOLD,
+      };
+
+      await openTransferConfirmModal(pendingTransferPayload);
+    } finally {
+      // Restore button state
+      if (btnText && btnSpinner) {
+        btnText.style.display = 'inline-block';
+        btnSpinner.style.display = 'none';
+        btnSubmit.removeAttribute('disabled');
+      }
     }
-
-    let recBank = 'WB Credit Finance';
-    let recName = destinationName;
-    let recAcct = destinationDetail;
-
-    if (activeTab === 'external_transfer') {
-      let extName = document.getElementById('regTransferExtRecipientName')?.value?.trim() || 'John Doe';
-      let extBank = document.getElementById('regTransferExtBankName')?.value?.trim() || 'Chase Bank';
-      let extAccount = document.getElementById('regTransferExtAccount')?.value?.trim() || '9045703453';
-      recName = extName;
-      recBank = extBank;
-      recAcct = extAccount;
-    }
-
-    pendingTransferPayload = {
-      fromId: sourceAcct.id,
-      fromName: sourceAcct.name,
-      fromCurrency: sourceAcct.currency,
-      toId: destAcctId,
-      destinationName,
-      destinationDetail,
-      amount,
-      note,
-      transferType: activeTab,
-      recipientName: recName,
-      recipientBank: recBank,
-      recipientAccount: recAcct,
-      recipientIban: recAcct,
-      requiresOtp: amount >= DOMESTIC_OTP_THRESHOLD,
-    };
-
-    openTransferConfirmModal(pendingTransferPayload);
   };
 
   if (mainTransferForm) {
     mainTransferForm.onsubmit = handleRegularTransferSubmit;
-  }
-
-  const btnSubmitReg = document.getElementById('btnSubmitRegularTransfer');
-  if (btnSubmitReg) {
-    btnSubmitReg.onclick = (e) => {
-      e.preventDefault();
-      handleRegularTransferSubmit(e);
-    };
   }
 
   // Setup Confirmation Modal Listeners
@@ -4371,7 +4363,7 @@ export function setupTransferSuccessModalController() {
 /**
  * Opens Transfer PIN & OTP Confirmation Modal
  */
-function openTransferConfirmModal(payload) {
+async function openTransferConfirmModal(payload) {
   const modal = document.getElementById('transferConfirmModal');
   const fromEl = document.getElementById('summaryFromAccount');
   const toEl = document.getElementById('summaryToAccount');
@@ -4407,8 +4399,10 @@ function openTransferConfirmModal(payload) {
     payload.currentOtp = otpCode;
     try {
       const user = getDemoStorageUser();
-      sendOTPEmail(user?.id, otpCode);
-    } catch (e) {}
+      await sendOTPEmail(user?.id, otpCode);
+    } catch (e) {
+      console.warn('Confirmation OTP dispatch note:', e);
+    }
     showToast(`High-value transfer ($${payload.amount.toFixed(2)}). An OTP has been sent to your email.`, 'info', 'OTP Dispatched');
   } else {
     if (otpSection) otpSection.style.display = 'none';
@@ -5115,113 +5109,125 @@ export function setupWireTransferController() {
   const handleWireSubmit = async (e) => {
     if (e) e.preventDefault();
 
-    const accounts = getUserAccounts();
-    const fromId = fromSelect?.value;
-    const sourceAcct = accounts.find((a) => a.id === fromId || a.accountNumber === fromId) || accounts[0];
+    const btnSubmit = document.getElementById('btnInitiateWireTransfer') || document.getElementById('btnInitiateWire');
+    
+    // Toggle loading state
+    if (btnSubmit) {
+      const originalHtml = btnSubmit.innerHTML;
+      btnSubmit.setAttribute('disabled', 'true');
+      btnSubmit.innerHTML = `
+        <svg class="animate-spin h-5 w-5 text-white inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width:20px; height:20px;">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Processing Wire...
+      `;
 
-    if (!sourceAcct) {
-      showToast('Please select a valid source vault account.', 'error');
-      return;
-    }
+      try {
+        const accounts = getUserAccounts();
+        const fromId = fromSelect?.value;
+        const sourceAcct = accounts.find((a) => a.id === fromId || a.accountNumber === fromId) || accounts[0];
 
-    const rawAmtStr = String(amountInput?.value || '').replace(/[^0-9.]/g, '');
-    const amount = parseFloat(rawAmtStr) || 10000;
+        if (!sourceAcct) {
+          showToast('Please select a valid source vault account.', 'error');
+          return;
+        }
 
-    if (amount <= 0) {
-      showToast('Please specify a wire amount greater than zero.', 'error');
-      return;
-    }
+        const rawAmtStr = String(amountInput?.value || '').replace(/[^0-9.]/g, '');
+        const amount = parseFloat(rawAmtStr) || 10000;
 
-    // Available balance soft check
-    const availVal = sourceAcct.available !== undefined ? sourceAcct.available : (sourceAcct.balance || 0);
-    if (amount > availVal) {
-      showToast(
-        `Insufficient available balance in ${sourceAcct.name} (${CURRENCY_SYMBOLS[sourceAcct.currency] || '$'}${availVal.toFixed(2)} available).`,
-        'error',
-        'Wire Declined'
-      );
-      return;
-    }
+        if (amount <= 0) {
+          showToast('Please specify a wire amount greater than zero.', 'error');
+          return;
+        }
 
-    let beneficiary = document.getElementById('wirePageBeneficiaryName')?.value?.trim();
-    let iban = document.getElementById('wirePageIban')?.value?.trim();
-    let swift = swiftInput?.value?.trim()?.toUpperCase();
-    let bankName = document.getElementById('wirePageBankName')?.value?.trim();
-    let bankCountry = document.getElementById('wirePageCountry')?.value?.trim();
-    let bankAddress = document.getElementById('wirePageBankAddress')?.value?.trim();
-    let purpose = document.getElementById('wirePagePurpose')?.value || 'Business';
-    let reference = document.getElementById('wirePageReference')?.value?.trim() || 'Grant';
-    let currency = currencySelect?.value || 'USD';
+        // Available balance soft check
+        const availVal = sourceAcct.available !== undefined ? sourceAcct.available : (sourceAcct.balance || 0);
+        if (amount > availVal) {
+          showToast(
+            `Insufficient available balance in ${sourceAcct.name} (${CURRENCY_SYMBOLS[sourceAcct.currency] || '$'}${availVal.toFixed(2)} available).`,
+            'error',
+            'Wire Declined'
+          );
+          return;
+        }
 
-    // Smart Fallbacks for any missing optional/clearing inputs to guarantee wire progress
-    if (!beneficiary) beneficiary = 'Adam Blaze';
-    if (!iban) iban = '905699003346';
-    if (!swift || swift.length < 3) swift = 'BARCGB22';
-    if (!bankName) bankName = 'Chase Bank';
-    if (!bankCountry) bankCountry = 'United Kingdom';
-    if (!bankAddress) bankAddress = '12 abalasco England';
+        let beneficiary = document.getElementById('wirePageBeneficiaryName')?.value?.trim();
+        let iban = document.getElementById('wirePageIban')?.value?.trim();
+        let swift = swiftInput?.value?.trim()?.toUpperCase();
+        let bankName = document.getElementById('wirePageBankName')?.value?.trim();
+        let bankCountry = document.getElementById('wirePageCountry')?.value?.trim();
+        let bankAddress = document.getElementById('wirePageBankAddress')?.value?.trim();
+        let purpose = document.getElementById('wirePagePurpose')?.value || 'Business';
+        let reference = document.getElementById('wirePageReference')?.value?.trim() || 'Grant';
+        let currency = currencySelect?.value || 'USD';
 
-    // Generate unique transaction reference
-    const txRef = 'WB-WIRE-' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+        // Smart Fallbacks for any missing optional/clearing inputs to guarantee wire progress
+        if (!beneficiary) beneficiary = 'Adam Blaze';
+        if (!iban) iban = '905699003346';
+        if (!swift || swift.length < 3) swift = 'BARCGB22';
+        if (!bankName) bankName = 'Chase Bank';
+        if (!bankCountry) bankCountry = 'United Kingdom';
+        if (!bankAddress) bankAddress = '12 abalasco England';
 
-    // Determine required code steps with user-assigned codes prioritized
-    const curUser = getDemoStorageUser();
-    const requiredCodes = getEffectiveWireCodeSteps(amount, curUser);
-    const requiresOtp = getEffectiveWireRequiresOtp(amount);
+        // Generate unique transaction reference
+        const txRef = 'WB-WIRE-' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
 
-    // Initialize wire session
-    activeWireSession = {
-      wirePayload: {
-        fromId: sourceAcct.id,
-        fromName: sourceAcct.name,
-        fromCurrency: sourceAcct.currency || 'USD',
-        amount,
-        currency,
-        beneficiary,
-        iban,
-        swift,
-        bankName,
-        bankCountry,
-        bankAddress,
-        purpose,
-        reference,
-      },
-      requiredCodeSteps: requiredCodes,
-      currentStepIndex: 0,
-      verifiedCodesList: [],
-      attemptsRemaining: {},
-      txRef,
-      requiresOtp,
-    };
+        // Determine required code steps with user-assigned codes prioritized
+        const curUser = getDemoStorageUser();
+        const requiredCodes = getEffectiveWireCodeSteps(amount, curUser);
+        const requiresOtp = getEffectiveWireRequiresOtp(amount);
 
-    // Set initial 5 attempts for each step
-    requiredCodes.forEach((c) => {
-      activeWireSession.attemptsRemaining[c.stepId] = 5;
-    });
+        // Initialize wire session
+        activeWireSession = {
+          wirePayload: {
+            fromId: sourceAcct.id,
+            fromName: sourceAcct.name,
+            fromCurrency: sourceAcct.currency || 'USD',
+            amount,
+            currency,
+            beneficiary,
+            iban,
+            swift,
+            bankName,
+            bankCountry,
+            bankAddress,
+            purpose,
+            reference,
+          },
+          requiredCodeSteps: requiredCodes,
+          currentStepIndex: 0,
+          verifiedCodesList: [],
+          attemptsRemaining: {},
+          txRef,
+          requiresOtp,
+        };
 
-    if (requiredCodes.length === 0) {
-      if (requiresOtp) {
-        updateWireTrackerUI(3);
-        openWireCodeVerificationModal();
-      } else {
-        finalizeWireTransferSettlement();
+        // Set initial 5 attempts for each step
+        requiredCodes.forEach((c) => {
+          activeWireSession.attemptsRemaining[c.stepId] = 5;
+        });
+
+        if (requiredCodes.length === 0) {
+          if (requiresOtp) {
+            updateWireTrackerUI(3);
+            openWireCodeVerificationModal();
+          } else {
+            finalizeWireTransferSettlement();
+          }
+        } else {
+          updateWireTrackerUI(2);
+          openWireCodeVerificationModal();
+        }
+      } finally {
+        btnSubmit.removeAttribute('disabled');
+        btnSubmit.innerHTML = originalHtml;
       }
-    } else {
-      updateWireTrackerUI(2);
-      openWireCodeVerificationModal();
     }
   };
 
   if (wireForm) {
     wireForm.onsubmit = handleWireSubmit;
-  }
-
-  const btnInitiate = document.getElementById('btnInitiateWireTransfer') || document.getElementById('btnInitiateWire');
-  if (btnInitiate) {
-    btnInitiate.onclick = (e) => {
-      e.preventDefault();
-      handleWireSubmit(e);
-    };
   }
 
   // Setup Code Verification Modal Handlers
@@ -5262,14 +5268,14 @@ function updateWireTrackerUI(stepNumber) {
 /**
  * Opens and renders current step inside Wire Code Verification Modal
  */
-function openWireCodeVerificationModal() {
+async function openWireCodeVerificationModal() {
   const modal = document.getElementById('wireCodeModal');
   const refIndicator = document.getElementById('wireTxRefIndicator');
   if (refIndicator && activeWireSession?.txRef) {
     refIndicator.textContent = `TX-REF: ${activeWireSession.txRef}`;
   }
 
-  const hasModalStep = renderActiveWireCodeStep();
+  const hasModalStep = await renderActiveWireCodeStep();
   if (!hasModalStep) {
     if (modal) {
       modal.classList.remove('is-active', 'show');
@@ -5290,7 +5296,7 @@ function openWireCodeVerificationModal() {
 /**
  * Renders the active code verification step
  */
-function renderActiveWireCodeStep() {
+async function renderActiveWireCodeStep() {
   if (!activeWireSession || !activeWireSession.requiredCodeSteps) return false;
 
   const totalSteps = activeWireSession.requiredCodeSteps.length;
@@ -5321,8 +5327,10 @@ function renderActiveWireCodeStep() {
       activeWireSession.currentOtp = otp;
       try {
         const user = getDemoStorageUser();
-        sendOTPEmail(user?.id, otp);
-      } catch (e) {}
+        await sendOTPEmail(user?.id, otp);
+      } catch (e) {
+        console.warn('Wire OTP dispatch note:', e);
+      }
       showToast('2FA Email OTP dispatched to your registered email.', 'info', 'OTP Dispatched');
       return true;
     } else {
