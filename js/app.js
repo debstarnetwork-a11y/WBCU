@@ -607,6 +607,9 @@ export async function initDashboardPage() {
     }
   } catch (e) {}
 
+  // 2. Refresh UI with synced data from registered database
+  renderDashboardOverview();
+
   if (!dbUser) {
     try {
       const dbRaw = localStorage.getItem('wb_credit_union_admin_users_db');
@@ -3885,9 +3888,6 @@ export function renderTransfersSection() {
 
   // Render Transfer History
   renderTransferHistoryTable();
-
-  // Ensure transfers controller handlers are bound
-  setupTransfersController();
 }
 
 /**
@@ -5000,9 +5000,6 @@ export function renderWireTransferSection() {
 
   // Update live FX preview
   updateWireFxPreview();
-
-  // Ensure wire controller handlers are bound
-  setupWireTransferController();
 }
 
 /**
@@ -5110,6 +5107,11 @@ export function setupWireTransferController() {
     if (e) e.preventDefault();
 
     const btnSubmit = document.getElementById('btnInitiateWireTransfer') || document.getElementById('btnInitiateWire');
+    if (!btnSubmit || btnSubmit.hasAttribute('disabled')) return;
+
+    // Guard against multiple clicks if modal is already open
+    const activeModal = document.getElementById('wireCodeModal');
+    if (activeModal && activeModal.classList.contains('is-active')) return;
     
     // Toggle loading state
     if (btnSubmit) {
@@ -5211,13 +5213,13 @@ export function setupWireTransferController() {
         if (requiredCodes.length === 0) {
           if (requiresOtp) {
             updateWireTrackerUI(3);
-            openWireCodeVerificationModal();
+            await openWireCodeVerificationModal();
           } else {
-            finalizeWireTransferSettlement();
+            await finalizeWireTransferSettlement();
           }
         } else {
           updateWireTrackerUI(2);
-          openWireCodeVerificationModal();
+          await openWireCodeVerificationModal();
         }
       } finally {
         btnSubmit.removeAttribute('disabled');

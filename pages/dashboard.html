@@ -393,10 +393,6 @@
           <span class="nav-item-icon">📤</span>
           <span class="nav-item-text">Transfers</span>
         </a>
-        <a href="#wire" class="sidebar-nav-item" data-section="wire" id="sideNavWire">
-          <span class="nav-item-icon">🔄</span>
-          <span class="nav-item-text">Wire Transfer</span>
-        </a>
         <a href="#crypto" class="sidebar-nav-item" data-section="crypto" id="sideNavCrypto">
           <span class="nav-item-icon">₿</span>
           <span class="nav-item-text">Crypto</span>
@@ -595,7 +591,7 @@
               <div class="account-card-balance" id="businessCardBalance">€ 0.00</div>
               <div class="account-card-available">
                 <span>Equiv USD: </span>
-                <strong class="font-numeric" id="businessEquivUSD">≈ $ 0.00</strong>
+                <strong class="font-numeric" id="businessEquivUSD">---</strong>
               </div>
               <div class="account-card-footer">
                 <div class="account-currency-tag">
@@ -626,7 +622,7 @@
               <div class="account-card-balance" id="gbpCardBalance">£ 0.00</div>
               <div class="account-card-available">
                 <span>Equiv USD: </span>
-                <strong class="font-numeric" id="gbpEquivUSD">≈ $ 0.00</strong>
+                <strong class="font-numeric" id="gbpEquivUSD">---</strong>
               </div>
               <div class="account-card-footer">
                 <div class="account-currency-tag">
@@ -657,7 +653,7 @@
               <div class="account-card-balance" id="cryptoCardBalance">₿ 0.0000 BTC</div>
               <div class="account-card-available">
                 <span>Vault Value: </span>
-                <strong class="font-numeric" id="cryptoCardEquivUSD">≈ $ 0.00 USD</strong>
+                <strong class="font-numeric" id="cryptoCardEquivUSD">---</strong>
               </div>
               <div class="account-card-footer">
                 <div class="account-currency-tag">
@@ -702,7 +698,7 @@
               </span>
             </div>
             <div class="stat-label">Monthly Credits & Income</div>
-            <div class="stat-value font-numeric text-green" id="statMonthlyIncome">$ 0.00</div>
+            <div class="stat-value font-numeric text-green" id="statMonthlyIncome">---</div>
             <div class="stat-subtext">Payroll & settled incoming wires</div>
           </div>
 
@@ -718,7 +714,7 @@
               </span>
             </div>
             <div class="stat-label">Monthly Outflows & Debits</div>
-            <div class="stat-value font-numeric" id="statMonthlyExpenses">$ 0.00</div>
+            <div class="stat-value font-numeric" id="statMonthlyExpenses">---</div>
             <div class="stat-subtext">Settled debits this month</div>
           </div>
 
@@ -1446,10 +1442,6 @@
               <p class="accounts-mgmt-sub">Instant zero-fee internal transfers between your vaults, direct payments to WB Credit Finance members, and domestic ACH/Fedwire clearing.</p>
             </div>
             <div class="d-flex flex-wrap gap-2">
-              <button type="button" class="btn btn-outline" id="btnGoToWireFromTransfers">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-                International Wire Transfer &rarr;
-              </button>
             </div>
           </div>
         </section>
@@ -1491,7 +1483,7 @@
                   </select>
                 </div>
                 <div class="d-flex justify-between align-center mt-1 px-1">
-                  <span class="text-xs text-muted">Available Balance: <strong class="font-numeric text-navy" id="regTransferFromAvailBal">$ 0.00</strong></span>
+                  <span class="text-xs text-muted">Available Balance: <strong class="font-numeric text-navy" id="regTransferFromAvailBal">---</strong></span>
                   <span class="text-xs text-muted font-numeric" id="regTransferFromCurrencyTag">USD</span>
                 </div>
               </div>
@@ -1794,7 +1786,7 @@
                   <!-- Populated dynamically via JS -->
                 </select>
                 <div class="d-flex justify-between align-center mt-1 px-1">
-                  <span class="text-xs text-muted">Available: <strong class="font-numeric text-navy" id="wirePageFromAvailBal">$ 0.00</strong></span>
+                  <span class="text-xs text-muted">Available: <strong class="font-numeric text-navy" id="wirePageFromAvailBal">---</strong></span>
                   <span class="text-xs text-muted font-numeric" id="wirePageFromCurrency">USD</span>
                 </div>
               </div>
@@ -5942,9 +5934,9 @@
             <span class="badge badge-success text-xs" id="detailStatusBadge">ACTIVE</span>
           </div>
           <div class="text-xs text-white opacity-80">Settled Ledger Balance</div>
-          <div class="detail-balance-large font-numeric" id="detailBalanceLarge">$ 0.00</div>
+          <div class="detail-balance-large font-numeric" id="detailBalanceLarge">---</div>
           <div class="d-flex justify-between text-xs text-white opacity-90 mt-2">
-            <span>Available: <strong class="font-numeric" id="detailAvailableBalance">$ 0.00</strong></span>
+            <span>Available: <strong class="font-numeric" id="detailAvailableBalance">---</strong></span>
             <span>Pending: <strong class="font-numeric" id="detailPendingBalance">$ 0.00</strong></span>
             <span id="detailEquivWrap">Equiv: <strong class="font-numeric" id="detailEquivUSD">$ 0.00 USD</strong></span>
           </div>
