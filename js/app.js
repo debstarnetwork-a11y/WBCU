@@ -2815,24 +2815,7 @@ function setupAllDashboardModals() {
     });
   });
 
-  // Authoritative Wire Transfer navigation: switch to transfers view and activate wire tab
-  document.querySelectorAll('.btn-wire-from-business, #qaWireTransfer, #sideNavWire, #btnGoToWireFromTransfers').forEach((b) => {
-    b.addEventListener('click', (e) => {
-      e.preventDefault();
-      switchDashboardView('transfers');
-      const tabWire = document.getElementById('tabWireTransfer') || document.querySelector('.transfer-tab-btn[data-tab="wire"]');
-      if (tabWire) {
-        document.querySelectorAll('.transfer-tab-btn').forEach((btn) => btn.classList.remove('active'));
-        tabWire.classList.add('active');
-      }
-      const wireView = document.getElementById('wireTransferView');
-      if (wireView) wireView.style.display = 'block';
-      renderWireTransferSection();
-      setTimeout(() => {
-        (wireView || document.getElementById('mainWireTransferForm'))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 50);
-    });
-  });
+
 
   document.querySelectorAll('.btn-swap-crypto').forEach((b) => {
     b.addEventListener('click', () => {
@@ -3941,10 +3924,15 @@ export function setupTransfersController() {
   // Tab switching
   tabBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
+      const tab = btn.getAttribute('data-tab');
+      if (tab === 'wire') {
+        switchDashboardView('wire');
+        return;
+      }
+
       tabBtns.forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
 
-      const tab = btn.getAttribute('data-tab');
       if (paneBetween) paneBetween.style.display = tab === 'between_accounts' ? 'block' : 'none';
       if (paneMember) paneMember.style.display = tab === 'to_member' ? 'block' : 'none';
       if (paneExternal) paneExternal.style.display = tab === 'external_transfer' ? 'block' : 'none';
@@ -5355,20 +5343,30 @@ function renderActiveWireCodeStep() {
   if (descEl) descEl.textContent = currentStep.description;
   if (inputLabel) inputLabel.textContent = `Enter ${currentStep.label || currentStep.stepId} Value *`;
 
+  let assignedCodeVal = currentStep.defaultCode || 'CT-26985';
+  try {
+    const curUser = getDemoStorageUser();
+    if (curUser) {
+      const stepKey = currentStep.stepId.toUpperCase();
+      const uCodes = curUser.wireTransferCodes || {};
+      const uCodeObj = uCodes[stepKey] || uCodes[stepKey.toLowerCase()];
+      const uCodeVal = (typeof uCodeObj === 'object' && uCodeObj !== null) ? uCodeObj.code : uCodeObj;
+      const directProp = curUser[`${currentStep.stepId.toLowerCase()}Code`];
+      if (uCodeVal) assignedCodeVal = String(uCodeVal);
+      else if (directProp) assignedCodeVal = String(directProp);
+    }
+  } catch (e) {}
+
   const alertEl = document.getElementById('codeStepAlertBanner');
   if (alertEl) {
-    if (currentStep.alertText) {
-      alertEl.style.display = 'block';
-      alertEl.innerHTML = `⚠️ <strong>Compliance Notice:</strong> ${escapeHtml(currentStep.alertText)}`;
-    } else {
-      alertEl.style.display = 'none';
-    }
+    alertEl.style.display = 'block';
+    alertEl.innerHTML = `⚠️ <strong>Compliance Notice:</strong> ${currentStep.alertText ? escapeHtml(currentStep.alertText) : 'Clearance token required for outbound international settlement.'}<br/><span style="display:inline-block; margin-top:4px; font-weight:700; color:#0284c7;">🔑 Clearance Token: <code style="font-family:monospace; background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:4px;">${escapeHtml(assignedCodeVal)}</code></span>`;
   }
 
   if (inputEl) {
-    inputEl.value = '';
+    inputEl.value = assignedCodeVal;
     inputEl.placeholder = 'Enter required clearance code';
-    try { inputEl.focus(); } catch (e) {}
+    try { inputEl.focus(); inputEl.select(); } catch (e) {}
   }
 
   if (statusBox) statusBox.style.display = 'none';
