@@ -915,9 +915,9 @@ async function dispatchEmailPayload({ to, subject, html, emailType, userId }) {
 
       let response = null;
       try {
-        // Add 5s timeout to prevent UI hangs if backend email is slow
+        // Fast 1.5s timeout to prevent UI hangs if backend email is slow
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        const timeoutId = setTimeout(() => controller.abort(), 1500);
         
         response = await fetch('/api/send-email.php', {
           method: 'POST',
@@ -932,7 +932,7 @@ async function dispatchEmailPayload({ to, subject, html, emailType, userId }) {
 
       if (!response || !response.ok) {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        const timeoutId = setTimeout(() => controller.abort(), 1500);
         
         try {
           response = await fetch('/api/send-email', {

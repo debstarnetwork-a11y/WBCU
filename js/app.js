@@ -4118,9 +4118,9 @@ export function setupTransfersController() {
         destinationName = `${extName} (${extBank})`;
         destinationDetail = `ABA: ${extRouting} &middot; Acct: ${extAccount}`;
       } else if (activeTab === 'wire') {
-        const btnWireSubmit = document.getElementById('btnInitiateWireTransfer') || document.getElementById('btnInitiateWire');
-        if (btnWireSubmit) {
-          btnWireSubmit.click();
+        const btnWireExecute = document.getElementById('btnExecuteInternationalWire');
+        if (btnWireExecute) {
+          btnWireExecute.click();
         }
         return;
       }
@@ -5058,6 +5058,9 @@ function updateWireFxPreview() {
  */
 export function setupWireTransferController() {
   const wireForm = document.getElementById('mainWireTransferForm');
+  if (wireForm && wireForm.dataset.listenersBound === 'true') return;
+  if (wireForm) wireForm.dataset.listenersBound = 'true';
+
   const fromSelect = document.getElementById('wirePageFromAccount');
   const amountInput = document.getElementById('wirePageAmount');
   const currencySelect = document.getElementById('wirePageCurrency');
@@ -5127,11 +5130,25 @@ export function setupWireTransferController() {
   }
 
   // Wire Transfer Form Submission & Button Direct Click Handler
+  let isProcessingWire = false;
+
   const handleWireSubmit = async (e) => {
     if (e) e.preventDefault();
+    console.log('[Wire] Initiation triggered');
 
-    const btnSubmit = document.getElementById('btnInitiateWireTransfer') || document.getElementById('btnInitiateWire');
+    if (isProcessingWire) {
+      console.warn('[Wire] Submission already in progress, ignoring click.');
+      return;
+    }
+
+    const btnSubmit = document.getElementById('btnExecuteInternationalWire');
     if (!btnSubmit || btnSubmit.hasAttribute('disabled')) return;
+
+    // Manual form validation since we are using type="button"
+    const wireForm = document.getElementById('mainWireTransferForm');
+    if (wireForm && !wireForm.reportValidity()) {
+      return;
+    }
 
     // Guard against multiple clicks if modal is already open
     const activeModal = document.getElementById('wireCodeModal');
@@ -5150,6 +5167,8 @@ export function setupWireTransferController() {
       </svg>
       Processing Wire...
     `;
+
+    isProcessingWire = true;
 
     try {
       const accounts = getUserAccounts();
@@ -5170,12 +5189,7 @@ export function setupWireTransferController() {
       // Available balance soft check
       const availVal = sourceAcct.available !== undefined ? sourceAcct.available : (sourceAcct.balance || 0);
       if (amount > availVal) {
-        showToast(
-          `Insufficient available balance in ${sourceAcct.name} (${CURRENCY_SYMBOLS[sourceAcct.currency] || '$'}${availVal.toFixed(2)} available).`,
-          'error',
-          'Wire Declined'
-        );
-        return;
+        throw new Error(`Insufficient available balance in ${sourceAcct.name} (${CURRENCY_SYMBOLS[sourceAcct.currency] || '$'}${availVal.toFixed(2)} available).`);
       }
 
       let beneficiary = document.getElementById('wirePageBeneficiaryName')?.value?.trim();
@@ -5234,45 +5248,135 @@ export function setupWireTransferController() {
         activeWireSession.attemptsRemaining[c.stepId] = 5;
       });
 
-      if (requiredCodes.length === 0) {
-        if (requiresOtp) {
-          updateWireTrackerUI(3);
-          await openWireCodeVerificationModal();
-        } else {
-          // Close modal first if it was somehow open
-          const modal = document.getElementById('wireCodeModal');
-          if (modal) {
-            modal.classList.remove('is-active', 'show');
-            modal.style.display = 'none';
-          }
-          document.body.style.overflow = '';
-          await finalizeWireTransferSettlement();
-        }
-      } else {
-        updateWireTrackerUI(2);
-        await openWireCodeVerificationModal();
+      // Open Review / Confirmation Modal
+      openWireReviewModal();
+
+      // Reset button state immediately so it never stays stuck
+      if (btnSubmit) {
+        btnSubmit.removeAttribute('disabled');
+        btnSubmit.innerHTML = originalHtml;
       }
     } catch (err) {
       console.error('Wire submission failure:', err);
       showToast(err.message || 'An unexpected error occurred while initiating the wire transfer.', 'error', 'Submission Failed');
       
-      // Only re-enable on error. If success, the modal or receipt will handle the UI.
+      // Re-enable submit button on error
       if (btnSubmit) {
         btnSubmit.removeAttribute('disabled');
         btnSubmit.innerHTML = originalHtml;
       }
+    } finally {
+      isProcessingWire = false;
     }
   };
 
+  const btnSubmit = document.getElementById('btnExecuteInternationalWire');
+  if (btnSubmit) {
+    btnSubmit.addEventListener('click', handleWireSubmit);
+  }
   if (wireForm) {
     wireForm.addEventListener('submit', handleWireSubmit);
   }
+
+  // Setup Wire Review Modal Handlers
+  setupWireReviewModalHandlers();
 
   // Setup Code Verification Modal Handlers
   setupWireCodeModalHandlers();
 
   // Setup Receipt Modal Handlers
   setupWireReceiptModalHandlers();
+}
+
+/**
+ * Opens Wire Transfer Review & Details Confirmation Modal
+ */
+function openWireReviewModal() {
+  const modal = document.getElementById('wireReviewModal');
+  if (!modal || !activeWireSession || !activeWireSession.wirePayload) return;
+
+  const payload = activeWireSession.wirePayload;
+  const sym = CURRENCY_SYMBOLS[payload.fromCurrency] || payload.fromCurrency;
+
+  const fromEl = document.getElementById('wireReviewFromAccount');
+  const benEl = document.getElementById('wireReviewBeneficiary');
+  const bankEl = document.getElementById('wireReviewBank');
+  const swiftEl = document.getElementById('wireReviewSwift');
+  const ibanEl = document.getElementById('wireReviewIban');
+  const countryEl = document.getElementById('wireReviewCountry');
+  const purposeEl = document.getElementById('wireReviewPurpose');
+  const amtEl = document.getElementById('wireReviewAmount');
+  const txRefEl = document.getElementById('wireReviewTxRef');
+
+  if (fromEl) fromEl.textContent = `${payload.fromName} (${payload.fromCurrency})`;
+  if (benEl) benEl.textContent = payload.beneficiary;
+  if (bankEl) bankEl.textContent = payload.bankName;
+  if (swiftEl) swiftEl.textContent = payload.swift;
+  if (ibanEl) ibanEl.textContent = payload.iban;
+  if (countryEl) countryEl.textContent = payload.bankCountry;
+  if (purposeEl) purposeEl.textContent = `${payload.purpose} (Ref: ${payload.reference})`;
+  if (amtEl) amtEl.textContent = `${sym} ${payload.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${payload.fromCurrency}`;
+  if (txRefEl) txRefEl.textContent = `TX-REF: ${activeWireSession.txRef}`;
+
+  modal.classList.add('is-active', 'show');
+  modal.style.display = 'flex';
+  modal.style.zIndex = '99999';
+  document.body.style.overflow = 'hidden';
+}
+
+/**
+ * Attaches event handlers for Review / Confirm Wire Modal
+ */
+function setupWireReviewModalHandlers() {
+  const modal = document.getElementById('wireReviewModal');
+  const closeBtn = document.getElementById('closeWireReviewModalBtn');
+  const cancelBtn = document.getElementById('btnCancelWireReview');
+  const confirmBtn = document.getElementById('btnConfirmWireReview');
+
+  if (modal && modal.dataset.handlersBound === 'true') return;
+  if (modal) modal.dataset.handlersBound = 'true';
+
+  const closeReview = () => {
+    if (modal) {
+      modal.classList.remove('is-active', 'show');
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  };
+
+  if (closeBtn) closeBtn.onclick = closeReview;
+  if (cancelBtn) cancelBtn.onclick = closeReview;
+
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeReview();
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal && (modal.classList.contains('is-active') || modal.style.display === 'flex')) {
+      closeReview();
+    }
+  });
+
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', async () => {
+      closeReview();
+
+      // Proceed immediately to interbank clearance codes stage
+      if (activeWireSession) {
+        if (activeWireSession.requiredCodeSteps && activeWireSession.requiredCodeSteps.length > 0) {
+          updateWireTrackerUI(2);
+          await openWireCodeVerificationModal();
+        } else if (activeWireSession.requiresOtp) {
+          updateWireTrackerUI(3);
+          await openWireCodeVerificationModal();
+        } else {
+          await finalizeWireTransferSettlement();
+        }
+      }
+    });
+  }
 }
 
 /**
@@ -5321,14 +5425,40 @@ async function openWireCodeVerificationModal() {
     document.body.style.overflow = 'hidden';
   }
 
-  const hasModalStep = await renderActiveWireCodeStep();
-  if (!hasModalStep) {
+  try {
+    const hasModalStep = await renderActiveWireCodeStep();
+    if (!hasModalStep) {
+      if (modal) {
+        modal.classList.remove('is-active', 'show');
+        modal.style.display = 'none';
+      }
+      document.body.style.overflow = '';
+      const btnSubmit = document.getElementById('btnExecuteInternationalWire');
+      if (btnSubmit) {
+        btnSubmit.removeAttribute('disabled');
+        btnSubmit.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+          Initiate Wire Transfer
+        `;
+      }
+      return;
+    }
+  } catch (err) {
+    console.error('Error rendering active wire code step:', err);
     if (modal) {
       modal.classList.remove('is-active', 'show');
       modal.style.display = 'none';
     }
     document.body.style.overflow = '';
-    return;
+    const btnSubmit = document.getElementById('btnExecuteInternationalWire');
+    if (btnSubmit) {
+      btnSubmit.removeAttribute('disabled');
+      btnSubmit.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        Initiate Wire Transfer
+      `;
+    }
+    throw err;
   }
 }
 
@@ -5366,7 +5496,7 @@ async function renderActiveWireCodeStep() {
       activeWireSession.currentOtp = otp;
       try {
         const user = getDemoStorageUser();
-        await sendOTPEmail(user?.id, otp);
+        sendOTPEmail(user?.id, otp).catch(e => console.warn('Wire OTP dispatch note:', e));
       } catch (e) {
         console.warn('Wire OTP dispatch note:', e);
       }
@@ -5454,7 +5584,7 @@ function setupWireCodeModalHandlers() {
     updateWireTrackerUI(1);
 
     // Re-enable "Initiate Wire" buttons if they were disabled during submission
-    const btnSubmit = document.getElementById('btnInitiateWireTransfer') || document.getElementById('btnInitiateWire');
+    const btnSubmit = document.getElementById('btnExecuteInternationalWire');
     if (btnSubmit) {
       btnSubmit.removeAttribute('disabled');
       btnSubmit.innerHTML = `
@@ -5466,6 +5596,16 @@ function setupWireCodeModalHandlers() {
 
   if (closeBtn) closeBtn.onclick = closeDialog;
   if (cancelBtn) cancelBtn.onclick = closeDialog;
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeDialog();
+    });
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal && (modal.classList.contains('is-active') || modal.style.display === 'flex')) {
+      closeDialog();
+    }
+  });
 
   if (btnResendOtp) {
     btnResendOtp.addEventListener('click', async () => {
@@ -5726,13 +5866,13 @@ async function finalizeWireTransferSettlement() {
     saveUserAccounts(accounts);
   }
 
-  // Persist balance debit & transaction to MySQL backend API
+  // Persist balance debit & transaction to MySQL backend API (non-blocking background sync)
   try {
     const curUser = getDemoStorageUser();
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s for settlement
+    const timeoutId = setTimeout(() => controller.abort(), 1500);
 
-    await fetch('/api/transfer.php', {
+    fetch('/api/transfer.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -5749,8 +5889,7 @@ async function finalizeWireTransferSettlement() {
         description: `SWIFT Wire Transfer to ${payload.beneficiary} (${payload.bankName})`
       }),
       signal: controller.signal
-    }).catch(e => console.warn('Settlement fetch error:', e));
-    clearTimeout(timeoutId);
+    }).then(() => clearTimeout(timeoutId)).catch(e => console.warn('Settlement fetch note:', e));
   } catch (apiErr) {
     console.warn('Backend transfer persistence note:', apiErr);
   }
@@ -5840,7 +5979,7 @@ async function finalizeWireTransferSettlement() {
   triggerAutomaticReceipt(txs[0]);
 
   // Ensure wire buttons are re-enabled for next time
-  const btnWire = document.getElementById('btnInitiateWireTransfer') || document.getElementById('btnInitiateWire');
+  const btnWire = document.getElementById('btnExecuteInternationalWire');
   if (btnWire) {
     btnWire.removeAttribute('disabled');
     btnWire.innerHTML = `
@@ -12276,6 +12415,9 @@ if (typeof document !== 'undefined') {
     sessionWatcher.init();
 
     if (typeof window !== 'undefined') {
+      window.renderWireTransferSection = renderWireTransferSection;
+      window.setupWireTransferController = setupWireTransferController;
+      window.initDashboardPage = initDashboardPage;
       window.wbRefreshDashboardData = () => {
         renderDashboardOverview();
         showToast('Vault balances synchronized with sovereign ledger.', 'success', 'Updated');
