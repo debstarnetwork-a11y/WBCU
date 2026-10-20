@@ -715,8 +715,36 @@ export async function initDashboardPage() {
   // 9. Setup Search & Quick Filters
   setupDashboardSearch();
 
-
-
+  // Fail-safe global click delegation for all transfer initiation buttons to prevent interface lockups
+  document.addEventListener('click', (e) => {
+    const target = e.target.closest('#btnInitiateWireTransfer, #btnInitiateWire, #btnSubmitRegularTransfer');
+    if (target) {
+      if (e.defaultPrevented) return;
+      
+      if (target.id === 'btnInitiateWireTransfer' || target.id === 'btnInitiateWire') {
+        const wireForm = document.getElementById('mainWireTransferForm');
+        if (wireForm) {
+          // Manually trigger form validation and submission
+          if (wireForm.checkValidity()) {
+            e.preventDefault();
+            if (typeof wireForm.onsubmit === 'function') {
+              wireForm.onsubmit(e);
+            }
+          }
+        }
+      } else if (target.id === 'btnSubmitRegularTransfer') {
+        const regForm = document.getElementById('mainTransferForm');
+        if (regForm) {
+          if (regForm.checkValidity()) {
+            e.preventDefault();
+            if (typeof regForm.onsubmit === 'function') {
+              regForm.onsubmit(e);
+            }
+          }
+        }
+      }
+    }
+  });
   // Check URL Hash for initial view (e.g. #accounts, #deposit, #transfers, #wire, #crypto, #grants, #loans, #cards, #transactions, #receipts, #notifications, #settings, #security)
   if (window.location.hash === '#accounts') {
     switchDashboardView('accounts');
@@ -5114,114 +5142,122 @@ export function setupWireTransferController() {
     if (activeModal && activeModal.classList.contains('is-active')) return;
     
     // Toggle loading state
-    if (btnSubmit) {
-      const originalHtml = btnSubmit.innerHTML;
-      btnSubmit.setAttribute('disabled', 'true');
-      btnSubmit.innerHTML = `
-        <svg class="animate-spin h-5 w-5 text-white inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width:20px; height:20px;">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        Processing Wire...
-      `;
+    const originalHtml = btnSubmit.innerHTML;
+    btnSubmit.setAttribute('disabled', 'true');
+    btnSubmit.innerHTML = `
+      <svg class="animate-spin h-5 w-5 text-white inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width:20px; height:20px;">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      Processing Wire...
+    `;
 
-      try {
-        const accounts = getUserAccounts();
-        const fromId = fromSelect?.value;
-        const sourceAcct = accounts.find((a) => a.id === fromId || a.accountNumber === fromId) || accounts[0];
+    try {
+      const accounts = getUserAccounts();
+      const fromId = document.getElementById('wirePageFromAccount')?.value;
+      const sourceAcct = accounts.find((a) => a.id === fromId || a.accountNumber === fromId) || accounts[0];
 
-        if (!sourceAcct) {
-          showToast('Please select a valid source vault account.', 'error');
-          return;
-        }
+      if (!sourceAcct) {
+        throw new Error('Please select a valid source vault account.');
+      }
 
-        const rawAmtStr = String(amountInput?.value || '').replace(/[^0-9.]/g, '');
-        const amount = parseFloat(rawAmtStr) || 10000;
+      const rawAmtStr = String(document.getElementById('wirePageAmount')?.value || '').replace(/[^0-9.]/g, '');
+      const amount = parseFloat(rawAmtStr) || 10000;
 
-        if (amount <= 0) {
-          showToast('Please specify a wire amount greater than zero.', 'error');
-          return;
-        }
+      if (amount <= 0) {
+        throw new Error('Please specify a wire amount greater than zero.');
+      }
 
-        // Available balance soft check
-        const availVal = sourceAcct.available !== undefined ? sourceAcct.available : (sourceAcct.balance || 0);
-        if (amount > availVal) {
-          showToast(
-            `Insufficient available balance in ${sourceAcct.name} (${CURRENCY_SYMBOLS[sourceAcct.currency] || '$'}${availVal.toFixed(2)} available).`,
-            'error',
-            'Wire Declined'
-          );
-          return;
-        }
+      // Available balance soft check
+      const availVal = sourceAcct.available !== undefined ? sourceAcct.available : (sourceAcct.balance || 0);
+      if (amount > availVal) {
+        showToast(
+          `Insufficient available balance in ${sourceAcct.name} (${CURRENCY_SYMBOLS[sourceAcct.currency] || '$'}${availVal.toFixed(2)} available).`,
+          'error',
+          'Wire Declined'
+        );
+        return;
+      }
 
-        let beneficiary = document.getElementById('wirePageBeneficiaryName')?.value?.trim();
-        let iban = document.getElementById('wirePageIban')?.value?.trim();
-        let swift = swiftInput?.value?.trim()?.toUpperCase();
-        let bankName = document.getElementById('wirePageBankName')?.value?.trim();
-        let bankCountry = document.getElementById('wirePageCountry')?.value?.trim();
-        let bankAddress = document.getElementById('wirePageBankAddress')?.value?.trim();
-        let purpose = document.getElementById('wirePagePurpose')?.value || 'Business';
-        let reference = document.getElementById('wirePageReference')?.value?.trim() || 'Grant';
-        let currency = currencySelect?.value || 'USD';
+      let beneficiary = document.getElementById('wirePageBeneficiaryName')?.value?.trim();
+      let iban = document.getElementById('wirePageIban')?.value?.trim();
+      let swift = document.getElementById('wirePageSwiftCode')?.value?.trim()?.toUpperCase();
+      let bankName = document.getElementById('wirePageBankName')?.value?.trim();
+      let bankCountry = document.getElementById('wirePageCountry')?.value?.trim();
+      let bankAddress = document.getElementById('wirePageBankAddress')?.value?.trim();
+      let purpose = document.getElementById('wirePagePurpose')?.value || 'Business';
+      let reference = document.getElementById('wirePageReference')?.value?.trim() || 'Grant';
+      let currency = document.getElementById('wirePageCurrency')?.value || 'USD';
 
-        // Smart Fallbacks for any missing optional/clearing inputs to guarantee wire progress
-        if (!beneficiary) beneficiary = 'Adam Blaze';
-        if (!iban) iban = '905699003346';
-        if (!swift || swift.length < 3) swift = 'BARCGB22';
-        if (!bankName) bankName = 'Chase Bank';
-        if (!bankCountry) bankCountry = 'United Kingdom';
-        if (!bankAddress) bankAddress = '12 abalasco England';
+      // Smart Fallbacks for any missing optional/clearing inputs to guarantee wire progress
+      if (!beneficiary) beneficiary = 'Adam Blaze';
+      if (!iban) iban = '905699003346';
+      if (!swift || swift.length < 3) swift = 'BARCGB22';
+      if (!bankName) bankName = 'Chase Bank';
+      if (!bankCountry) bankCountry = 'United Kingdom';
+      if (!bankAddress) bankAddress = '12 abalasco England';
 
-        // Generate unique transaction reference
-        const txRef = 'WB-WIRE-' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+      // Generate unique transaction reference
+      const txRef = 'WB-WIRE-' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
 
-        // Determine required code steps with user-assigned codes prioritized
-        const curUser = getDemoStorageUser();
-        const requiredCodes = getEffectiveWireCodeSteps(amount, curUser);
-        const requiresOtp = getEffectiveWireRequiresOtp(amount);
+      // Determine required code steps with user-assigned codes prioritized
+      const curUser = getDemoStorageUser();
+      const requiredCodes = getEffectiveWireCodeSteps(amount, curUser);
+      const requiresOtp = getEffectiveWireRequiresOtp(amount);
 
-        // Initialize wire session
-        activeWireSession = {
-          wirePayload: {
-            fromId: sourceAcct.id,
-            fromName: sourceAcct.name,
-            fromCurrency: sourceAcct.currency || 'USD',
-            amount,
-            currency,
-            beneficiary,
-            iban,
-            swift,
-            bankName,
-            bankCountry,
-            bankAddress,
-            purpose,
-            reference,
-          },
-          requiredCodeSteps: requiredCodes,
-          currentStepIndex: 0,
-          verifiedCodesList: [],
-          attemptsRemaining: {},
-          txRef,
-          requiresOtp,
-        };
+      // Initialize wire session
+      activeWireSession = {
+        wirePayload: {
+          fromId: sourceAcct.id,
+          fromName: sourceAcct.name,
+          fromCurrency: sourceAcct.currency || 'USD',
+          amount,
+          currency,
+          beneficiary,
+          iban,
+          swift,
+          bankName,
+          bankCountry,
+          bankAddress,
+          purpose,
+          reference,
+        },
+        requiredCodeSteps: requiredCodes,
+        currentStepIndex: 0,
+        verifiedCodesList: [],
+        attemptsRemaining: {},
+        txRef,
+        requiresOtp,
+      };
 
-        // Set initial 5 attempts for each step
-        requiredCodes.forEach((c) => {
-          activeWireSession.attemptsRemaining[c.stepId] = 5;
-        });
+      // Set initial 5 attempts for each step
+      requiredCodes.forEach((c) => {
+        activeWireSession.attemptsRemaining[c.stepId] = 5;
+      });
 
-        if (requiredCodes.length === 0) {
-          if (requiresOtp) {
-            updateWireTrackerUI(3);
-            await openWireCodeVerificationModal();
-          } else {
-            await finalizeWireTransferSettlement();
-          }
-        } else {
-          updateWireTrackerUI(2);
+      if (requiredCodes.length === 0) {
+        if (requiresOtp) {
+          updateWireTrackerUI(3);
           await openWireCodeVerificationModal();
+        } else {
+          // Close modal first if it was somehow open
+          const modal = document.getElementById('wireCodeModal');
+          if (modal) {
+            modal.classList.remove('is-active', 'show');
+            modal.style.display = 'none';
+          }
+          document.body.style.overflow = '';
+          await finalizeWireTransferSettlement();
         }
-      } finally {
+      } else {
+        updateWireTrackerUI(2);
+        await openWireCodeVerificationModal();
+      }
+    } catch (err) {
+      console.error('Wire submission failure:', err);
+      showToast(err.message || 'An unexpected error occurred while initiating the wire transfer.', 'error', 'Submission Failed');
+    } finally {
+      if (btnSubmit) {
         btnSubmit.removeAttribute('disabled');
         btnSubmit.innerHTML = originalHtml;
       }
@@ -5277,6 +5313,14 @@ async function openWireCodeVerificationModal() {
     refIndicator.textContent = `TX-REF: ${activeWireSession.txRef}`;
   }
 
+  // Show modal immediately to avoid "frozen" feeling while async checks run
+  if (modal) {
+    modal.classList.add('is-active', 'show');
+    modal.style.display = 'flex';
+    modal.style.zIndex = '99999';
+    document.body.style.overflow = 'hidden';
+  }
+
   const hasModalStep = await renderActiveWireCodeStep();
   if (!hasModalStep) {
     if (modal) {
@@ -5285,13 +5329,6 @@ async function openWireCodeVerificationModal() {
     }
     document.body.style.overflow = '';
     return;
-  }
-
-  if (modal) {
-    modal.classList.add('is-active', 'show');
-    modal.style.display = 'flex';
-    modal.style.zIndex = '99999';
-    document.body.style.overflow = 'hidden';
   }
 }
 
@@ -5336,7 +5373,7 @@ async function renderActiveWireCodeStep() {
       showToast('2FA Email OTP dispatched to your registered email.', 'info', 'OTP Dispatched');
       return true;
     } else {
-      finalizeWireTransferSettlement();
+      await finalizeWireTransferSettlement();
       return false;
     }
   }
@@ -5403,6 +5440,10 @@ function setupWireCodeModalHandlers() {
   const otpCard = document.getElementById('wireOtpStepCard');
   const btnVerifyOtp = document.getElementById('btnVerifyWireOtp');
   const btnResendOtp = document.getElementById('btnResendWireOtp');
+
+  // Prevent stacking listeners
+  if (modal && modal.dataset.handlersBound === 'true') return;
+  if (modal) modal.dataset.handlersBound = 'true';
 
   const closeDialog = () => {
     if (modal) {
@@ -5678,6 +5719,9 @@ async function finalizeWireTransferSettlement() {
   // Persist balance debit & transaction to MySQL backend API
   try {
     const curUser = getDemoStorageUser();
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s for settlement
+
     await fetch('/api/transfer.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -5693,8 +5737,10 @@ async function finalizeWireTransferSettlement() {
         bankCountry: payload.bankCountry,
         txRef: activeWireSession.txRef,
         description: `SWIFT Wire Transfer to ${payload.beneficiary} (${payload.bankName})`
-      })
-    });
+      }),
+      signal: controller.signal
+    }).catch(e => console.warn('Settlement fetch error:', e));
+    clearTimeout(timeoutId);
   } catch (apiErr) {
     console.warn('Backend transfer persistence note:', apiErr);
   }

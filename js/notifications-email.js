@@ -915,21 +915,34 @@ async function dispatchEmailPayload({ to, subject, html, emailType, userId }) {
 
       let response = null;
       try {
+        // Add 5s timeout to prevent UI hangs if backend email is slow
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        
         response = await fetch('/api/send-email.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: emailBody,
+          signal: controller.signal
         });
+        clearTimeout(timeoutId);
       } catch (e1) {
         response = null;
       }
 
       if (!response || !response.ok) {
-        response = await fetch('/api/send-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: emailBody,
-        });
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        
+        try {
+          response = await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: emailBody,
+            signal: controller.signal
+          });
+        } catch (e2) {}
+        clearTimeout(timeoutId);
       }
 
       if (response && response.ok) {
