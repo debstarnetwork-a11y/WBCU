@@ -141,7 +141,7 @@ export function wrapEmailHtml(contentHtml, previewText = 'WB Credit Finance Noti
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                       <tr>
                         <td align="center" style="padding-bottom: 12px;">
-                          <img src="https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png" alt="WB Credit Finance" style="height: 52px; width: auto; max-width: 240px; object-fit: contain; display: block; margin: 0 auto;" />
+                          <img src="https://www.wbcu.net/assets/img/logo.png" alt="WB Credit Finance" style="height: 52px; width: auto; max-width: 240px; object-fit: contain; display: block; margin: 0 auto;" />
                         </td>
                       </tr>
                     </table>
@@ -376,6 +376,18 @@ export function getTransactionEmailHtml(data = {}) {
               <td style="padding-bottom: 12px; font-family: 'Poppins', Arial, sans-serif; font-size: 12px; color: #64748b; font-weight: 600;">Reference Number:</td>
               <td style="padding-bottom: 12px; font-family: 'Poppins', Arial, sans-serif; font-size: 13px; font-weight: 700; color: #0284c7; text-align: right; letter-spacing: 0.5px;">${reference}</td>
             </tr>
+            ${data.beneficiary || data.recipientName || data.recipient ? `
+            <tr>
+              <td style="padding-bottom: 12px; font-family: 'Poppins', Arial, sans-serif; font-size: 12px; color: #64748b; font-weight: 600;">Beneficiary Name:</td>
+              <td style="padding-bottom: 12px; font-family: 'Poppins', Arial, sans-serif; font-size: 13px; font-weight: 700; color: #0f172a; text-align: right;">${data.beneficiary || data.recipientName || data.recipient}</td>
+            </tr>
+            ` : ''}
+            ${data.bankName || data.recipientBank ? `
+            <tr>
+              <td style="padding-bottom: 12px; font-family: 'Poppins', Arial, sans-serif; font-size: 12px; color: #64748b; font-weight: 600;">Beneficiary Bank:</td>
+              <td style="padding-bottom: 12px; font-family: 'Poppins', Arial, sans-serif; font-size: 13px; font-weight: 600; color: #0f172a; text-align: right;">${data.bankName || data.recipientBank}${data.swift ? ' (' + data.swift + ')' : ''}</td>
+            </tr>
+            ` : ''}
             <tr>
               <td style="padding-bottom: 12px; font-family: 'Poppins', Arial, sans-serif; font-size: 12px; color: #64748b; font-weight: 600;">Description:</td>
               <td style="padding-bottom: 12px; font-family: 'Poppins', Arial, sans-serif; font-size: 13px; font-weight: 600; color: #334155; text-align: right;">${description}</td>
@@ -385,7 +397,7 @@ export function getTransactionEmailHtml(data = {}) {
               <td style="padding-bottom: 12px; font-family: 'Poppins', Arial, sans-serif; font-size: 13px; font-weight: 700; color: #0f172a; text-align: right;">${maskedAccount}</td>
             </tr>
             <tr style="border-top: 1px dashed #cbd5e1;">
-              <td style="padding-top: 12px; font-family: 'Poppins', Arial, sans-serif; font-size: 13px; color: #0f172a; font-weight: 700;">New Vault Balance:</td>
+              <td style="padding-top: 12px; font-family: 'Poppins', Arial, sans-serif; font-size: 13px; color: #0f172a; font-weight: 700;">Available Balance Remaining:</td>
               <td style="padding-top: 12px; font-family: 'Poppins', Arial, sans-serif; font-size: 16px; font-weight: 800; color: #0f2b48; text-align: right;">${newBalance}</td>
             </tr>
           </table>
@@ -893,27 +905,45 @@ async function dispatchEmailPayload({ to, subject, html, emailType, userId }) {
   // 2. Dispatch via real backend API if automated global dispatch is enabled
   if (isGlobalEnabled) {
     try {
-      const response = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          to: to || 'mizbrymo@gmail.com',
-          subject,
-          html,
-          emailType,
-          smtp: smtpConfig,
-        }),
+      const emailBody = JSON.stringify({
+        to: to || 'mizbrymo@gmail.com',
+        subject,
+        html,
+        emailType,
+        smtp: smtpConfig,
       });
-      const resData = await response.json();
-      if (resData.success) {
-        previewUrl = resData.previewUrl || null;
-        messageId = resData.messageId || null;
-        status = 'delivered';
-      } else {
-        errorMessage = resData.error || 'SMTP dispatch warning';
+
+      let response = null;
+      try {
+        response = await fetch('/api/send-email.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: emailBody,
+        });
+      } catch (e1) {
+        response = null;
+      }
+
+      if (!response || !response.ok) {
+        response = await fetch('/api/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: emailBody,
+        });
+      }
+
+      if (response && response.ok) {
+        const resData = await response.json();
+        if (resData.success) {
+          previewUrl = resData.previewUrl || null;
+          messageId = resData.messageId || null;
+          status = 'delivered';
+        } else {
+          errorMessage = resData.error || 'SMTP dispatch warning';
+        }
       }
     } catch (netErr) {
-      console.warn('Backend /api/send-email connection notice:', netErr);
+      console.warn('Backend email connection notice:', netErr);
       errorMessage = netErr.message;
     }
   } else {

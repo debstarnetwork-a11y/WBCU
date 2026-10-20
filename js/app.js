@@ -2732,7 +2732,6 @@ export function openStatementModal(acctId) {
 function setupAllDashboardModals() {
   const modalPairs = [
     { modalId: 'transferModal', triggers: ['btnLegacySendMoney'] },
-    { modalId: 'wireModal', triggers: ['qaWireTransfer', 'sideNavWire'] },
     { modalId: 'exchangeModal', triggers: ['btnOpenExchangeModal', 'btnQuickCryptoTrade'] },
     { modalId: 'payBillsModal', triggers: ['btnPayBills'] },
     { modalId: 'addFundsModal', triggers: ['btnAddFunds'] },
@@ -2791,9 +2790,15 @@ function setupAllDashboardModals() {
     });
   });
 
-  document.querySelectorAll('.btn-wire-from-business').forEach((b) => {
-    b.addEventListener('click', () => {
-      document.getElementById('wireModal')?.classList.add('is-active');
+  // Authoritative Wire Transfer navigation: switch to view and scroll into view
+  document.querySelectorAll('.btn-wire-from-business, #qaWireTransfer, #sideNavWire, #btnGoToWireFromTransfers').forEach((b) => {
+    b.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchDashboardView('wire');
+      renderWireTransferSection();
+      setTimeout(() => {
+        document.getElementById('wireTransferView')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
     });
   });
 
@@ -2864,153 +2869,17 @@ function setupAllDashboardModals() {
     });
   }
 
-  // 2. Wire Form Submission
-  const wireForm = document.getElementById('wireForm');
-  if (wireForm) {
-    const populateWireModalAccounts = () => {
-      const select = document.getElementById('wireFromAccountSelect');
-      const availEl = document.getElementById('wireModalAvailBal');
-      if (!select) return;
-
-      const accounts = getUserAccounts();
-      select.innerHTML = accounts
-        .map((a) => {
-          const sym = CURRENCY_SYMBOLS[a.currency] || '$';
-          const avail = a.available ?? a.balance ?? 0;
-          return `<option value="${a.id}">${a.name} (${a.currency}) - ${sym}${avail.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} [${a.accountNumber}]</option>`;
-        })
-        .join('');
-
-      const updateAvail = () => {
-        const sel = accounts.find((a) => a.id === select.value) || accounts[0];
-        if (sel && availEl) {
-          const sym = CURRENCY_SYMBOLS[sel.currency] || '$';
-          const avail = sel.available ?? sel.balance ?? 0;
-          availEl.textContent = `${sym} ${avail.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-        }
-      };
-
-      select.onchange = updateAvail;
-      updateAvail();
-    };
-
-    document.querySelectorAll('#qaWireTransfer, #sideNavWire, .btn-wire-from-business').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        populateWireModalAccounts();
-        const alertEl = document.getElementById('wireModalAlert');
-        if (alertEl) {
-          alertEl.style.display = 'none';
-          alertEl.innerHTML = '';
-        }
-      });
-    });
-
-    wireForm.addEventListener('submit', async (e) => {
+  // 2. Wire Navigation Handlers (Unified to Wire Transfer View & Tab)
+  document.querySelectorAll('#qaWireTransfer, #sideNavWire, .btn-wire-from-business, #tabWireTransfer').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
       e.preventDefault();
-      const alertEl = document.getElementById('wireModalAlert');
-      if (alertEl) {
-        alertEl.style.display = 'none';
-        alertEl.innerHTML = '';
-      }
-
-      const accounts = getUserAccounts();
-      const fromId = document.getElementById('wireFromAccountSelect')?.value;
-      const sourceAcct = accounts.find((a) => a.id === fromId || a.accountNumber === fromId) || accounts[0];
-
-      if (!sourceAcct) {
-        if (alertEl) {
-          alertEl.style.display = 'block';
-          alertEl.innerHTML = '<strong>Error:</strong> Please select a valid source vault account.';
-        }
-        showToast('Please select a valid source vault account.', 'error');
-        return;
-      }
-
-      const currency = document.getElementById('wireCurrencySelect')?.value || 'USD';
-      const amount = parseFloat(document.getElementById('wireAmountInput')?.value) || 0;
-      const beneficiary = document.getElementById('wireBeneficiaryName')?.value.trim();
-      const bankName = document.getElementById('wireBankName')?.value.trim();
-      const iban = document.getElementById('wireIbanInput')?.value.trim();
-      const swift = document.getElementById('wireSwiftInput')?.value.trim().toUpperCase();
-      const bankCountry = document.getElementById('wireBankCountry')?.value.trim();
-
-      if (amount <= 0) {
-        if (alertEl) {
-          alertEl.style.display = 'block';
-          alertEl.innerHTML = '<strong>Error:</strong> Please specify a wire amount greater than zero.';
-        }
-        showToast('Please specify a wire amount greater than zero.', 'error');
-        return;
-      }
-
-      const sym = CURRENCY_SYMBOLS[sourceAcct.currency] || '$';
-      const avail = sourceAcct.available ?? sourceAcct.balance ?? 0;
-      if (amount > avail) {
-        if (alertEl) {
-          alertEl.style.display = 'block';
-          alertEl.innerHTML = `⚠️ <strong>Wire Hold / Insufficient Balance:</strong> The selected account <strong>${sourceAcct.name}</strong> has an available balance of <strong>${sym}${avail.toFixed(2)}</strong>. Please select another account or top up before transmitting.`;
-        }
-        showToast(`Insufficient available balance in ${sourceAcct.name} (${sym}${avail.toFixed(2)} available).`, 'error', 'Wire Hold');
-        return;
-      }
-
-      if (!beneficiary || !bankName || !iban || !swift || !bankCountry) {
-        if (alertEl) {
-          alertEl.style.display = 'block';
-          alertEl.innerHTML = '<strong>Error:</strong> Please provide all mandatory fields (Recipient Legal Name, Beneficiary Bank Name, IBAN, SWIFT Code, Country).';
-        }
-        showToast('Please provide all mandatory wire clearing fields.', 'error');
-        return;
-      }
-
-      document.getElementById('wireModal')?.classList.remove('is-active');
-
-      const txRef = 'WB-WIRE-' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-      const curUser = getDemoStorageUser();
-      const requiredCodes = getEffectiveWireCodeSteps(amount, curUser);
-      const requiresOtp = getEffectiveWireRequiresOtp(amount);
-
-      activeWireSession = {
-        wirePayload: {
-          fromId: sourceAcct.id,
-          fromName: sourceAcct.name,
-          fromCurrency: sourceAcct.currency,
-          amount,
-          currency,
-          beneficiary,
-          iban,
-          swift,
-          bankName: bankName || `International Financial Corp (${swift.slice(0, 4)})`,
-          bankCountry,
-          bankAddress: 'Central Clearing Gateway',
-          purpose: 'International SWIFT Wire',
-          reference: 'Cross-Border Clearance',
-        },
-        requiredCodeSteps: requiredCodes,
-        currentStepIndex: 0,
-        verifiedCodesList: [],
-        attemptsRemaining: {},
-        txRef,
-        requiresOtp,
-      };
-
-      requiredCodes.forEach((c) => {
-        activeWireSession.attemptsRemaining[c.stepId] = 5;
-      });
-
-      if (requiredCodes.length === 0) {
-        if (requiresOtp) {
-          updateWireTrackerUI(3);
-          openWireCodeVerificationModal();
-        } else {
-          finalizeWireTransferSettlement();
-        }
-      } else {
-        updateWireTrackerUI(2);
-        openWireCodeVerificationModal();
-      }
+      switchDashboardView('wire');
+      renderWireTransferSection();
+      setTimeout(() => {
+        document.getElementById('wireTransferView')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
     });
-  }
+  });
 
   // 3. FX Exchange Form Submission
   const exchangeForm = document.getElementById('exchangeForm');
@@ -4931,7 +4800,7 @@ const WIRE_CODES_CONFIG = [
 export function getEffectiveWireCodeSteps(amount, user = null) {
   let globalConfig = null;
   try {
-    const raw = localStorage.getItem('wb_credit_union_global_codes_config');
+    const raw = localStorage.getItem("wb_credit_union_global_codes_config");
     if (raw) globalConfig = JSON.parse(raw);
   } catch (e) {}
 
@@ -4941,61 +4810,115 @@ export function getEffectiveWireCodeSteps(amount, user = null) {
     } catch (e) {}
   }
 
-  const uCodes = (user && user.wireTransferCodes && typeof user.wireTransferCodes === 'object') ? user.wireTransferCodes : {};
+  // Also check admin users DB for this user's latest clearance codes
+  if (user && (!user.wireTransferCodes || Object.keys(user.wireTransferCodes).length === 0)) {
+    try {
+      const adminUsersRaw = localStorage.getItem("wb_credit_union_admin_users_db");
+      if (adminUsersRaw) {
+        const adminUsers = JSON.parse(adminUsersRaw);
+        const match = adminUsers.find((u) => u.id === user.id || (u.email && user.email && u.email.toLowerCase() === user.email.toLowerCase()));
+        if (match && match.wireTransferCodes) {
+          user.wireTransferCodes = match.wireTransferCodes;
+        }
+      }
+    } catch (e) {}
+  }
+
+  const uCodes = (user && user.wireTransferCodes && typeof user.wireTransferCodes === "object") ? user.wireTransferCodes : {};
   const steps = [];
   const handledKeys = new Set();
 
-  for (const c of WIRE_CODES_CONFIG) {
-    const stepId = c.stepId;
+  // Regulatory clearance sequence: COT, IMF, AML, PAP (with TAX included if active)
+  const orderedKeys = ["COT", "IMF", "AML", "PAP"];
+  if (uCodes.TAX || uCodes.tax) {
+    orderedKeys.splice(1, 0, "TAX");
+  }
+
+  const codePresets = {
+    COT: { title: "COT Code Required", label: "COT Code (Cost of Transfer)", description: "Enter your Cost of Transfer code to proceed with international SWIFT clearing.", defaultCode: "CT-26985", appliesAbove: 5000.00 },
+    TAX: { title: "Tax Clearance Code Required", label: "Tax Clearance Code (TCC)", description: "Enter your Tax clearance code for offshore outbound liquidations.", defaultCode: "TX-50308", appliesAbove: 10000.00 },
+    IMF: { title: "IMF Clearance Code Required", label: "IMF Code (International Monetary Fund)", description: "Enter your International Monetary Fund sovereign clearance code.", defaultCode: "IMF-16483", appliesAbove: 25000.00 },
+    AML: { title: "AML Code Required", label: "AML Code (Anti-Money Laundering)", description: "Enter your Anti-Money Laundering compliance token to satisfy FATF regulatory mandates.", defaultCode: "AML-12087", appliesAbove: 10000.00 },
+    PAP: { title: "PAP Code Required", label: "PAP Code (Permanent Access Passcode)", description: "Enter your Permanent Access passcode for final dual-custody authorization.", defaultCode: "PAP-38560", appliesAbove: 50000.00 },
+  };
+
+  for (const stepId of orderedKeys) {
     handledKeys.add(stepId);
 
     // Check if globally disabled by admin
     if (globalConfig && globalConfig[stepId] && globalConfig[stepId].enabled === false) {
       continue;
     }
-    // Check if disabled for this specific member by admin
-    const memberCodeObj = uCodes[stepId] || uCodes[stepId.toLowerCase()];
-    if (memberCodeObj && memberCodeObj.active === false) {
-      continue;
-    }
-    // Check amount threshold
-    if (amount >= (c.appliesAbove || 0)) {
-      const customCode = typeof memberCodeObj === 'object' && memberCodeObj !== null ? (memberCodeObj.code || '') : (memberCodeObj || '');
-      const customName = typeof memberCodeObj === 'object' && memberCodeObj !== null ? (memberCodeObj.name || '') : '';
-      const customDesc = typeof memberCodeObj === 'object' && memberCodeObj !== null ? (memberCodeObj.desc || memberCodeObj.instruction || '') : '';
-      const customAlert = typeof memberCodeObj === 'object' && memberCodeObj !== null ? (memberCodeObj.alertText || memberCodeObj.notes || '') : '';
 
-      steps.push({
-        stepId,
-        title: customName ? `${customName} Required` : c.title,
-        label: customName || c.label,
-        description: customDesc || c.description,
-        alertText: customAlert,
-        defaultCode: customCode || c.defaultCode,
-        appliesAbove: c.appliesAbove || 0,
-        maxAttempts: c.maxAttempts || 5
-      });
+    const memberCodeObj = uCodes[stepId] || uCodes[stepId.toLowerCase()];
+    const preset = codePresets[stepId] || { title: `${stepId} Code Required`, label: `${stepId} Code`, description: `Enter your ${stepId} clearance code.`, defaultCode: `${stepId}-99482`, appliesAbove: 5000.00 };
+
+    if (memberCodeObj) {
+      // Member has assigned code in user profile
+      const isActive = typeof memberCodeObj === "object" ? memberCodeObj.active !== false : true;
+      if (!isActive) continue; // Explicitly disabled by admin for this member
+
+      // CRITICAL: If assigned to member, threshold defaults to 0.00 (enforced on all wire amounts unless specified)
+      const threshold = typeof memberCodeObj === "object" && memberCodeObj.applies_to_amount_above !== undefined
+        ? Number(memberCodeObj.applies_to_amount_above)
+        : (typeof memberCodeObj === "object" && memberCodeObj.appliesAbove !== undefined ? Number(memberCodeObj.appliesAbove) : 0.00);
+
+      if (amount >= threshold) {
+        const customCode = typeof memberCodeObj === "object" ? (memberCodeObj.code || "") : String(memberCodeObj);
+        const customName = typeof memberCodeObj === "object" ? (memberCodeObj.name || "") : "";
+        const customDesc = typeof memberCodeObj === "object" ? (memberCodeObj.desc || memberCodeObj.instruction || "") : "";
+        const customAlert = typeof memberCodeObj === "object" ? (memberCodeObj.alertText || memberCodeObj.notes || "") : "";
+
+        steps.push({
+          stepId,
+          title: customName ? `${customName} Required` : preset.title,
+          label: customName || preset.label,
+          description: customDesc || preset.description,
+          alertText: customAlert,
+          defaultCode: customCode || preset.defaultCode,
+          appliesAbove: threshold,
+          maxAttempts: 5
+        });
+      }
+    } else {
+      // Fallback to standard system threshold
+      if (amount >= preset.appliesAbove) {
+        steps.push({
+          stepId,
+          title: preset.title,
+          label: preset.label,
+          description: preset.description,
+          alertText: "",
+          defaultCode: preset.defaultCode,
+          appliesAbove: preset.appliesAbove,
+          maxAttempts: 5
+        });
+      }
     }
   }
 
-  // Also include any custom clearance code gates added by Admin for this member
+  // Also include any other custom clearance code gates added by Admin for this member
   Object.keys(uCodes).forEach((key) => {
-    if (!key || handledKeys.has(key) || key.toUpperCase() === 'OTP') return;
+    const upperKey = key.toUpperCase();
+    if (!key || handledKeys.has(upperKey) || upperKey === "OTP") return;
     const item = uCodes[key];
     if (!item) return;
-    const isActive = typeof item === 'object' ? item.active !== false : true;
-    const codeVal = typeof item === 'object' ? (item.code || '') : item;
+    const isActive = typeof item === "object" ? item.active !== false : true;
+    const codeVal = typeof item === "object" ? (item.code || "") : item;
     if (isActive && codeVal) {
-      steps.push({
-        stepId: key.toUpperCase(),
-        title: item.name ? `${item.name} Required` : `${key} Clearance Code Required`,
-        label: item.name || `${key} Clearance Code`,
-        description: item.desc || item.instruction || `Enter your ${key} regulatory clearance code to proceed.`,
-        alertText: item.alertText || item.notes || '',
-        defaultCode: codeVal,
-        appliesAbove: 0,
-        maxAttempts: 5
-      });
+      const threshold = typeof item === "object" && item.applies_to_amount_above !== undefined ? Number(item.applies_to_amount_above) : 0.00;
+      if (amount >= threshold) {
+        steps.push({
+          stepId: upperKey,
+          title: item.name ? `${item.name} Required` : `${upperKey} Clearance Code Required`,
+          label: item.name || `${upperKey} Clearance Code`,
+          description: item.desc || item.instruction || `Enter your ${upperKey} regulatory clearance code to proceed.`,
+          alertText: item.alertText || item.notes || "",
+          defaultCode: codeVal,
+          appliesAbove: threshold,
+          maxAttempts: 5
+        });
+      }
     }
   });
 
@@ -5210,40 +5133,9 @@ export function setupWireTransferController() {
       // Generate unique transaction reference
       const txRef = 'WB-WIRE-' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
 
-      // Determine required code steps based on admin_code_settings & amount
-      let requiredCodes = [];
-
-      // Check admin_code_settings from Supabase if configured
-      if (isConfigured) {
-        try {
-          const { data } = await supabase
-            .from('admin_code_settings')
-            .select('code_type, is_enabled, display_name, description, default_code, applies_to_amount_above')
-            .eq('is_enabled', true);
-
-          if (data && data.length > 0) {
-            requiredCodes = data
-              .filter((c) => c.code_type !== 'OTP' && amount >= (c.applies_to_amount_above || 0))
-              .map((c) => {
-                const preset = WIRE_CODES_CONFIG.find((p) => p.stepId === c.code_type);
-                return {
-                  stepId: c.code_type,
-                  title: `${c.code_type} Code Required`,
-                  label: c.display_name,
-                  description: c.description || preset?.description,
-                  defaultCode: c.default_code || preset?.defaultCode || `${c.code_type}-99482`,
-                  maxAttempts: 5,
-                };
-              });
-          }
-        } catch (dbErr) {
-          console.warn('admin_code_settings query note:', dbErr);
-        }
-      }
-
-      // Respect Admin clearance codes and OTP configuration
+      // Determine required code steps with user-assigned codes prioritized
       const curUser = getDemoStorageUser();
-      requiredCodes = getEffectiveWireCodeSteps(amount, curUser);
+      const requiredCodes = getEffectiveWireCodeSteps(amount, curUser);
       const requiresOtp = getEffectiveWireRequiresOtp(amount);
 
       // Initialize wire session
@@ -5329,14 +5221,16 @@ function updateWireTrackerUI(stepNumber) {
  * Opens and renders current step inside Wire Code Verification Modal
  */
 function openWireCodeVerificationModal() {
-  document.getElementById('wireModal')?.classList.remove('is-active');
   const modal = document.getElementById('wireCodeModal');
   const refIndicator = document.getElementById('wireTxRefIndicator');
   if (refIndicator) refIndicator.textContent = `TX-REF: ${activeWireSession.txRef}`;
 
   renderActiveWireCodeStep();
 
-  if (modal) modal.classList.add('is-active');
+  if (modal) {
+    modal.classList.add('is-active', 'show');
+    modal.style.display = 'flex';
+  }
 }
 
 /**
@@ -5434,7 +5328,10 @@ function setupWireCodeModalHandlers() {
   const btnResendOtp = document.getElementById('btnResendWireOtp');
 
   const closeDialog = () => {
-    if (modal) modal.classList.remove('is-active');
+    if (modal) {
+      modal.classList.remove('is-active', 'show');
+      modal.style.display = 'none';
+    }
     updateWireTrackerUI(1);
   };
 
@@ -5680,7 +5577,10 @@ function setupWireCodeModalHandlers() {
  */
 async function finalizeWireTransferSettlement() {
   const modal = document.getElementById('wireCodeModal');
-  if (modal) modal.classList.remove('is-active');
+  if (modal) {
+    modal.classList.remove('is-active', 'show');
+    modal.style.display = 'none';
+  }
 
   updateWireTrackerUI(4);
 
@@ -5689,11 +5589,35 @@ async function finalizeWireTransferSettlement() {
 
   // Debit account balance
   const accounts = getUserAccounts();
-  const sourceAcct = accounts.find((a) => a.id === payload.fromId);
+  const sourceAcct = accounts.find((a) => a.id === payload.fromId || a.accountNumber === payload.fromId) || accounts[0];
   if (sourceAcct) {
-    sourceAcct.balance -= payload.amount;
-    sourceAcct.available -= payload.amount;
+    sourceAcct.balance = Math.max(0, (sourceAcct.balance || 0) - payload.amount);
+    sourceAcct.available = Math.max(0, (sourceAcct.available ?? sourceAcct.balance) - payload.amount);
     saveUserAccounts(accounts);
+  }
+
+  // Persist balance debit & transaction to MySQL backend API
+  try {
+    const curUser = getDemoStorageUser();
+    await fetch('/api/transfer.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: curUser?.id || 'wb-usr-demo-01',
+        fromAccountId: sourceAcct?.id || payload.fromId,
+        amount: payload.amount,
+        currency: payload.fromCurrency || 'USD',
+        beneficiary: payload.beneficiary,
+        bankName: payload.bankName,
+        iban: payload.iban,
+        swift: payload.swift,
+        bankCountry: payload.bankCountry,
+        txRef: activeWireSession.txRef,
+        description: `SWIFT Wire Transfer to ${payload.beneficiary} (${payload.bankName})`
+      })
+    });
+  } catch (apiErr) {
+    console.warn('Backend transfer persistence note:', apiErr);
   }
 
   // Record in user transactions ledger
@@ -11283,9 +11207,28 @@ export function numberToWords(amount) {
 /**
  * Generates an official bank receipt for any transaction, modeled after the official bank document
  */
-export function generateOfficialReceiptForTransaction(txId) {
-  const allTxs = getUserTransactions();
-  const tx = allTxs.find(t => t.id === txId || t.ref === txId) || allTxs[0];
+export function generateOfficialReceiptForTransaction(txIdOrObj) {
+  let tx = null;
+  if (typeof txIdOrObj === "object" && txIdOrObj !== null) {
+    tx = txIdOrObj;
+  } else {
+    const allTxs = getUserTransactions();
+    tx = allTxs.find(t => t.id === txIdOrObj || t.ref === txIdOrObj) || allTxs[0];
+  }
+  if (!tx && typeof activeWireSession === "object" && activeWireSession?.wirePayload) {
+    const p = activeWireSession.wirePayload;
+    tx = {
+      id: "TX-" + Math.floor(1000 + Math.random() * 9000),
+      amount: -p.amount,
+      currency: p.fromCurrency || "USD",
+      recipient: p.beneficiary,
+      recipientName: p.beneficiary,
+      recipientBank: p.bankName,
+      recipientAccount: p.iban,
+      recipientIban: p.iban,
+      ref: activeWireSession.txRef || "WB-WIRE-REF"
+    };
+  }
   if (!tx) return null;
 
   const absAmount = Math.abs(tx.amount !== undefined ? tx.amount : 100);

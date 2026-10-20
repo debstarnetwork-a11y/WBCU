@@ -258,30 +258,54 @@ if ($pdo) {
 
             $addr = trim(($row['address_line1'] ?? '') . ', ' . ($row['city'] ?? '') . ' ' . ($row['postal_code'] ?? '') . ', ' . ($row['country'] ?? ''));
 
-            $usersMap[$uid] = [
+            $existingUser = $usersMap[$uid] ?? [];
+            $existingCodes = $existingUser['wireTransferCodes'] ?? [];
+
+            // Load clearance codes from MySQL if available
+            try {
+                $cStmt = $pdo->prepare("SELECT * FROM `wire_transfer_codes` WHERE user_id = ?");
+                $cStmt->execute([$uid]);
+                $dbCodes = $cStmt->fetchAll() ?: [];
+                foreach ($dbCodes as $c) {
+                    $type = strtoupper($c['code_type']);
+                    $existingCodes[$type] = [
+                        'code' => $c['code_value'],
+                        'name' => $c['display_name'] ?: ($type . ' Code'),
+                        'desc' => $c['description'] ?: '',
+                        'instruction' => $c['description'] ?: '',
+                        'active' => (bool)$c['is_active'],
+                        'notes' => $c['description'] ?: ''
+                    ];
+                }
+            } catch (Throwable $e) {}
+
+            $usersMap[$uid] = array_merge($existingUser, [
                 'id' => $uid,
                 'fullName' => $fn,
-                'firstName' => $row['first_name'] ?? '',
-                'lastName' => $row['last_name'] ?? '',
+                'firstName' => $row['first_name'] ?? ($existingUser['firstName'] ?? ''),
+                'lastName' => $row['last_name'] ?? ($existingUser['lastName'] ?? ''),
                 'email' => $row['email'],
                 'username' => $row['username'],
                 'password' => $row['password_hash'],
                 'role' => ($role === 'super_admin') ? 'Super Admin' : ($isAdmin ? 'Admin' : 'Member'),
                 'is_admin' => $isAdmin,
                 'is_officer' => $isAdmin,
-                'status' => $row['status'] ?? 'active',
-                'kycStatus' => $row['kyc_status'] ?? 'verified',
-                'pin' => $row['transaction_pin'] ?? '1234',
-                'phone' => $row['phone_number'] ?? '',
-                'dob' => $row['date_of_birth'] ?? '',
-                'nationality' => $row['nationality'] ?? 'Switzerland',
+                'status' => $row['status'] ?? ($existingUser['status'] ?? 'active'),
+                'kycStatus' => $row['kyc_status'] ?? ($existingUser['kycStatus'] ?? 'verified'),
+                'pin' => $row['transaction_pin'] ?? ($existingUser['pin'] ?? '1234'),
+                'phone' => $row['phone_number'] ?? ($existingUser['phone'] ?? ''),
+                'dob' => $row['date_of_birth'] ?? ($existingUser['dob'] ?? ''),
+                'nationality' => $row['nationality'] ?? ($existingUser['nationality'] ?? 'Switzerland'),
                 'address' => $addr,
-                'profilePhoto' => $photo,
-                'avatarUrl' => $photo,
-                'passportPhoto' => $row['passport_photo_url'] ?? '',
-                'avatarColor' => $row['avatar_color'] ?: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
-                'accounts' => $acctMap[$uid] ?? []
-            ];
+                'profilePhoto' => $photo ?: ($existingUser['profilePhoto'] ?? ''),
+                'avatarUrl' => $photo ?: ($existingUser['avatarUrl'] ?? ''),
+                'passportPhoto' => $row['passport_photo_url'] ?? ($existingUser['passportPhoto'] ?? ''),
+                'avatarColor' => $row['avatar_color'] ?: ($existingUser['avatarColor'] ?? 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)'),
+                'accounts' => !empty($acctMap[$uid]) ? $acctMap[$uid] : ($existingUser['accounts'] ?? []),
+                'wireTransferCodes' => $existingCodes,
+                'cards' => $existingUser['cards'] ?? [],
+                'activityLog' => $existingUser['activityLog'] ?? []
+            ]);
         }
     } catch (Throwable $e) {}
 }

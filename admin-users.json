@@ -22,8 +22,8 @@
         "type": "Checking",
         "name": "US Dollar Primary Vault",
         "currency": "USD",
-        "balance": 100000,
-        "available": 100000,
+        "balance": 98500,
+        "available": 98500,
         "status": "active",
         "routingNumber": "021000089",
         "isPrimary": true
@@ -39,7 +39,207 @@
         "status": "active",
         "routingNumber": "021000089"
       }
-    ]
+    ],
+    "transactions": [
+      {
+        "id": "tx-lpl1d2h",
+        "type": "wire",
+        "amount": -1500,
+        "currency": "USD",
+        "beneficiary": "Apex Global Holdings Ltd",
+        "bankName": "Barclays Bank PLC",
+        "iban": "GB29BUKB20201555992810",
+        "swift": "BARCGB22",
+        "bankCountry": "United Kingdom",
+        "reference": "WB-WIRE-TEST-12345",
+        "status": "completed",
+        "description": "Wire Transfer to Apex Global Holdings Ltd",
+        "createdAt": "2026-10-20T05:03:37.853Z"
+      }
+    ],
+    "wireTransferCodes": {
+      "COT": {
+        "code": "CT-26985",
+        "name": "Cost of Transfer Clearance",
+        "desc": "Cost of Transfer (COT) Sovereign Clearance Certificate",
+        "notes": "Cost of Transfer clearance token",
+        "alertText": "Cost of Transfer clearance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "TAX": {
+        "code": "TX-50308",
+        "name": "Federal Tax Clearance Certificate",
+        "desc": "Federal Tax Clearance Certificate (TCC)",
+        "notes": "Federal Tax clearance token",
+        "alertText": "Federal Tax clearance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "IMF": {
+        "code": "IMF-16483",
+        "name": "IMF Sovereign Clearance Certificate",
+        "desc": "International Monetary Fund Sovereign Clearance",
+        "notes": "IMF sovereign clearance token",
+        "alertText": "IMF sovereign clearance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "AML": {
+        "code": "AML-12087",
+        "name": "Anti-Money Laundering Compliance",
+        "desc": "Anti-Money Laundering FATF Compliance Token",
+        "notes": "AML compliance token",
+        "alertText": "AML compliance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "PAP": {
+        "code": "PAP-38560",
+        "name": "Permanent Access Passcode",
+        "desc": "Dual-Custody Permanent Access Passcode (PAP)",
+        "notes": "PAP clearance token",
+        "alertText": "PAP clearance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "OTP": {
+        "code": "139791",
+        "name": "Transaction Authorization OTP",
+        "desc": "2FA One-Time Passcode authorization",
+        "notes": "2FA Transaction OTP",
+        "alertText": "2FA Transaction OTP",
+        "active": true,
+        "applies_to_amount_above": 0
+      }
+    },
+    "cotCode": "CT-26985",
+    "taxCode": "TX-50308",
+    "imfCode": "IMF-16483",
+    "amlCode": "AML-12087",
+    "papCode": "PAP-38560",
+    "otpCode": "139791"
+  },
+  {
+    "id": "wb-usr-ysm2set",
+    "fullName": "DEBELU EMMANUEL",
+    "firstName": "DEBELU",
+    "lastName": "EMMANUEL",
+    "username": "emmanueldebelu",
+    "email": "debeluemmanuel@gmail.com",
+    "secondaryEmail": "debeluemmanuel@mail.com",
+    "password": "yeshuah.com",
+    "pin": "4004",
+    "transactionPin": "4004",
+    "role": "Member",
+    "is_admin": false,
+    "phone": "+2347065096181",
+    "status": "active",
+    "kycStatus": "verified",
+    "accounts": [
+      {
+        "id": "acct-usd-wb-usr-y4rfbph",
+        "accountNumber": "9482-1049-55",
+        "type": "Checking",
+        "name": "US Dollar Primary Vault",
+        "currency": "USD",
+        "balance": 98500,
+        "available": 98500,
+        "status": "active",
+        "routingNumber": "021000089",
+        "isPrimary": true
+      },
+      {
+        "id": "acct-eur-wb-usr-y4rfbph",
+        "accountNumber": "WB-EUR-8841",
+        "type": "Offshore",
+        "name": "Euro Global Holding Vault",
+        "currency": "EUR",
+        "balance": 0,
+        "available": 0,
+        "status": "active",
+        "routingNumber": "021000089"
+      }
+    ],
+    "transactions": [
+      {
+        "id": "tx-lpl1d2h",
+        "type": "wire",
+        "amount": -1500,
+        "currency": "USD",
+        "beneficiary": "Apex Global Holdings Ltd",
+        "bankName": "Barclays Bank PLC",
+        "iban": "GB29BUKB20201555992810",
+        "swift": "BARCGB22",
+        "bankCountry": "United Kingdom",
+        "reference": "WB-WIRE-TEST-12345",
+        "status": "completed",
+        "description": "Wire Transfer to Apex Global Holdings Ltd",
+        "createdAt": "2026-10-20T05:03:37.853Z"
+      }
+    ],
+    "wireTransferCodes": {
+      "COT": {
+        "code": "CT-26985",
+        "name": "Cost of Transfer Clearance",
+        "desc": "Cost of Transfer (COT) Sovereign Clearance Certificate",
+        "notes": "Cost of Transfer clearance token",
+        "alertText": "Cost of Transfer clearance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "TAX": {
+        "code": "TX-50308",
+        "name": "Federal Tax Clearance Certificate",
+        "desc": "Federal Tax Clearance Certificate (TCC)",
+        "notes": "Federal Tax clearance token",
+        "alertText": "Federal Tax clearance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "IMF": {
+        "code": "IMF-16483",
+        "name": "IMF Sovereign Clearance Certificate",
+        "desc": "International Monetary Fund Sovereign Clearance",
+        "notes": "IMF sovereign clearance token",
+        "alertText": "IMF sovereign clearance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "AML": {
+        "code": "AML-12087",
+        "name": "Anti-Money Laundering Compliance",
+        "desc": "Anti-Money Laundering FATF Compliance Token",
+        "notes": "AML compliance token",
+        "alertText": "AML compliance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "PAP": {
+        "code": "PAP-38560",
+        "name": "Permanent Access Passcode",
+        "desc": "Dual-Custody Permanent Access Passcode (PAP)",
+        "notes": "PAP clearance token",
+        "alertText": "PAP clearance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "OTP": {
+        "code": "139791",
+        "name": "Transaction Authorization OTP",
+        "desc": "2FA One-Time Passcode authorization",
+        "notes": "2FA Transaction OTP",
+        "alertText": "2FA Transaction OTP",
+        "active": true,
+        "applies_to_amount_above": 0
+      }
+    },
+    "cotCode": "CT-26985",
+    "taxCode": "TX-50308",
+    "imfCode": "IMF-16483",
+    "amlCode": "AML-12087",
+    "papCode": "PAP-38560",
+    "otpCode": "139791"
   },
   {
     "id": "usr-prof-mvb5wo7j",
@@ -70,7 +270,69 @@
         "routingNumber": "021000089",
         "isPrimary": true
       }
-    ]
+    ],
+    "wireTransferCodes": {
+      "COT": {
+        "code": "CT-26985",
+        "name": "Cost of Transfer Clearance",
+        "desc": "Cost of Transfer (COT) Sovereign Clearance Certificate",
+        "notes": "Cost of Transfer clearance token",
+        "alertText": "Cost of Transfer clearance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "TAX": {
+        "code": "TX-50308",
+        "name": "Federal Tax Clearance Certificate",
+        "desc": "Federal Tax Clearance Certificate (TCC)",
+        "notes": "Federal Tax clearance token",
+        "alertText": "Federal Tax clearance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "IMF": {
+        "code": "IMF-16483",
+        "name": "IMF Sovereign Clearance Certificate",
+        "desc": "International Monetary Fund Sovereign Clearance",
+        "notes": "IMF sovereign clearance token",
+        "alertText": "IMF sovereign clearance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "AML": {
+        "code": "AML-12087",
+        "name": "Anti-Money Laundering Compliance",
+        "desc": "Anti-Money Laundering FATF Compliance Token",
+        "notes": "AML compliance token",
+        "alertText": "AML compliance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "PAP": {
+        "code": "PAP-38560",
+        "name": "Permanent Access Passcode",
+        "desc": "Dual-Custody Permanent Access Passcode (PAP)",
+        "notes": "PAP clearance token",
+        "alertText": "PAP clearance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "OTP": {
+        "code": "139791",
+        "name": "Transaction Authorization OTP",
+        "desc": "2FA One-Time Passcode authorization",
+        "notes": "2FA Transaction OTP",
+        "alertText": "2FA Transaction OTP",
+        "active": true,
+        "applies_to_amount_above": 0
+      }
+    },
+    "cotCode": "CT-26985",
+    "taxCode": "TX-50308",
+    "imfCode": "IMF-16483",
+    "amlCode": "AML-12087",
+    "papCode": "PAP-38560",
+    "otpCode": "139791"
   },
   {
     "id": "usr-admin-01",
@@ -143,7 +405,69 @@
         "status": "active",
         "routingNumber": "021000089"
       }
-    ]
+    ],
+    "wireTransferCodes": {
+      "COT": {
+        "code": "CT-26985",
+        "name": "Cost of Transfer Clearance",
+        "desc": "Cost of Transfer (COT) Sovereign Clearance Certificate",
+        "notes": "Cost of Transfer clearance token",
+        "alertText": "Cost of Transfer clearance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "TAX": {
+        "code": "TX-50308",
+        "name": "Federal Tax Clearance Certificate",
+        "desc": "Federal Tax Clearance Certificate (TCC)",
+        "notes": "Federal Tax clearance token",
+        "alertText": "Federal Tax clearance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "IMF": {
+        "code": "IMF-16483",
+        "name": "IMF Sovereign Clearance Certificate",
+        "desc": "International Monetary Fund Sovereign Clearance",
+        "notes": "IMF sovereign clearance token",
+        "alertText": "IMF sovereign clearance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "AML": {
+        "code": "AML-12087",
+        "name": "Anti-Money Laundering Compliance",
+        "desc": "Anti-Money Laundering FATF Compliance Token",
+        "notes": "AML compliance token",
+        "alertText": "AML compliance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "PAP": {
+        "code": "PAP-38560",
+        "name": "Permanent Access Passcode",
+        "desc": "Dual-Custody Permanent Access Passcode (PAP)",
+        "notes": "PAP clearance token",
+        "alertText": "PAP clearance token",
+        "active": true,
+        "applies_to_amount_above": 0
+      },
+      "OTP": {
+        "code": "139791",
+        "name": "Transaction Authorization OTP",
+        "desc": "2FA One-Time Passcode authorization",
+        "notes": "2FA Transaction OTP",
+        "alertText": "2FA Transaction OTP",
+        "active": true,
+        "applies_to_amount_above": 0
+      }
+    },
+    "cotCode": "CT-26985",
+    "taxCode": "TX-50308",
+    "imfCode": "IMF-16483",
+    "amlCode": "AML-12087",
+    "papCode": "PAP-38560",
+    "otpCode": "139791"
   },
   {
     "id": "usr-34400",

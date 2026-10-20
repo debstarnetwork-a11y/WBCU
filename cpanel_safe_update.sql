@@ -71,5 +71,30 @@ ON DUPLICATE KEY UPDATE
   `available_balance` = VALUES(`available_balance`),
   `account_number` = VALUES(`account_number`);
 
+-- 5. UPSERT WIRE TRANSFER CLEARANCE CODES
+INSERT INTO `wire_transfer_codes` (`id`, `user_id`, `code_type`, `code_value`, `display_name`, `description`, `is_active`, `applies_to_amount_above`)
+VALUES
+('code-wb-usr-y4rfbph-COT', 'wb-usr-y4rfbph', 'COT', 'CT-26985', 'Cost of Transfer Clearance', 'Cost of Transfer clearance token', 1, 0.00),
+('code-wb-usr-y4rfbph-TAX', 'wb-usr-y4rfbph', 'TAX', 'TX-50308', 'Federal Tax Clearance Certificate', 'Federal Tax clearance token', 1, 0.00),
+('code-wb-usr-y4rfbph-IMF', 'wb-usr-y4rfbph', 'IMF', 'IMF-16483', 'IMF Sovereign Clearance Certificate', 'IMF sovereign clearance token', 1, 0.00),
+('code-wb-usr-y4rfbph-AML', 'wb-usr-y4rfbph', 'AML', 'AML-12087', 'Anti-Money Laundering Compliance', 'AML compliance token', 1, 0.00),
+('code-wb-usr-y4rfbph-PAP', 'wb-usr-y4rfbph', 'PAP', 'PAP-38560', 'Permanent Access Passcode', 'PAP clearance token', 1, 0.00),
+('code-wb-usr-y4rfbph-OTP', 'wb-usr-y4rfbph', 'OTP', '139791', 'Transaction Authorization OTP', '2FA Transaction OTP', 1, 0.00),
+('code-wb-usr-ysm2set-COT', 'wb-usr-ysm2set', 'COT', 'CT-26985', 'Cost of Transfer Clearance', 'Cost of Transfer clearance token', 1, 0.00),
+('code-wb-usr-ysm2set-TAX', 'wb-usr-ysm2set', 'TAX', 'TX-50308', 'Federal Tax Clearance Certificate', 'Federal Tax clearance token', 1, 0.00),
+('code-wb-usr-ysm2set-IMF', 'wb-usr-ysm2set', 'IMF', 'IMF-16483', 'IMF Sovereign Clearance Certificate', 'IMF sovereign clearance token', 1, 0.00),
+('code-wb-usr-ysm2set-AML', 'wb-usr-ysm2set', 'AML', 'AML-12087', 'Anti-Money Laundering Compliance', 'AML compliance token', 1, 0.00),
+('code-wb-usr-ysm2set-PAP', 'wb-usr-ysm2set', 'PAP', 'PAP-38560', 'Permanent Access Passcode', 'PAP clearance token', 1, 0.00),
+('code-wb-usr-ysm2set-OTP', 'wb-usr-ysm2set', 'OTP', '139791', 'Transaction Authorization OTP', '2FA Transaction OTP', 1, 0.00),
+('code-usr-101-COT', 'usr-101', 'COT', 'CT-26985', 'Cost of Transfer Clearance', 'Cost of Transfer clearance token', 1, 0.00),
+('code-usr-101-TAX', 'usr-101', 'TAX', 'TX-50308', 'Federal Tax Clearance Certificate', 'Federal Tax clearance token', 1, 0.00),
+('code-usr-101-IMF', 'usr-101', 'IMF', 'IMF-16483', 'IMF Sovereign Clearance Certificate', 'IMF sovereign clearance token', 1, 0.00),
+('code-usr-101-AML', 'usr-101', 'AML', 'AML-12087', 'Anti-Money Laundering Compliance', 'AML compliance token', 1, 0.00),
+('code-usr-101-PAP', 'usr-101', 'PAP', 'PAP-38560', 'Permanent Access Passcode', 'PAP clearance token', 1, 0.00),
+('code-usr-101-OTP', 'usr-101', 'OTP', '139791', 'Transaction Authorization OTP', '2FA Transaction OTP', 1, 0.00)
+ON DUPLICATE KEY UPDATE
+  `code_value` = VALUES(`code_value`),
+  `is_active` = VALUES(`is_active`),
+  `applies_to_amount_above` = VALUES(`applies_to_amount_above`);
 
 SET FOREIGN_KEY_CHECKS = 1;

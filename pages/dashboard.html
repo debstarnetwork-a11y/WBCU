@@ -1444,6 +1444,10 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
                 <span>External Transfer</span>
               </button>
+              <button type="button" class="transfer-tab-btn" data-tab="wire" role="tab" id="tabWireTransfer">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                <span>International Wire</span>
+              </button>
             </div>
 
             <!-- Transfer Form -->
@@ -4564,87 +4568,7 @@
     </div>
   </div>
 
-  <!-- (2) INTERNATIONAL WIRE TRANSFER MODAL (WITH COT/IMF CLEARANCE CODES) -->
-  <div class="modal-overlay" id="wireModal" role="dialog" aria-modal="true" aria-labelledby="wireModalTitle">
-    <div class="modal-dialog">
-      <div class="modal-header">
-        <div class="d-flex align-center gap-2">
-          <div class="modal-icon-badge orange">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-          </div>
-          <h3 class="modal-title" id="wireModalTitle">International SWIFT / Fedwire</h3>
-        </div>
-        <button type="button" class="modal-close-btn" id="closeWireModalBtn" aria-label="Close modal">&times;</button>
-      </div>
-      <form id="wireForm">
-        <div class="modal-body">
-          <div class="alert alert-info py-2 px-3 mb-3 text-xs">
-            <strong>Regulatory Notice:</strong> Cross-border wires exceeding $5,000 may require verification clearances (COT, IMF, or TAX clearance tokens) as mandated by interbank settlement regulations.
-          </div>
-
-          <div id="wireModalAlert" class="alert alert-danger py-2 px-3 mb-3 text-xs" style="display:none;"></div>
-
-          <div class="form-group mb-3">
-            <label class="form-label" for="wireFromAccountSelect">From Vault Account <span class="text-red">*</span></label>
-            <select id="wireFromAccountSelect" class="form-select"></select>
-            <div class="text-xs text-muted mt-1 d-flex justify-between">
-              <span>Available Balance: <strong id="wireModalAvailBal" class="text-navy font-numeric">$ 0.00</strong></span>
-            </div>
-          </div>
-
-          <div class="d-grid grid-cols-2 gap-2 mb-3">
-            <div class="form-group mb-0">
-              <label class="form-label" for="wireCurrencySelect">Settlement Currency</label>
-              <select id="wireCurrencySelect" class="form-select">
-                <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="GBP" selected>GBP (£)</option>
-                <option value="CAD">CAD (CA$)</option>
-                <option value="AUD">AUD (AU$)</option>
-                <option value="JPY">JPY (¥)</option>
-                <option value="NGN">NGN (₦)</option>
-              </select>
-            </div>
-            <div class="form-group mb-0">
-              <label class="form-label" for="wireAmountInput">Wire Amount</label>
-              <input type="number" id="wireAmountInput" class="form-control tabular-nums" placeholder="200.00" min="1" step="any" required />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="wireBeneficiaryName">Recipient / Beneficiary Legal Name <span class="text-red">*</span></label>
-            <input type="text" id="wireBeneficiaryName" class="form-control" placeholder="e.g. Apex Global AG / John Doe" required />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="wireBankName">Beneficiary Bank Name <span class="text-red">*</span></label>
-            <input type="text" id="wireBankName" class="form-control" placeholder="e.g. Barclays Bank PLC / UBS AG / Deutsche Bank" required />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="wireIbanInput">IBAN / Account Number <span class="text-red">*</span></label>
-            <input type="text" id="wireIbanInput" class="form-control font-numeric" placeholder="e.g. GB29 BUKB 2020 1555 9928 10" required />
-          </div>
-
-          <div class="d-grid grid-cols-2 gap-2">
-            <div class="form-group">
-              <label class="form-label" for="wireSwiftInput">SWIFT / BIC Code <span class="text-red">*</span></label>
-              <input type="text" id="wireSwiftInput" class="form-control font-numeric" placeholder="e.g. BARCGB22" required />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="wireBankCountry">Beneficiary Country <span class="text-red">*</span></label>
-              <input type="text" id="wireBankCountry" class="form-control" list="worldCountriesList" placeholder="Select from dropdown or type country..." required autocomplete="off" />
-            </div>
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline" id="cancelWireBtn">Cancel</button>
-          <button type="submit" class="btn btn-primary" id="btnSubmitWire">Transmit Wire Clearing</button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <!-- (2) LEGACY WIRE MODAL REMOVED - MAIN WIRE TRANSFER VIEW IS AUTHORITATIVE -->
 
   <!-- (3) FX CURRENCY EXCHANGE MODAL -->
   <div class="modal-overlay" id="exchangeModal" role="dialog" aria-modal="true" aria-labelledby="exchangeModalTitle">

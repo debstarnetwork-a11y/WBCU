@@ -50,7 +50,13 @@ $fromEmail = !empty($smtp['fromEmail']) ? $smtp['fromEmail'] : (!empty($smtp['us
 $fromName = !empty($smtp['fromName']) ? $smtp['fromName'] : 'WB Credit Finance';
 
 // 2. BUILD CLEAN BRANDED HTML CARD WITH EMBEDDED LOGO
-$logoUrl = 'https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png';
+$localLogoPath = dirname(__DIR__) . '/assets/img/logo-white.png';
+if (file_exists($localLogoPath)) {
+    $logoSrc = 'data:image/png;base64,' . base64_encode(file_get_contents($localLogoPath));
+} else {
+    $logoSrc = 'https://www.wbcu.net/assets/img/logo.png';
+}
+
 $fullHtml = "<!DOCTYPE html>
 <html lang='en'>
 <head>
@@ -69,7 +75,7 @@ $fullHtml = "<!DOCTYPE html>
   <div class='card'>
     <div class='header'>
       <a href='https://wbcu.net' target='_blank' style='text-decoration:none; display:inline-block;'>
-        <img src='https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png' alt='WB Credit Finance' width='180' height='44' border='0' style='display:block; margin:0 auto 10px auto; height:44px; max-height:44px; width:auto; max-width:180px; object-fit:contain; border:0; outline:none;' />
+        <img src='{$logoSrc}' alt='WB Credit Finance' width='180' height='44' border='0' style='display:block; margin:0 auto 10px auto; height:44px; max-height:44px; width:auto; max-width:180px; object-fit:contain; border:0; outline:none;' />
       </a>
       <div style='color:#ffffff; font-size:0.825rem; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; text-shadow:0 1px 2px rgba(0,0,0,0.3);'>
         Institutional Depository &bull; Transaction Notice

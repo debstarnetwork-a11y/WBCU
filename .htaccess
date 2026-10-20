@@ -57,6 +57,8 @@
   RewriteRule ^api/admin-login$ api/admin-login.php [L,QSA]
   RewriteRule ^api/admin-login.php$ api/admin-login.php [L,QSA]
   RewriteRule ^api/admin/users$ api/admin-users.php [L,QSA]
+  RewriteRule ^api/transfer$ api/transfer.php [L,QSA]
+  RewriteRule ^api/transfer.php$ api/transfer.php [L,QSA]
 </IfModule>
 
 # Security Headers
