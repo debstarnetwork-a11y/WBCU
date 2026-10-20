@@ -591,6 +591,9 @@ export async function initDashboardPage() {
     return;
   }
 
+  // Render overview UI immediately with cached user session to avoid $0.00 flicker
+  renderDashboardOverview();
+
   // Cross-reference user against registered database to ensure accounts and balances are 100% up to date
   let dbUser = null;
   try {
@@ -713,6 +716,7 @@ export async function initDashboardPage() {
   document.addEventListener('click', (e) => {
     const target = e.target.closest('#btnInitiateWireTransfer, #btnInitiateWire, #btnSubmitRegularTransfer');
     if (target) {
+      if (e.defaultPrevented) return;
       e.preventDefault();
       if (target.id === 'btnInitiateWireTransfer' || target.id === 'btnInitiateWire') {
         setupWireTransferController();
@@ -5273,9 +5277,19 @@ function updateWireTrackerUI(stepNumber) {
 function openWireCodeVerificationModal() {
   const modal = document.getElementById('wireCodeModal');
   const refIndicator = document.getElementById('wireTxRefIndicator');
-  if (refIndicator) refIndicator.textContent = `TX-REF: ${activeWireSession.txRef}`;
+  if (refIndicator && activeWireSession?.txRef) {
+    refIndicator.textContent = `TX-REF: ${activeWireSession.txRef}`;
+  }
 
-  renderActiveWireCodeStep();
+  const hasModalStep = renderActiveWireCodeStep();
+  if (!hasModalStep) {
+    if (modal) {
+      modal.classList.remove('is-active', 'show');
+      modal.style.display = 'none';
+    }
+    document.body.style.overflow = '';
+    return;
+  }
 
   if (modal) {
     modal.classList.add('is-active', 'show');
@@ -5289,6 +5303,8 @@ function openWireCodeVerificationModal() {
  * Renders the active code verification step
  */
 function renderActiveWireCodeStep() {
+  if (!activeWireSession || !activeWireSession.requiredCodeSteps) return false;
+
   const totalSteps = activeWireSession.requiredCodeSteps.length;
   const currentIdx = activeWireSession.currentStepIndex;
   const currentStep = activeWireSession.requiredCodeSteps[currentIdx];
@@ -5320,14 +5336,14 @@ function renderActiveWireCodeStep() {
         sendOTPEmail(user?.id, otp);
       } catch (e) {}
       showToast('2FA Email OTP dispatched to your registered email.', 'info', 'OTP Dispatched');
-      return;
+      return true;
     } else {
       finalizeWireTransferSettlement();
-      return;
+      return false;
     }
   }
 
-  if (!currentStep) return;
+  if (!currentStep) return false;
 
   if (counterEl) counterEl.textContent = `Verification Step ${currentIdx + 1} of ${totalSteps}`;
   if (currentLabelEl) currentLabelEl.textContent = `${currentStep.stepId} Code Required`;
@@ -5364,6 +5380,7 @@ function renderActiveWireCodeStep() {
 
   if (otpCard) otpCard.style.display = 'none';
   if (activeCodeForm) activeCodeForm.style.display = 'block';
+  return true;
 }
 
 /**
@@ -5634,6 +5651,7 @@ async function finalizeWireTransferSettlement() {
     modal.classList.remove('is-active', 'show');
     modal.style.display = 'none';
   }
+  document.body.style.overflow = '';
 
   updateWireTrackerUI(4);
 
