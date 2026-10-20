@@ -717,22 +717,11 @@ export async function initDashboardPage() {
 
   // Fail-safe global click delegation for all transfer initiation buttons to prevent interface lockups
   document.addEventListener('click', (e) => {
-    const target = e.target.closest('#btnInitiateWireTransfer, #btnInitiateWire, #btnSubmitRegularTransfer');
+    const target = e.target.closest('#btnSubmitRegularTransfer');
     if (target) {
       if (e.defaultPrevented) return;
       
-      if (target.id === 'btnInitiateWireTransfer' || target.id === 'btnInitiateWire') {
-        const wireForm = document.getElementById('mainWireTransferForm');
-        if (wireForm) {
-          // Manually trigger form validation and submission
-          if (wireForm.checkValidity()) {
-            e.preventDefault();
-            if (typeof wireForm.onsubmit === 'function') {
-              wireForm.onsubmit(e);
-            }
-          }
-        }
-      } else if (target.id === 'btnSubmitRegularTransfer') {
+      if (target.id === 'btnSubmitRegularTransfer') {
         const regForm = document.getElementById('mainTransferForm');
         if (regForm) {
           if (regForm.checkValidity()) {
@@ -4343,6 +4332,13 @@ export function closeTransferSuccessModal() {
     modal.classList.remove('show');
     modal.style.display = 'none';
   }
+  
+  // Re-enable regular transfer buttons
+  const btnReg = document.getElementById('btnSubmitRegularTransfer');
+  if (btnReg) {
+    btnReg.removeAttribute('disabled');
+    btnReg.innerHTML = 'Confirm Transfer'; // Restore default text
+  }
 }
 
 export function setupTransferSuccessModalController() {
@@ -5139,7 +5135,10 @@ export function setupWireTransferController() {
 
     // Guard against multiple clicks if modal is already open
     const activeModal = document.getElementById('wireCodeModal');
-    if (activeModal && activeModal.classList.contains('is-active')) return;
+    if (activeModal && (activeModal.classList.contains('is-active') || activeModal.style.display === 'flex')) {
+      console.warn('Wire submission blocked: Modal already active.');
+      return;
+    }
     
     // Toggle loading state
     const originalHtml = btnSubmit.innerHTML;
@@ -5256,7 +5255,8 @@ export function setupWireTransferController() {
     } catch (err) {
       console.error('Wire submission failure:', err);
       showToast(err.message || 'An unexpected error occurred while initiating the wire transfer.', 'error', 'Submission Failed');
-    } finally {
+      
+      // Only re-enable on error. If success, the modal or receipt will handle the UI.
       if (btnSubmit) {
         btnSubmit.removeAttribute('disabled');
         btnSubmit.innerHTML = originalHtml;
@@ -5265,7 +5265,7 @@ export function setupWireTransferController() {
   };
 
   if (wireForm) {
-    wireForm.onsubmit = handleWireSubmit;
+    wireForm.addEventListener('submit', handleWireSubmit);
   }
 
   // Setup Code Verification Modal Handlers
@@ -5452,6 +5452,16 @@ function setupWireCodeModalHandlers() {
       document.body.style.overflow = '';
     }
     updateWireTrackerUI(1);
+
+    // Re-enable "Initiate Wire" buttons if they were disabled during submission
+    const btnSubmit = document.getElementById('btnInitiateWireTransfer') || document.getElementById('btnInitiateWire');
+    if (btnSubmit) {
+      btnSubmit.removeAttribute('disabled');
+      btnSubmit.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        Initiate Wire Transfer
+      `;
+    }
   };
 
   if (closeBtn) closeBtn.onclick = closeDialog;
@@ -5828,6 +5838,16 @@ async function finalizeWireTransferSettlement() {
 
   // Automatically generate official bank receipt matching user model
   triggerAutomaticReceipt(txs[0]);
+
+  // Ensure wire buttons are re-enabled for next time
+  const btnWire = document.getElementById('btnInitiateWireTransfer') || document.getElementById('btnInitiateWire');
+  if (btnWire) {
+    btnWire.removeAttribute('disabled');
+    btnWire.innerHTML = `
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+      Initiate Wire Transfer
+    `;
+  }
 }
 
 /**
