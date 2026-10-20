@@ -93,6 +93,38 @@
               }
             });
           }
+
+          // Instant Zero-Flash Balance Pre-Population
+          try {
+            var userAccts = null;
+            if (u && Array.isArray(u.accounts) && u.accounts.length > 0) {
+              userAccts = u.accounts;
+            } else if (adminDbRaw) {
+              var db = JSON.parse(adminDbRaw);
+              var match = db.find(function(item) {
+                return u && (item.id === u.id || (item.email && u.email && item.email.toLowerCase() === u.email.toLowerCase()));
+              });
+              if (match && Array.isArray(match.accounts) && match.accounts.length > 0) userAccts = match.accounts;
+            }
+
+            if (userAccts && userAccts.length > 0) {
+              var prim = userAccts[0];
+              var bal = typeof prim.balance === 'number' ? prim.balance : parseFloat(prim.balance) || 0;
+              var avail = prim.available !== undefined ? (typeof prim.available === 'number' ? prim.available : parseFloat(prim.available) || 0) : bal;
+              var curSym = (prim.currency === 'EUR' ? '€' : (prim.currency === 'GBP' ? '£' : '$'));
+              var formattedBal = curSym + ' ' + bal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+              var formattedAvail = curSym + ' ' + avail.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+              ['checkingCardBalance', 'totalPortfolioBalanceDisplay', 'totalLiquidityVal'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) el.textContent = formattedBal;
+              });
+              ['checkingCardAvailable', 'wirePageFromAvailBal', 'regTransferFromAvailBal'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) el.textContent = formattedAvail;
+              });
+            }
+          } catch(bErr) {}
         });
       } catch (e) {}
     })();

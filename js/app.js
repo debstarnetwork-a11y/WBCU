@@ -709,6 +709,27 @@ export async function initDashboardPage() {
   // 9. Setup Search & Quick Filters
   setupDashboardSearch();
 
+  // 10. Global Event Delegation for Fail-Safe Transfer & Wire Submit Buttons
+  document.addEventListener('click', (e) => {
+    const target = e.target.closest('#btnInitiateWireTransfer, #btnInitiateWire, #btnSubmitRegularTransfer');
+    if (target) {
+      e.preventDefault();
+      if (target.id === 'btnInitiateWireTransfer' || target.id === 'btnInitiateWire') {
+        setupWireTransferController();
+        const wireForm = document.getElementById('mainWireTransferForm');
+        if (wireForm && typeof wireForm.onsubmit === 'function') {
+          wireForm.onsubmit(e);
+        }
+      } else if (target.id === 'btnSubmitRegularTransfer') {
+        setupTransfersController();
+        const regForm = document.getElementById('mainTransferForm');
+        if (regForm && typeof regForm.onsubmit === 'function') {
+          regForm.onsubmit(e);
+        }
+      }
+    }
+  });
+
   // Check URL Hash for initial view (e.g. #accounts, #deposit, #transfers, #wire, #crypto, #grants, #loans, #cards, #transactions, #receipts, #notifications, #settings, #security)
   if (window.location.hash === '#accounts') {
     switchDashboardView('accounts');
