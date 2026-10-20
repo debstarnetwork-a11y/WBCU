@@ -224,16 +224,26 @@ def main():
                     if os.path.exists(dst_file):
                         # SPECIAL CASE: Never overwrite .env or database files if they already exist on live
                         if ef == ".env":
-                            # But ensure DB_HOST is 127.0.0.1
+                            # Sanitize live .env, strip trailing spaces, and ensure DB_HOST is 127.0.0.1
                             try:
                                 with open(dst_file, "r") as f:
                                     env_data = f.read()
-                                if "DB_HOST=localhost" in env_data:
-                                    env_data = env_data.replace("DB_HOST=localhost", "DB_HOST=127.0.0.1")
-                                    with open(dst_file, "w") as f:
-                                        f.write(env_data)
-                            except Exception:
-                                pass
+                                clean_lines = []
+                                for line in env_data.splitlines():
+                                    if "=" in line and not line.strip().startswith("#"):
+                                        k, v = line.split("=", 1)
+                                        k = k.strip()
+                                        v = v.strip().strip("'\"")
+                                        if k == "DB_HOST" and (v == "localhost" or not v):
+                                            v = "127.0.0.1"
+                                        clean_lines.append("%s=%s" % (k, v))
+                                    else:
+                                        clean_lines.append(line)
+                                with open(dst_file, "w") as f:
+                                    f.write("\n".join(clean_lines) + "\n")
+                                log("Sanitized live .env file (normalized host & trimmed whitespace).", "SUCCESS")
+                            except Exception as env_err:
+                                log("Notice sanitizing live .env: %s" % str(env_err), "WARN")
                             continue 
                             
                         try:
