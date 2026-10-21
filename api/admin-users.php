@@ -99,15 +99,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } catch (Throwable $e) {}
             }
 
-            // A. Update Users table
+// A. Insert or Update Users table
             try {
-                $stmt = $pdo->prepare("UPDATE `users` SET status = COALESCE(?, status), kyc_status = COALESCE(?, kyc_status), transaction_pin = COALESCE(?, transaction_pin) WHERE id = ?");
-                $stmt->execute([
-                    $u['status'] ?? null,
-                    $u['kycStatus'] ?? ($u['kyc_status'] ?? null),
-                    $u['pin'] ?? ($u['transactionPin'] ?? null),
-                    $uid
-                ]);
+                $chkUser = $pdo->prepare("SELECT id FROM `users` WHERE id = ? LIMIT 1");
+                $chkUser->execute([$uid]);
+                if ($chkUser->fetch()) {
+                    $stmt = $pdo->prepare("UPDATE `users` SET 
+                        username = COALESCE(?, username),
+                        email = COALESCE(?, email),
+                        status = COALESCE(?, status), 
+                        kyc_status = COALESCE(?, kyc_status), 
+                        transaction_pin = COALESCE(?, transaction_pin),
+                        password_hash = COALESCE(?, password_hash)
+                        WHERE id = ?");
+                    $stmt->execute([
+                        $u['username'] ?? null,
+                        $u['email'] ?? null,
+                        $u['status'] ?? null,
+                        $u['kycStatus'] ?? ($u['kyc_status'] ?? null),
+                        $u['pin'] ?? ($u['transactionPin'] ?? null),
+                        $u['password'] ?? null,
+                        $uid
+                    ]);
+                } else {
+                    $stmt = $pdo->prepare("INSERT INTO `users` (id, username, email, password_hash, role, transaction_pin, status, kyc_status) 
+                        VALUES (?, ?, ?, ?, 'user', ?, ?, ?)");
+                    $stmt->execute([
+                        $uid,
+                        $u['username'] ?? $uid,
+                        $u['email'] ?? ($uid . '@wbcu.net'),
+                        $u['password'] ?? 'MemberPass123!',
+                        $u['pin'] ?? ($u['transactionPin'] ?? '1234'),
+                        $u['status'] ?? 'active',
+                        $u['kycStatus'] ?? ($u['kyc_status'] ?? 'verified')
+                    ]);
+                }
             } catch (Throwable $e) {}
 
             // B. Update Profiles table (Photo, phone, name)

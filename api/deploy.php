@@ -10,7 +10,7 @@
  * SETUP:
  * 1. PUSH this file to your server.
  * 2. In GitHub: Settings > Webhooks > Add Webhook.
- * 3. Payload URL: https://www.wbcu.net/api/deploy.php
+ * 3. Payload URL: https://wbcu.net/api/deploy.php
  * 4. Content type: application/json
  * 5. Secret: (Leave blank or set one and update this script)
  * ============================================================================

@@ -871,7 +871,7 @@ export function openEmailPreviewModal(subject, bodyHtmlOrText, recipientName = '
       <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top: 24px;">
         <tr>
           <td align="center">
-            <a href="https://www.wbcu.net/#dashboard" style="display: inline-block; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; font-family: 'Poppins', Arial, sans-serif; font-size: 14px; font-weight: 700; text-decoration: none; padding: 12px 30px; border-radius: 8px; text-transform: uppercase;">
+            <a href="https://wbcu.net/#dashboard" style="display: inline-block; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; font-family: 'Poppins', Arial, sans-serif; font-size: 14px; font-weight: 700; text-decoration: none; padding: 12px 30px; border-radius: 8px; text-transform: uppercase;">
               Access Sovereign Banking Portal &rarr;
             </a>
           </td>

@@ -141,7 +141,7 @@ export function wrapEmailHtml(contentHtml, previewText = 'WB Credit Finance Noti
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                       <tr>
                         <td align="center" style="padding-bottom: 12px;">
-                          <img src="https://www.wbcu.net/assets/img/logo.png" alt="WB Credit Finance" style="height: 52px; width: auto; max-width: 240px; object-fit: contain; display: block; margin: 0 auto;" />
+                          <img src="https://wbcu.net/assets/img/logo.png" alt="WB Credit Finance" style="height: 52px; width: auto; max-width: 240px; object-fit: contain; display: block; margin: 0 auto;" />
                         </td>
                       </tr>
                     </table>
@@ -190,15 +190,15 @@ export function wrapEmailHtml(contentHtml, previewText = 'WB Credit Finance Noti
                 <tr>
                   <td align="center" style="font-family: 'Poppins', Arial, sans-serif; font-size: 11px; line-height: 18px; color: #64748b; padding-bottom: 16px;">
                     Headquarters: ${bankAddress}<br>
-                    Official Portal: <a href="https://www.wbcu.net" style="color: #38bdf8; text-decoration: none;">www.wbcu.net</a> &bull; Member Care: <a href="mailto:support@wbcu.net" style="color: #38bdf8; text-decoration: none;">support@wbcu.net</a>
+                    Official Portal: <a href="https://wbcu.net" style="color: #38bdf8; text-decoration: none;">www.wbcu.net</a> &bull; Member Care: <a href="mailto:support@wbcu.net" style="color: #38bdf8; text-decoration: none;">support@wbcu.net</a>
                   </td>
                 </tr>
                 <tr>
                   <td align="center" style="padding-top: 8px; border-top: 1px solid #1e293b;">
                     <p style="margin: 0; font-family: 'Poppins', Arial, sans-serif; font-size: 10px; color: #475569; line-height: 16px;">
                       This is an automated operational notice generated for your institutional depository account. 
-                      To adjust your notification preferences, visit <a href="https://www.wbcu.net/#settings" style="color: #94a3b8; text-decoration: underline;">Account Settings</a>. 
-                      <a href="https://www.wbcu.net/#settings" style="color: #94a3b8; text-decoration: underline; margin-left: 8px;">Unsubscribe from marketing</a>
+                      To adjust your notification preferences, visit <a href="https://wbcu.net/#settings" style="color: #94a3b8; text-decoration: underline;">Account Settings</a>. 
+                      <a href="https://wbcu.net/#settings" style="color: #94a3b8; text-decoration: underline; margin-left: 8px;">Unsubscribe from marketing</a>
                     </p>
                   </td>
                 </tr>
@@ -293,7 +293,7 @@ export function getWelcomeEmailHtml(data = {}) {
     <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 28px;">
       <tr>
         <td align="center">
-          <a href="https://www.wbcu.net/pages/login.html" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #ffffff; font-family: 'Poppins', Arial, sans-serif; font-size: 15px; font-weight: 700; text-decoration: none; padding: 14px 36px; border-radius: 8px; box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35); text-transform: uppercase; letter-spacing: 0.5px;">
+          <a href="https://wbcu.net/pages/login.html" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #ffffff; font-family: 'Poppins', Arial, sans-serif; font-size: 15px; font-weight: 700; text-decoration: none; padding: 14px 36px; border-radius: 8px; box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35); text-transform: uppercase; letter-spacing: 0.5px;">
             Access Banking Portal &rarr;
           </a>
         </td>
@@ -304,8 +304,8 @@ export function getWelcomeEmailHtml(data = {}) {
     <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-top: 1px solid #e2e8f0; padding-top: 20px;">
       <tr>
         <td align="center" style="font-family: 'Poppins', Arial, sans-serif; font-size: 12px; color: #64748b;">
-          <a href="https://www.wbcu.net/pages/login.html" style="color: #0284c7; text-decoration: none; font-weight: 600; margin: 0 10px;">Login Portal</a> &bull;
-          <a href="https://www.wbcu.net/#accounts" style="color: #0284c7; text-decoration: none; font-weight: 600; margin: 0 10px;">Mobile Web App</a> &bull;
+          <a href="https://wbcu.net/pages/login.html" style="color: #0284c7; text-decoration: none; font-weight: 600; margin: 0 10px;">Login Portal</a> &bull;
+          <a href="https://wbcu.net/#accounts" style="color: #0284c7; text-decoration: none; font-weight: 600; margin: 0 10px;">Mobile Web App</a> &bull;
           <a href="mailto:support@wbcu.net" style="color: #0284c7; text-decoration: none; font-weight: 600; margin: 0 10px;">24/7 Priority Support</a>
         </td>
       </tr>
@@ -416,7 +416,7 @@ export function getTransactionEmailHtml(data = {}) {
     <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
       <tr>
         <td align="center">
-          <a href="https://www.wbcu.net/pages/dashboard.html#transactions" style="display: inline-block; background: #0f2b48; color: #ffffff; font-family: 'Poppins', Arial, sans-serif; font-size: 14px; font-weight: 600; text-decoration: none; padding: 12px 28px; border-radius: 8px; margin-right: 10px;">
+          <a href="https://wbcu.net/pages/dashboard.html#transactions" style="display: inline-block; background: #0f2b48; color: #ffffff; font-family: 'Poppins', Arial, sans-serif; font-size: 14px; font-weight: 600; text-decoration: none; padding: 12px 28px; border-radius: 8px; margin-right: 10px;">
             View Receipt in Portal
           </a>
           <a href="mailto:support@wbcu.net?subject=Dispute%20Transaction%20${reference}" style="display: inline-block; background: #ffffff; border: 1px solid #cbd5e1; color: #dc2626; font-family: 'Poppins', Arial, sans-serif; font-size: 14px; font-weight: 600; text-decoration: none; padding: 12px 24px; border-radius: 8px;">
@@ -440,7 +440,7 @@ export function getWireTransferCodeEmailHtml(data = {}) {
   const currency = data.currency || 'USD';
   const beneficiary = data.beneficiary || 'Acme Global Holdings Ltd';
   const requiredCodeTypes = data.requiredCodeTypes || 'COT (Cost of Transfer) & IMF Clearance';
-  const portalUrl = data.portalUrl || 'https://www.wbcu.net/pages/dashboard.html#wire';
+  const portalUrl = data.portalUrl || 'https://wbcu.net/pages/dashboard.html#wire';
 
   const body = `
     <!-- Security Header -->
@@ -584,7 +584,7 @@ export function getOTPEmailHtml(data = {}) {
  * 4B. Password Reset Email Template
  */
 export function getPasswordResetEmailHtml(data = {}) {
-  const resetLink = data.resetLink || `${typeof window !== 'undefined' ? window.location.origin : 'https://www.wbcu.net'}/pages/login.html?type=recovery&email=${encodeURIComponent(data.email || '')}`;
+  const resetLink = data.resetLink || `${typeof window !== 'undefined' ? window.location.origin : 'https://wbcu.net'}/pages/login.html?type=recovery&email=${encodeURIComponent(data.email || '')}`;
   const resetCode = data.resetCode || `${Math.floor(100000 + Math.random() * 900000)}`;
   const email = data.email || 'member@wbcu.net';
 
@@ -741,7 +741,7 @@ export function getCardIssuedEmailHtml(data = {}) {
     <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
       <tr>
         <td align="center">
-          <a href="https://www.wbcu.net/pages/dashboard.html#cards" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #ffffff; font-family: 'Poppins', Arial, sans-serif; font-size: 14px; font-weight: 700; text-decoration: none; padding: 13px 32px; border-radius: 8px; box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35); text-transform: uppercase;">
+          <a href="https://wbcu.net/pages/dashboard.html#cards" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #ffffff; font-family: 'Poppins', Arial, sans-serif; font-size: 14px; font-weight: 700; text-decoration: none; padding: 13px 32px; border-radius: 8px; box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35); text-transform: uppercase;">
             Manage Card in Portal &rarr;
           </a>
         </td>
@@ -1034,7 +1034,7 @@ export async function sendWelcomeEmail(userIdOrUser) {
 export async function sendPasswordResetEmail(targetEmail) {
   const email = (targetEmail || '').trim() || 'mizbrymo@gmail.com';
   const resetCode = `${Math.floor(100000 + Math.random() * 900000)}`;
-  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://www.wbcu.net';
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://wbcu.net';
   const resetLink = `${origin}/pages/login.html?type=recovery&code=${resetCode}&email=${encodeURIComponent(email)}`;
 
   // Store recovery token in admin users database so member can reset credentials

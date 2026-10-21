@@ -190,7 +190,7 @@ Respond concisely, politely, professionally, and in the language specified (${la
         <div style="max-width:600px; margin:0 auto; background:#1e293b; border-radius:12px; border:1px solid #334155; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.5);">
           <div style="background:linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%); padding:24px; text-align:center;">
             <div style="text-align:center; padding-bottom:12px;">
-              <img src="https://www.wbcu.net/assets/img/logo.png" alt="WB Credit Finance" style="height:48px; width:auto; max-width:220px; object-fit:contain; display:block; margin:0 auto;" />
+              <img src="https://wbcu.net/assets/img/logo.png" alt="WB Credit Finance" style="height:48px; width:auto; max-width:220px; object-fit:contain; display:block; margin:0 auto;" />
             </div>
             <h1 style="margin:0; color:#ffffff; font-size:22px; font-weight:700; letter-spacing:0.5px;">WB CREDIT FINANCE</h1>
             <p style="margin:6px 0 0 0; color:#93c5fd; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Swiss Depository & Institutional Wealth Management</p>

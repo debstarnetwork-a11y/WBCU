@@ -73,7 +73,7 @@ $htmlBody = "
 <body>
   <div class='card'>
     <div class='header'>
-      <img src='https://www.wbcu.net/assets/img/logo.png' alt='WB Credit Finance' style='height:44px; width:auto; max-width:180px; object-fit:contain; margin-bottom:10px; display:inline-block;' /><br/>
+      <img src='https://wbcu.net/assets/img/logo.png' alt='WB Credit Finance' style='height:44px; width:auto; max-width:180px; object-fit:contain; margin-bottom:10px; display:inline-block;' /><br/>
       <h1>{$fromName}</h1>
       <p style='margin:5px 0 0; font-size:0.85rem; opacity:0.9;'>Automated Transaction Relay System</p>
     </div>

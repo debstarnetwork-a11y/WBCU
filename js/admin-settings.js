@@ -46,7 +46,7 @@ export const defaultSystemSettings = {
     address: '109, Feldgüetliweg Meilen Bezirk Meilen Zurich 8706 Switzerland',
     phone: '001 (207) 613-1332',
     email: 'info@wbcu.net',
-    websiteUrl: 'https://www.wbcu.net'
+    websiteUrl: 'https://wbcu.net'
   },
   transactionSettings: {
     minTransfer: 10,

@@ -18,7 +18,7 @@ export function injectHeaderAndFooter() {
         <div class="container nav-container">
           <!-- Brand Logo -->
           <a href="/" class="brand-logo" aria-label="WB Credit Finance Home">
-            <img src="https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png" alt="WB Credit Finance Logo" style="height: 40px; width: auto; max-width: 220px; object-fit: contain;">
+            <img src="https://wbcu.net/assets/wbcu-logo.png" alt="WB Credit Finance Logo" style="height: 40px; width: auto; max-width: 220px; object-fit: contain;">
           </a>
 
           <!-- Desktop Navigation Links -->
@@ -72,7 +72,7 @@ export function injectHeaderAndFooter() {
             <!-- Col 1: Brand & Bio -->
             <div class="footer-col brand-col">
               <div class="brand-logo footer-logo">
-                <img src="https://i.ibb.co/svKRSV69/WBCU-LOGO-03.png" alt="WB Credit Finance Logo" style="height: 38px; width: auto; max-width: 200px; object-fit: contain;">
+                <img src="https://wbcu.net/assets/wbcu-logo.png" alt="WB Credit Finance Logo" style="height: 38px; width: auto; max-width: 200px; object-fit: contain;">
               </div>
               <p class="footer-bio" data-i18n="footer.tagline">
                 We believe people come first. WB CREDIT FINANCE delivers premier personal, business, and high-yield financial solutions with state-of-the-art security and member-first care.

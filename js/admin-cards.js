@@ -1210,7 +1210,7 @@ export function openCardDetailModal(cardId) {
         <!-- Top Row: WBCU Branding Logo, Grade, Contactless Icon -->
         <div class="d-flex justify-between items-start">
           <div>
-            <img src="https://i.ibb.co/qMPvkK0B/WBCU-LOGO-03.png" alt="WB Credit Finance" style="height: 28px; width: auto; max-width: 130px; object-fit: contain; filter: brightness(0) invert(1); display: block;">
+            <img src="https://wbcu.net/assets/wbcu-logo.png" alt="WB Credit Finance" style="height: 28px; width: auto; max-width: 130px; object-fit: contain; filter: brightness(0) invert(1); display: block;">
           </div>
           <div class="font-bold text-xs" style="letter-spacing:0.22em; color:#cbd5e1; text-transform:uppercase;">
             ${cardGrade}

@@ -8,7 +8,7 @@
  * 1. Upload this file to your public_html folder (e.g. public_html/deploy.php)
  * 2. Go to your GitHub Repository -> Settings -> Webhooks
  * 3. Add a new webhook:
- *    - Payload URL: https://www.wbcu.net/deploy.php
+ *    - Payload URL: https://wbcu.net/deploy.php
  *    - Content type: application/json
  *    - Trigger: Just the push event.
  * 4. Ensure your cPanel user has SSH access to the GitHub repo (already should be if you cloned it).

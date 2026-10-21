@@ -4187,9 +4187,7 @@ export function setupTransfersController() {
 export function openTransferTypeSelectModal() {
   const modal = document.getElementById('transferTypeSelectModal');
   if (modal) {
-    modal.classList.add('is-active');
-    modal.classList.add('show');
-    modal.style.display = 'flex';
+    modal.classList.add('is-active', 'show'); modal.style.display = 'flex'; modal.style.zIndex = '999999'; document.body.style.overflow = 'hidden';
   }
 }
 
@@ -4320,9 +4318,9 @@ export function openTransferSuccessModal(tx, amountFormatted, recipientName, txR
   if (recEl) recEl.textContent = `Recipient: ${recipientName || tx?.recipient || 'Verified Beneficiary'}`;
   if (refEl) refEl.textContent = `Ref: ${txRef || tx?.ref || 'WB-TX-CONFIRMED'}`;
 
-  modal.classList.add('is-active');
-  modal.classList.add('show');
-  modal.style.display = 'flex';
+  modal.classList.add('is-active', 'show'); modal.style.display = 'flex'; modal.style.zIndex = '999999'; document.body.style.overflow = 'hidden';
+  modal.style.zIndex = '999999';
+  document.body.style.overflow = 'hidden';
 }
 
 export function closeTransferSuccessModal() {
@@ -5337,6 +5335,15 @@ function setupWireReviewModalHandlers() {
   if (modal) modal.dataset.handlersBound = 'true';
 
   const closeReview = () => {
+    isProcessingWire = false;
+    const btnSubmit = document.getElementById('btnExecuteInternationalWire');
+    if (btnSubmit) {
+      btnSubmit.removeAttribute('disabled');
+      btnSubmit.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        Initiate Wire Transfer
+      `;
+    }
     if (modal) {
       modal.classList.remove('is-active', 'show');
       modal.style.display = 'none';
@@ -11695,9 +11702,9 @@ export function displayReceiptInModal(receipt) {
   setElText('receiptDocRefCode', receipt.ref);
   setElText('receiptDocHash', receipt.hash);
 
-  modal.classList.add('is-active');
-  modal.classList.add('show');
-  modal.style.display = 'flex';
+  modal.classList.add('is-active', 'show'); modal.style.display = 'flex'; modal.style.zIndex = '999999'; document.body.style.overflow = 'hidden';
+  modal.style.zIndex = '999999';
+  document.body.style.overflow = 'hidden';
 
   const modalBody = modal.querySelector('.modal-body');
   if (modalBody) modalBody.scrollTop = 0;
